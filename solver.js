@@ -9,17 +9,118 @@
 
   const EPSILON = 1e-10;
 
+  class Fraction {
+    constructor(numerator = 0n, denominator = 1n) {
+      let n = BigInt(numerator);
+      let d = BigInt(denominator);
+      if (d === 0n) throw new Error('No se puede construir una fracción con denominador cero.');
+      if (d < 0n) { n = -n; d = -d; }
+      const divisor = gcd(absBigInt(n), d);
+      this.n = n / divisor;
+      this.d = d / divisor;
+      Object.freeze(this);
+    }
+
+    static parse(value) {
+      if (value instanceof Fraction) return value;
+      if (typeof value === 'bigint') return new Fraction(value);
+      if (typeof value === 'number') {
+        if (!Number.isFinite(value)) throw new Error('Todos los valores deben ser números finitos.');
+        return Fraction.parse(String(value));
+      }
+      if (typeof value !== 'string') throw new Error('Cada entrada debe ser un número o fracción.');
+      const raw = value.trim().replace(',', '.');
+      if (!raw) throw new Error('Las entradas no pueden estar vacías.');
+      const fractionMatch = raw.match(/^([+-]?)(\d+)\s*\/\s*(\d+)$/);
+      if (fractionMatch) {
+        const sign = fractionMatch[1] === '-' ? -1n : 1n;
+        const numerator = sign * BigInt(fractionMatch[2]);
+        const denominator = BigInt(fractionMatch[3]);
+        if (denominator === 0n) throw new Error('Una fracción no puede tener denominador cero.');
+        return new Fraction(numerator, denominator);
+      }
+      const decimalMatch = raw.match(/^([+-]?)(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/i);
+      if (!decimalMatch) throw new Error(`Entrada no válida: "${value}". Usa números o fracciones como 3/4.`);
+      const sign = decimalMatch[1] === '-' ? -1n : 1n;
+      const whole = decimalMatch[2];
+      const decimals = decimalMatch[3] || '';
+      const exponent = Number(decimalMatch[4] || 0);
+      const digits = BigInt((whole + decimals) || '0');
+      const decimalPlaces = decimals.length - exponent;
+      if (decimalPlaces >= 0) {
+        return new Fraction(sign * digits, 10n ** BigInt(decimalPlaces));
+      }
+      return new Fraction(sign * digits * (10n ** BigInt(-decimalPlaces)), 1n);
+    }
+
+    add(other) {
+      const b = Fraction.parse(other);
+      return new Fraction(this.n * b.d + b.n * this.d, this.d * b.d);
+    }
+
+    sub(other) {
+      const b = Fraction.parse(other);
+      return new Fraction(this.n * b.d - b.n * this.d, this.d * b.d);
+    }
+
+    mul(other) {
+      const b = Fraction.parse(other);
+      return new Fraction(this.n * b.n, this.d * b.d);
+    }
+
+    div(other) {
+      const b = Fraction.parse(other);
+      if (b.n === 0n) throw new Error('División entre cero.');
+      return new Fraction(this.n * b.d, this.d * b.n);
+    }
+
+    neg() {
+      return new Fraction(-this.n, this.d);
+    }
+
+    isZero() {
+      return this.n === 0n;
+    }
+
+    abs() {
+      return new Fraction(absBigInt(this.n), this.d);
+    }
+
+    toNumber() {
+      return Number(this.n) / Number(this.d);
+    }
+
+    toString() {
+      return this.d === 1n ? this.n.toString() : `${this.n}/${this.d}`;
+    }
+  }
+
+  function absBigInt(value) {
+    return value < 0n ? -value : value;
+  }
+
+  function gcd(a, b) {
+    let x = absBigInt(a);
+    let y = absBigInt(b);
+    while (y !== 0n) {
+      const rest = x % y;
+      x = y;
+      y = rest;
+    }
+    return x || 1n;
+  }
+
   function cloneMatrix(matrix) {
     return matrix.map(row => row.slice());
   }
 
-  function clean(value) {
-    return Math.abs(value) < EPSILON ? 0 : value;
+  function toFractionMatrix(matrix) {
+    return matrix.map(row => row.map(Fraction.parse));
   }
 
-  function rankOf(matrix, tolerance = EPSILON) {
+  function rankOf(matrix) {
     if (!matrix.length) return 0;
-    const work = cloneMatrix(matrix);
+    const work = toFractionMatrix(matrix);
     const rows = work.length;
     const cols = work[0].length;
     let rank = 0;
@@ -28,14 +129,15 @@
     for (let col = 0; col < cols && pivotRow < rows; col += 1) {
       let best = pivotRow;
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        if (Math.abs(work[r][col]) > Math.abs(work[best][col])) best = r;
+        if (work[r][col].abs().toNumber() > work[best][col].abs().toNumber()) best = r;
       }
-      if (Math.abs(work[best][col]) <= tolerance) continue;
+      if (work[best][col].isZero()) continue;
       [work[pivotRow], work[best]] = [work[best], work[pivotRow]];
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        const factor = work[r][col] / work[pivotRow][col];
+        const factor = work[r][col].div(work[pivotRow][col]);
+        if (factor.isZero()) continue;
         for (let c = col; c < cols; c += 1) {
-          work[r][c] = clean(work[r][c] - factor * work[pivotRow][c]);
+          work[r][c] = work[r][c].sub(factor.mul(work[pivotRow][c]));
         }
       }
       pivotRow += 1;
@@ -56,27 +158,106 @@
       if (!Array.isArray(row) || row.length !== width) {
         throw new Error('Todas las filas deben tener el mismo número de columnas.');
       }
-      return row.map(value => {
-        const number = Number(value);
-        if (!Number.isFinite(number)) throw new Error('Todos los valores deben ser números finitos.');
-        return number;
-      });
+      return row.map(value => Fraction.parse(value));
     });
     return { matrix: normalized, variables: width - 1 };
   }
 
-  function recordStep(steps, label, matrix, note = '') {
-    steps.push({ label, matrix: cloneMatrix(matrix).map(row => row.map(clean)), note });
+  function cloneForOutput(matrix) {
+    return cloneMatrix(matrix);
+  }
+
+  function recordStep(steps, label, matrix) {
+    steps.push({ label, matrix: cloneForOutput(matrix) });
   }
 
   function classify(echelonOrReduced, variables) {
     for (const row of echelonOrReduced) {
-      const allCoefficientsZero = row.slice(0, variables).every(v => Math.abs(v) <= EPSILON);
-      const rhsNonZero = Math.abs(row[variables]) > EPSILON;
+      const allCoefficientsZero = row.slice(0, variables).every(value => value.isZero());
+      const rhsNonZero = !row[variables].isZero();
       if (allCoefficientsZero && rhsNonZero) return 'none';
     }
-    const rankA = rankOf(echelonOrReduced.map(row => row.slice(0, variables)));
-    return rankA === variables ? 'unique' : 'infinite';
+    return rankOf(echelonOrReduced.map(row => row.slice(0, variables))) === variables
+      ? 'unique'
+      : 'infinite';
+  }
+
+  function findPivots(reduced, variables) {
+    const pivotForColumn = Array(variables).fill(-1);
+    for (let r = 0; r < reduced.length; r += 1) {
+      const pivot = reduced[r].slice(0, variables).findIndex(value => !value.isZero());
+      if (pivot !== -1 && pivotForColumn[pivot] === -1) pivotForColumn[pivot] = r;
+    }
+    return pivotForColumn;
+  }
+
+  function extractSolution(reduced, variables) {
+    const solution = Array(variables).fill(null).map(() => new Fraction(0));
+    const pivots = findPivots(reduced, variables);
+    for (let column = 0; column < variables; column += 1) {
+      if (pivots[column] !== -1) {
+        solution[column] = reduced[pivots[column]][variables];
+      }
+    }
+    return solution;
+  }
+
+  function buildParametricSolution(reduced, variables) {
+    const pivotForColumn = findPivots(reduced, variables);
+    const freeColumns = [];
+    for (let c = 0; c < variables; c += 1) {
+      if (pivotForColumn[c] === -1) freeColumns.push(c);
+    }
+
+    const parameters = freeColumns.map((column, index) => ({
+      column,
+      name: `t${index + 1}`
+    }));
+
+    const expressions = Array.from({ length: variables }, (_, column) => {
+      const pivotRow = pivotForColumn[column];
+      if (pivotRow === -1) {
+        const parameter = parameters.find(item => item.column === column);
+        return {
+          variable: column,
+          constant: new Fraction(0),
+          terms: [{ parameter: parameter.name, coefficient: new Fraction(1) }],
+          text: parameter.name
+        };
+      }
+
+      const row = reduced[pivotRow];
+      const terms = freeColumns
+        .map((freeColumn, index) => ({
+          parameter: parameters[index].name,
+          coefficient: row[freeColumn].neg()
+        }))
+        .filter(term => !term.coefficient.isZero());
+
+      const constant = row[variables];
+      return {
+        variable: column,
+        constant,
+        terms,
+        text: formatExpressionValue(constant, terms)
+      };
+    });
+
+    return { parameters, expressions };
+  }
+
+  function formatExpressionValue(constant, terms) {
+    let text = constant.toString();
+    for (const term of terms) {
+      const coefficient = term.coefficient;
+      const negative = coefficient.n < 0n;
+      const absolute = negative ? coefficient.neg() : coefficient;
+      const coefficientText = absolute.toString() === '1' ? '' : absolute.toString();
+      const signed = negative ? ' − ' : ' + ';
+      text += `${signed}${coefficientText}${term.parameter}`;
+    }
+    if (text === '0') return '0';
+    return text;
   }
 
   function gaussJordan(augmented) {
@@ -92,10 +273,9 @@
     for (let col = 0; col < variables && pivotRow < rows; col += 1) {
       let bestRow = pivotRow;
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        if (Math.abs(work[r][col]) > Math.abs(work[bestRow][col])) bestRow = r;
+        if (work[r][col].abs().toNumber() > work[bestRow][col].abs().toNumber()) bestRow = r;
       }
-
-      if (Math.abs(work[bestRow][col]) <= EPSILON) continue;
+      if (work[bestRow][col].isZero()) continue;
 
       if (bestRow !== pivotRow) {
         [work[pivotRow], work[bestRow]] = [work[bestRow], work[pivotRow]];
@@ -103,19 +283,19 @@
       }
 
       const pivot = work[pivotRow][col];
-      if (Math.abs(pivot - 1) > EPSILON) {
-        for (let c = 0; c < cols; c += 1) work[pivotRow][c] = clean(work[pivotRow][c] / pivot);
-        recordStep(steps, `F${pivotRow + 1} ← F${pivotRow + 1} ÷ ${formatNumber(pivot)}`, work);
+      if (pivot.toString() !== '1') {
+        for (let c = 0; c < cols; c += 1) work[pivotRow][c] = work[pivotRow][c].div(pivot);
+        recordStep(steps, `F${pivotRow + 1} ← F${pivotRow + 1} ÷ ${pivot}`, work);
       }
 
       for (let r = 0; r < rows; r += 1) {
         if (r === pivotRow) continue;
         const factor = work[r][col];
-        if (Math.abs(factor) <= EPSILON) continue;
+        if (factor.isZero()) continue;
         for (let c = 0; c < cols; c += 1) {
-          work[r][c] = clean(work[r][c] - factor * work[pivotRow][c]);
+          work[r][c] = work[r][c].sub(factor.mul(work[pivotRow][c]));
         }
-        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(-factor)}·F${pivotRow + 1}`, work);
+        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(factor.neg())}·F${pivotRow + 1}`, work);
       }
       pivotRow += 1;
     }
@@ -127,14 +307,14 @@
     return {
       method: 'Gauss-Jordan',
       matrixType: 'Matriz reducida (RREF)',
-      matrix: work.map(row => row.map(clean)),
+      matrix: work,
       steps,
       variables,
       classification,
       rankA,
       rankAugmented,
       solution: classification === 'unique' ? extractSolution(work, variables) : null,
-      parametricSolution: classification === 'infinite' ? extractParametricSolution(work, variables) : null
+      parametricSolution: classification === 'infinite' ? buildParametricSolution(work, variables) : null
     };
   }
 
@@ -145,30 +325,29 @@
     const work = cloneMatrix(matrix);
     const steps = [];
     let pivotRow = 0;
-    const pivots = [];
 
     recordStep(steps, 'Matriz inicial', work);
 
     for (let col = 0; col < variables && pivotRow < rows; col += 1) {
       let bestRow = pivotRow;
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        if (Math.abs(work[r][col]) > Math.abs(work[bestRow][col])) bestRow = r;
+        if (work[r][col].abs().toNumber() > work[bestRow][col].abs().toNumber()) bestRow = r;
       }
-      if (Math.abs(work[bestRow][col]) <= EPSILON) continue;
+      if (work[bestRow][col].isZero()) continue;
 
       if (bestRow !== pivotRow) {
         [work[pivotRow], work[bestRow]] = [work[bestRow], work[pivotRow]];
         recordStep(steps, `Intercambio F${pivotRow + 1} ↔ F${bestRow + 1}`, work);
       }
 
-      pivots.push(col);
+      const pivot = work[pivotRow][col];
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        const factor = work[r][col] / work[pivotRow][col];
-        if (Math.abs(factor) <= EPSILON) continue;
+        const factor = work[r][col].div(pivot);
+        if (factor.isZero()) continue;
         for (let c = col; c < cols; c += 1) {
-          work[r][c] = clean(work[r][c] - factor * work[pivotRow][c]);
+          work[r][c] = work[r][c].sub(factor.mul(work[pivotRow][c]));
         }
-        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(-factor)}·F${pivotRow + 1}`, work);
+        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(factor.neg())}·F${pivotRow + 1}`, work);
       }
       pivotRow += 1;
     }
@@ -176,110 +355,52 @@
     const classification = classify(work, variables);
     const rankA = rankOf(matrix.map(row => row.slice(0, variables)));
     const rankAugmented = rankOf(matrix);
+    let solution = null;
+    let parametricSolution = null;
+
+    if (classification === 'unique') {
+      const reducedResult = gaussJordan(augmented);
+      solution = reducedResult.solution;
+    } else if (classification === 'infinite') {
+      const reducedResult = gaussJordan(augmented);
+      parametricSolution = reducedResult.parametricSolution;
+    }
 
     return {
       method: 'Eliminación de Gauss',
       matrixType: 'Matriz escalonada',
-      matrix: work.map(row => row.map(clean)),
+      matrix: work,
       steps,
       variables,
       classification,
       rankA,
       rankAugmented,
-      solution: classification === 'unique' ? backSubstitute(work, variables, pivots) : null,
-      parametricSolution: classification === 'infinite'
-        ? extractParametricSolution(gaussJordan(matrix).matrix, variables)
-        : null
+      solution,
+      parametricSolution
     };
-  }
-
-  function extractSolution(reduced, variables) {
-    const solution = Array(variables).fill(0);
-    for (const row of reduced) {
-      const pivotIndex = row.slice(0, variables).findIndex(v => Math.abs(v) > EPSILON);
-      if (pivotIndex !== -1) solution[pivotIndex] = clean(row[variables] / row[pivotIndex]);
-    }
-    return solution;
-  }
-
-  function extractParametricSolution(reduced, variables) {
-    const pivotForColumn = Array(variables).fill(-1);
-    const freeColumns = [];
-
-    for (let r = 0; r < reduced.length; r += 1) {
-      const pivot = reduced[r].slice(0, variables).findIndex(v => Math.abs(v) > EPSILON);
-      if (pivot !== -1 && pivotForColumn[pivot] === -1) pivotForColumn[pivot] = r;
-    }
-
-    for (let c = 0; c < variables; c += 1) {
-      if (pivotForColumn[c] === -1) freeColumns.push(c);
-    }
-
-    const parameters = freeColumns.map((column, index) => ({
-      column,
-      name: `t${index + 1}`
-    }));
-
-    const expressions = Array.from({ length: variables }, (_, column) => {
-      const pivotRow = pivotForColumn[column];
-      if (pivotRow === -1) {
-        const parameter = parameters.find(item => item.column === column);
-        return { variable: column, constant: 0, terms: [{ parameter: parameter.name, coefficient: 1 }] };
-      }
-
-      const row = reduced[pivotRow];
-      const terms = freeColumns
-        .map((freeColumn, index) => ({
-          parameter: parameters[index].name,
-          coefficient: clean(-row[freeColumn])
-        }))
-        .filter(term => Math.abs(term.coefficient) > EPSILON);
-
-      return {
-        variable: column,
-        constant: clean(row[variables]),
-        terms
-      };
-    });
-
-    return { parameters, expressions };
-  }
-
-  function backSubstitute(matrix, variables, pivots) {
-    const solution = Array(variables).fill(0);
-    for (let i = pivots.length - 1; i >= 0; i -= 1) {
-      const row = i;
-      const pivotCol = pivots[i];
-      let rhs = matrix[row][variables];
-      for (let col = pivotCol + 1; col < variables; col += 1) rhs -= matrix[row][col] * solution[col];
-      solution[pivotCol] = clean(rhs / matrix[row][pivotCol]);
-    }
-    return solution;
   }
 
   function solve(augmented, method = 'gauss-jordan') {
     return method === 'gaussian' ? gaussian(augmented) : gaussJordan(augmented);
   }
 
-  function formatNumber(value, digits = 6) {
-    if (Math.abs(value) < EPSILON) return '0';
-    const rounded = Number.parseFloat(value.toFixed(digits));
-    if (Object.is(rounded, -0)) return '0';
-    return String(rounded);
+  function formatNumber(value) {
+    return Fraction.parse(value).toString();
   }
 
   function formatSignedFactor(value) {
-    const n = formatNumber(value);
-    return value >= 0 ? `+ ${n}` : `- ${formatNumber(Math.abs(value))}`;
+    const fraction = Fraction.parse(value);
+    const absolute = fraction.n < 0n ? fraction.neg() : fraction;
+    return fraction.n < 0n ? `- ${absolute}` : `+ ${absolute}`;
   }
 
   return {
     EPSILON,
+    Fraction,
     solve,
     gaussJordan,
     gaussian,
     rankOf,
-    formatNumber,
-    extractParametricSolution
+    formatNumber
   };
 });
