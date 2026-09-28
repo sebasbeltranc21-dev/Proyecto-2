@@ -23,6 +23,12 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - Ejemplo adicional para probar sistemas con fracciones.
 - Tests ampliados para precisión exacta y entradas inválidas.
 
+## Fase 4
+- Presets para cargar rápidamente sistemas de prueba: solución única, fracciones, infinitas, incompatible y 5×5.
+- Historial local de hasta 8 sistemas resueltos, con opción de cargar o borrar entradas.
+- Indicaciones más claras al abrir el procedimiento matemático.
+- El historial usa `localStorage` y no bloquea la app si el navegador no permite almacenamiento.
+
 ## Verificación
 
 Para ejecutar las pruebas:
