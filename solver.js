@@ -39,12 +39,15 @@
         if (denominator === 0n) throw new Error('Una fracción no puede tener denominador cero.');
         return new Fraction(numerator, denominator);
       }
-      const decimalMatch = raw.match(/^([+-]?)(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/i);
+      const decimalMatch = raw.match(/^([+-]?)(?:\d+(?:\.\d*)?|\.\d+)(?:e([+-]?\d+))?$/i);
       if (!decimalMatch) throw new Error(`Entrada no válida: "${value}". Usa números o fracciones como 3/4.`);
-      const sign = decimalMatch[1] === '-' ? -1n : 1n;
-      const whole = decimalMatch[2];
-      const decimals = decimalMatch[3] || '';
-      const exponent = Number(decimalMatch[4] || 0);
+      const sign = raw.startsWith('-') ? -1n : 1n;
+      const unsigned = raw.replace(/^[+-]/, '');
+      const mantissa = unsigned.split(/e/i)[0];
+      const [wholePart, decimalPart = ''] = mantissa.split('.');
+      const whole = wholePart || '0';
+      const decimals = decimalPart;
+      const exponent = Number(decimalMatch[1] || 0);
       const digits = BigInt((whole + decimals) || '0');
       const decimalPlaces = decimals.length - exponent;
       if (decimalPlaces >= 0) {
