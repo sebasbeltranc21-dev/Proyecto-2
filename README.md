@@ -53,6 +53,12 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - Identificación de la fila objetivo para las eliminaciones y normalizaciones.
 - La información visual se genera desde el solver y no altera los cálculos exactos.
 
+## Fase 9
+- Detección exacta de la fila de contradicción cuando el sistema es incompatible.
+- Visualización de la igualdad imposible real, por ejemplo `F2: 0 = -1/2`.
+- Explicación de por qué una fila con coeficientes 0 y término independiente distinto de 0 implica que no existe solución.
+- El reporte descargable incluye la fila de contradicción detectada.
+
 ## Verificación
 
 Para ejecutar las pruebas:
