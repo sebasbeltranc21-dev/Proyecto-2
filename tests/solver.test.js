@@ -49,6 +49,17 @@ for (const method of ['gauss-jordan', 'gaussian']) {
   assert.equal(result.classification, 'none');
   assert.equal(result.solution, null);
   assert.equal(result.parametricSolution, null);
+  assert.ok(result.contradiction);
+  assert.equal(result.contradiction.row, 1);
+  assert.equal(result.contradiction.equation, '0 = 3');
+
+  const fractionalNone = Solver.solve([
+    ['1/2', '1/3', '1/4'],
+    ['1', '2/3', '1/2']
+  ], method);
+  assert.equal(fractionalNone.classification, 'none');
+  assert.ok(fractionalNone.contradiction);
+  assert.equal(fractionalNone.contradiction.row, 1);
 
   result = Solver.solve(identity5, method);
   assert.equal(result.classification, 'unique');
