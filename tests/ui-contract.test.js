@@ -54,3 +54,9 @@ assert.ok(app.includes('function stepFocusText'));
 assert.ok(app.includes('renderMatrix(step.matrix, step.focus)'));
 assert.ok(app.includes('step-focus-row'));
 assert.ok(app.includes('pivot-cell'));
+
+assert.ok(html.includes('id="contradictionPanel"'));
+assert.ok(app.includes('function renderContradiction'));
+assert.ok(app.includes('result.contradiction'));
+assert.ok(app.includes('Contradicción encontrada'));
+assert.ok(app.includes('CONTRADICCIÓN'));
