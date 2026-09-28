@@ -49,3 +49,8 @@ assert.ok(app.includes('stepNextBtn.addEventListener'));
 assert.ok(app.includes('formatEquationsForReport(lastMatrix)'));
 
 console.log('✅ Contrato de interfaz verificado.');
+
+assert.ok(app.includes('function stepFocusText'));
+assert.ok(app.includes('renderMatrix(step.matrix, step.focus)'));
+assert.ok(app.includes('step-focus-row'));
+assert.ok(app.includes('pivot-cell'));
