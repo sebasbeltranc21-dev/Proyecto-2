@@ -135,16 +135,25 @@
     return 'Sin solución';
   }
 
-  function renderMatrix(matrix) {
+  function renderMatrix(matrix, focus = null) {
     const wrapper = document.createElement('div');
     wrapper.className = 'output-grid';
     const variables = matrix[0].length - 1;
-    matrix.forEach(row => {
+    const focusRows = focus?.rows || [];
+    const pivot = focus?.pivot || null;
+    matrix.forEach((row, rowIndex) => {
       const outRow = document.createElement('div');
-      outRow.className = 'output-row';
+      const classes = ['output-row'];
+      if (focusRows.includes(rowIndex)) classes.push('step-focus-row');
+      if (focus?.targetRow === rowIndex) classes.push('step-target-row');
+      outRow.className = classes.join(' ');
+
       row.forEach((value, index) => {
         const cell = document.createElement('div');
-        cell.className = `output-cell${index === variables ? ' constant' : ''}`;
+        const cellClasses = ['output-cell'];
+        if (index === variables) cellClasses.push('constant');
+        if (pivot?.[0] === rowIndex && pivot?.[1] === index) cellClasses.push('pivot-cell');
+        cell.className = cellClasses.join(' ');
         cell.textContent = MatrixSolver.formatNumber(value);
         outRow.appendChild(cell);
       });
@@ -297,6 +306,16 @@
     };
   }
 
+  function stepFocusText(focus) {
+    if (!focus || !focus.rows?.length) return '';
+    if (focus.targetRow >= 0) {
+      return focus.rows.length > 1
+        ? `Filas implicadas: F${focus.rows.map(row => row + 1).join(' y F')}. F${focus.targetRow + 1} es la fila objetivo; el pivote está resaltado.`
+        : `Fila implicada: F${focus.targetRow + 1}. El pivote está resaltado.`;
+    }
+    return `Filas implicadas: F${focus.rows.map(row => row + 1).join(' y F')}.`;
+  }
+
   function stepExplanation(label) {
     if (label === 'Matriz inicial') {
       return 'Se parte de la matriz aumentada que representa todas las ecuaciones del sistema.';
@@ -332,7 +351,15 @@
       explanation.textContent = stepExplanation(step.label);
       card.appendChild(explanation);
 
-      card.appendChild(renderMatrix(step.matrix));
+      const focusText = stepFocusText(step.focus);
+      if (focusText) {
+        const focus = document.createElement('div');
+        focus.className = 'step-focus-text';
+        focus.textContent = focusText;
+        card.appendChild(focus);
+      }
+
+      card.appendChild(renderMatrix(step.matrix, step.focus));
       list.appendChild(card);
     });
     stepsContainer.appendChild(list);
