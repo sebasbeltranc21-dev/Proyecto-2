@@ -29,6 +29,12 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - Indicaciones más claras al abrir el procedimiento matemático.
 - El historial usa `localStorage` y no bloquea la app si el navegador no permite almacenamiento.
 
+## Fase 5
+- Copiar la solución al portapapeles.
+- Descargar un reporte completo en `.txt` con matriz de entrada, resultado, matriz final y procedimiento.
+- Imprimir el resultado o usar la opción del navegador **Guardar como PDF**.
+- El diseño de impresión oculta controles innecesarios y conserva el resultado y procedimiento.
+
 ## Verificación
 
 Para ejecutar las pruebas:
