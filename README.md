@@ -35,6 +35,12 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - Imprimir el resultado o usar la opción del navegador **Guardar como PDF**.
 - El diseño de impresión oculta controles innecesarios y conserva el resultado y procedimiento.
 
+## Fase 6
+- Explicación automática de la clasificación del sistema mediante rangos.
+- Explicación breve de cada operación elemental de filas.
+- Presentación más didáctica del procedimiento matemático.
+- Vista de impresión corregida para incluir correctamente el resultado y los pasos.
+
 ## Verificación
 
 Para ejecutar las pruebas:
