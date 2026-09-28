@@ -36,5 +36,16 @@ assert.ok(app.includes('function stepExplanation'));
 assert.ok(app.includes('stepExplanation(step.label)'));
 assert.ok(html.includes('Procedimiento matemático'));
 assert.ok(html.includes('Aritmética exacta para números y fracciones.'));
+assert.ok(html.includes('id="equationsPreview"'));
+for (const id of ['stepPrevBtn', 'stepNextBtn', 'stepCounter']) {
+  assert.ok(html.includes('id="' + id + '"'), 'Falta navegación de pasos: ' + id);
+}
+assert.ok(app.includes('function renderEquations'));
+assert.ok(app.includes('function signedEquationTerm'));
+assert.ok(app.includes('function updateStepNavigation'));
+assert.ok(app.includes('function showStep'));
+assert.ok(app.includes('stepPrevBtn.addEventListener'));
+assert.ok(app.includes('stepNextBtn.addEventListener'));
+assert.ok(app.includes('formatEquationsForReport(lastMatrix)'));
 
 console.log('✅ Contrato de interfaz verificado.');
