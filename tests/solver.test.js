@@ -38,11 +38,12 @@ for (const method of ['gauss-jordan', 'gaussian']) {
 
   result = Solver.solve(infinite3, method);
   assert.equal(result.classification, 'infinite');
-  assert.deepEqual(result.parametricSolution.parameters.map(p => p.name), ['t1', 't2']);
-  assert.equal(expressionFor(result, 0).constant, 4);
-  assert.equal(expressionFor(result, 0).terms[0].coefficient, -2);
-  assert.equal(expressionFor(result, 2).constant, 3);
-  assert.equal(expressionFor(result, 2).terms[0].coefficient, -1);
+  assert.deepEqual(result.parametricSolution.parameters.map(p => p.name), ['t1']);
+  assert.equal(expressionFor(result, 0).constant, -2);
+  assert.equal(expressionFor(result, 0).terms[0].coefficient, 1);
+  assert.equal(expressionFor(result, 1).constant, 3);
+  assert.equal(expressionFor(result, 1).terms[0].coefficient, -1);
+  assert.deepEqual(expressionFor(result, 2).terms, [{ parameter: 't1', coefficient: 1 }]);
 
   result = Solver.solve(none, method);
   assert.equal(result.classification, 'none');
