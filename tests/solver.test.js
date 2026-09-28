@@ -55,11 +55,12 @@ for (const method of ['gauss-jordan', 'gaussian']) {
 
   const fractionalNone = Solver.solve([
     ['1/2', '1/3', '1/4'],
-    ['1', '2/3', '1/2']
+    ['1', '2/3', '3/4']
   ], method);
   assert.equal(fractionalNone.classification, 'none');
   assert.ok(fractionalNone.contradiction);
   assert.equal(fractionalNone.contradiction.row, 1);
+  assert.equal(fractionalNone.contradiction.equation, '0 = 1/4');
 
   result = Solver.solve(identity5, method);
   assert.equal(result.classification, 'unique');
