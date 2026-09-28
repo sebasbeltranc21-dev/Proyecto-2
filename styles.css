@@ -352,13 +352,6 @@ select:focus, input:focus { border-color: #8da6ff; box-shadow: 0 0 0 4px rgba(49
   line-height: 1.45;
 }
 
-@media print {
-  .result-section,
-  .result-panel,
-  .steps-panel {
-    break-inside: avoid;
-  }
-}
 
 
 .equations-preview {
