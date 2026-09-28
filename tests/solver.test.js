@@ -59,6 +59,16 @@ assert.equal(Solver.formatNumber('6/8'), '3/4');
 assert.equal(Solver.formatNumber('-10/20'), '-1/2');
 assert.equal(Solver.formatNumber('0.125'), '1/8');
 assert.equal(Solver.formatNumber('1e-3'), '1/1000');
+assert.equal(Solver.formatNumber('1,5'), '3/2');
+assert.equal(Solver.formatNumber('.5'), '1/2');
+assert.equal(Solver.formatNumber('2.'), '2');
+assert.equal(Solver.formatNumber('-0.25e2'), '-25');
+const hugePivot = Solver.solve([
+  ['1000000000000000000000000', '1', '1000000000000000000000001'],
+  ['1', '1', '2']
+], 'gauss-jordan');
+assert.equal(hugePivot.classification, 'unique');
+expectExact(hugePivot.solution, ['1', '1']);
 assert.throws(() => Solver.solve([['1/0', '1']], 'gauss-jordan'), /denominador cero/);
 assert.throws(() => Solver.solve([['abc', '1']], 'gauss-jordan'), /Entrada no válida/);
 assert.throws(() => Solver.solve([['1', '2'], ['3']], 'gauss-jordan'), /mismo número de columnas/);
