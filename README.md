@@ -47,6 +47,12 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - La impresión conserva todos los pasos aunque la vista normal muestre uno a la vez.
 - El reporte descargable también incluye las ecuaciones originales.
 
+## Fase 8
+- Resaltado visual de las filas que participan en cada operación elemental.
+- Marcado del pivote usado en cada paso cuando corresponde.
+- Identificación de la fila objetivo para las eliminaciones y normalizaciones.
+- La información visual se genera desde el solver y no altera los cálculos exactos.
+
 ## Verificación
 
 Para ejecutar las pruebas:
