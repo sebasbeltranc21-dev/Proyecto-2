@@ -27,6 +27,6 @@ for (const id of ['copyResultBtn', 'downloadReportBtn', 'printResultBtn', 'expor
 assert.ok(app.includes('navigator.clipboard'));
 assert.ok(app.includes('new Blob([buildReport()]'));
 assert.ok(app.includes('window.print()'));
-assert.ok(html.includes('Guardar como PDF')) || assert.ok(app.includes('Guardar como PDF')));
+assert.ok(app.includes('Guardar como PDF'));
 
 console.log('✅ Contrato de interfaz verificado.');
