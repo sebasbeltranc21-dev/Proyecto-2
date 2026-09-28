@@ -24,6 +24,7 @@
   const rankLabel = document.getElementById('rankLabel');
   const methodLabel = document.getElementById('methodLabel');
   const explanationPanel = document.getElementById('explanationPanel');
+  const contradictionPanel = document.getElementById('contradictionPanel');
   const stepsHint = document.getElementById('stepsHint');
   const historyContainer = document.getElementById('historyContainer');
   const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -115,6 +116,8 @@
     toggleStepsBtn.setAttribute('aria-expanded', 'false');
     currentSteps = [];
     currentStepIndex = 0;
+    contradictionPanel.hidden = true;
+    contradictionPanel.innerHTML = '';
     updateStepNavigation();
   }
 
@@ -299,9 +302,13 @@
       };
     }
 
+    const contradiction = result.contradiction;
+    const contradictionText = contradiction
+      ? `En la fila F${contradiction.row + 1} aparece exactamente ${contradiction.equation}.`
+      : 'Al reducir la matriz aparece una contradicción del tipo 0 = c, con c distinto de cero.';
     return {
       title: '¿Por qué no hay solución?',
-      body: `Los rangos son diferentes: r(A) = ${result.rankA} y r(A|b) = ${result.rankAugmented}. Eso significa que al reducir la matriz aparece una contradicción del tipo 0 = c, con c distinto de cero; por tanto, ninguna asignación de variables satisface simultáneamente todas las ecuaciones.`,
+      body: `Los rangos son diferentes: r(A) = ${result.rankA} y r(A|b) = ${result.rankAugmented}. ${contradictionText} Por tanto, ninguna asignación de variables puede satisfacer simultáneamente todas las ecuaciones.`,
       className: 'explanation none'
     };
   }
@@ -314,6 +321,27 @@
         : `Fila implicada: F${focus.targetRow + 1}. El pivote está resaltado.`;
     }
     return `Filas implicadas: F${focus.rows.map(row => row + 1).join(' y F')}.`;
+  }
+
+  function renderContradiction(result) {
+    contradictionPanel.innerHTML = '';
+    if (!result.contradiction) {
+      contradictionPanel.hidden = true;
+      return;
+    }
+
+    const title = document.createElement('strong');
+    title.textContent = 'Contradicción encontrada';
+
+    const equation = document.createElement('div');
+    equation.className = 'contradiction-equation';
+    equation.textContent = `F${result.contradiction.row + 1}: ${result.contradiction.equation}`;
+
+    const note = document.createElement('p');
+    note.textContent = 'Todas las variables quedaron con coeficiente 0, pero el término independiente no es 0. Esa fila representa una igualdad imposible y confirma que el sistema no tiene solución.';
+
+    contradictionPanel.append(title, equation, note);
+    contradictionPanel.hidden = false;
   }
 
   function stepExplanation(label) {
@@ -431,6 +459,9 @@
       '------------------------------',
       solutionText(lastResult),
       '',
+      ...(lastResult.contradiction
+        ? ['CONTRADICCIÓN', '------------------------------', `Fila F${lastResult.contradiction.row + 1}: ${lastResult.contradiction.equation}`, '']
+        : []),
       type.toUpperCase(),
       '------------------------------',
       matrixText(lastResult.matrix),
@@ -631,6 +662,7 @@
         : `El sistema no tiene solución porque la matriz de coeficientes y la aumentada tienen rangos distintos (${result.rankA} y ${result.rankAugmented}).`;
 
     renderEquations(lastMatrix);
+    renderContradiction(result);
     const explanation = classificationExplanation(result);
     explanationPanel.className = explanation.className;
     explanationPanel.innerHTML = `<strong>${explanation.title}</strong><p>${explanation.body}</p>`;
