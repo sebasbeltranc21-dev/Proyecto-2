@@ -59,6 +59,12 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - Explicación de por qué una fila con coeficientes 0 y término independiente distinto de 0 implica que no existe solución.
 - El reporte descargable incluye la fila de contradicción detectada.
 
+## Fase 10
+- Verificación automática de soluciones por sustitución exacta en las ecuaciones originales.
+- Para soluciones únicas se comprueba cada residuo y debe ser exactamente 0.
+- Para infinitas soluciones se verifica simbólicamente el término constante y cada parámetro libre.
+- Los resultados de la verificación se muestran en pantalla y se incluyen en el reporte.
+
 ## Verificación
 
 Para ejecutar las pruebas:
