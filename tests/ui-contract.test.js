@@ -60,3 +60,9 @@ assert.ok(app.includes('function renderContradiction'));
 assert.ok(app.includes('result.contradiction'));
 assert.ok(app.includes('Contradicción encontrada'));
 assert.ok(app.includes('CONTRADICCIÓN'));
+
+assert.ok(html.includes('id="verificationPanel"'));
+assert.ok(app.includes('function renderVerification'));
+assert.ok(app.includes('result.verification'));
+assert.ok(app.includes('Verificación por sustitución correcta'));
+assert.ok(app.includes('VERIFICACIÓN'));
