@@ -21,5 +21,12 @@ for (const name of ['unique', 'fraction', 'infinite', 'none', 'five']) {
 }
 assert.ok(app.includes('localStorage.getItem(HISTORY_KEY)'));
 assert.ok(app.includes('localStorage.setItem(HISTORY_KEY'));
+for (const id of ['copyResultBtn', 'downloadReportBtn', 'printResultBtn', 'exportStatus']) {
+  assert.ok(html.includes('id="' + id + '"'), 'Falta control de exportación: ' + id);
+}
+assert.ok(app.includes('navigator.clipboard'));
+assert.ok(app.includes('new Blob([buildReport()]'));
+assert.ok(app.includes('window.print()'));
+assert.ok(html.includes('Guardar como PDF')) || assert.ok(app.includes('Guardar como PDF')));
 
 console.log('✅ Contrato de interfaz verificado.');
