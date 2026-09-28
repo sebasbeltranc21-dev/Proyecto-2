@@ -63,6 +63,13 @@ assert.equal(Solver.formatNumber('1,5'), '3/2');
 assert.equal(Solver.formatNumber('.5'), '1/2');
 assert.equal(Solver.formatNumber('2.'), '2');
 assert.equal(Solver.formatNumber('-0.25e2'), '-25');
+
+const visual = Solver.solve(unique, 'gauss-jordan');
+assert.ok(Array.isArray(visual.steps[0].focus.rows));
+assert.equal(visual.steps[0].focus.pivot, null);
+assert.ok(visual.steps.some(step => Array.isArray(step.focus.pivot) && step.focus.pivot.length === 2));
+assert.ok(visual.steps.some(step => step.focus.targetRow >= 0));
+
 const hugePivot = Solver.solve([
   ['1000000000000000000000000', '1', '1000000000000000000000001'],
   ['1', '1', '2']
