@@ -519,3 +519,63 @@ select:focus, input:focus { border-color: #8da6ff; box-shadow: 0 0 0 4px rgba(49
   font-size: .8rem;
   line-height: 1.5;
 }
+
+
+.verification-panel {
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.verification-panel strong {
+  display: block;
+  font-size: .9rem;
+  margin-bottom: 7px;
+}
+
+.verification-panel p {
+  margin: 0;
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+.verification-panel.verified {
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: #ccebdc;
+}
+
+.verification-panel.failed {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: #f1c8c4;
+}
+
+.verification-panel.neutral {
+  background: #f7f9fc;
+  color: var(--muted);
+}
+
+.verification-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.verification-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 9px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.68);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78rem;
+}
+
+@media print {
+  .verification-panel {
+    break-inside: avoid;
+  }
+}
