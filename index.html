@@ -94,6 +94,7 @@
       </div>
 
       <div id="resultSummary" class="result-summary"></div>
+      <div id="equationsPreview" class="equations-preview"></div>
       <div id="explanationPanel" class="explanation-panel"></div>
 
       <div class="result-grid">
@@ -135,6 +136,11 @@
           <button id="toggleStepsBtn" class="text-btn" type="button" aria-expanded="false">Mostrar pasos</button>
         </div>
         <p id="stepsHint" class="steps-hint" hidden>Las operaciones se muestran en el orden exacto en que fueron aplicadas.</p>
+        <div class="step-navigation" aria-label="Navegación de pasos">
+          <button id="stepPrevBtn" class="ghost-btn small" type="button">Anterior</button>
+          <span id="stepCounter" class="step-counter" aria-live="polite">Paso 0 de 0</span>
+          <button id="stepNextBtn" class="ghost-btn small" type="button">Siguiente</button>
+        </div>
         <div id="stepsContainer" hidden></div>
       </div>
     </section>
