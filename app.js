@@ -19,12 +19,29 @@
   const toggleStepsBtn = document.getElementById('toggleStepsBtn');
   const rankLabel = document.getElementById('rankLabel');
   const methodLabel = document.getElementById('methodLabel');
+  const stepsHint = document.getElementById('stepsHint');
+  const historyContainer = document.getElementById('historyContainer');
+  const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+  const presetButtons = [...document.querySelectorAll('[data-example]')];
+  const HISTORY_KEY = 'matrix-solver-history-v1';
+  const MAX_HISTORY = 8;
 
   const examples = {
     unique: { equations: 2, variables: 2, matrix: [['2', '1', '5'], ['1', '-1', '1']] },
     fraction: { equations: 2, variables: 2, matrix: [['1/3', '1/2', '5/6'], ['2/3', '-1/2', '1/6']] },
     infinite: { equations: 2, variables: 2, matrix: [['1', '1', '2'], ['2', '2', '4']] },
-    none: { equations: 2, variables: 2, matrix: [['1', '1', '2'], ['2', '2', '5']] }
+    none: { equations: 2, variables: 2, matrix: [['1', '1', '2'], ['2', '2', '5']] },
+    five: {
+      equations: 5,
+      variables: 5,
+      matrix: [
+        ['1', '0', '0', '0', '0', '3'],
+        ['0', '1', '0', '0', '0', '-2'],
+        ['0', '0', '1', '0', '0', '5'],
+        ['0', '0', '0', '1', '0', '7'],
+        ['0', '0', '0', '0', '1', '-1']
+      ]
+    }
   };
 
   const VARIABLE_NAMES = ['x', 'y', 'z', 'w', 'v'];
@@ -80,6 +97,7 @@
     inputError.hidden = true;
     inputError.textContent = '';
     stepsContainer.hidden = true;
+    stepsHint.hidden = true;
     toggleStepsBtn.textContent = 'Mostrar pasos';
     toggleStepsBtn.setAttribute('aria-expanded', 'false');
   }
@@ -183,6 +201,119 @@
     stepsContainer.appendChild(list);
   }
 
+  function saveToHistory(matrix, result, method) {
+    const entry = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      matrix: matrix.map(row => row.slice()),
+      equations: matrix.length,
+      variables: matrix[0].length - 1,
+      method,
+      classification: result.classification,
+      createdAt: new Date().toISOString()
+    };
+    try {
+      const current = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      const safeCurrent = Array.isArray(current) ? current : [];
+      localStorage.setItem(HISTORY_KEY, JSON.stringify([entry, ...safeCurrent].slice(0, MAX_HISTORY)));
+    } catch (error) {}
+    renderHistory();
+  }
+
+  function renderHistory() {
+    historyContainer.innerHTML = '';
+    let items = [];
+    try {
+      const parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      items = Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      items = [];
+    }
+
+    if (!items.length) {
+      historyContainer.innerHTML = '<p class="empty-note">Todavía no hay sistemas guardados.</p>';
+      return;
+    }
+
+    items.forEach(entry => {
+      const item = document.createElement('article');
+      item.className = 'history-item';
+
+      const info = document.createElement('div');
+      info.className = 'history-info';
+      const title = document.createElement('strong');
+      title.textContent = `${entry.equations} ecuaciones · ${entry.variables} variables`;
+      const meta = document.createElement('span');
+      meta.textContent = `${statusText(entry.classification)} · ${entry.method === 'gaussian' ? 'Gauss' : 'Gauss-Jordan'} · ${formatHistoryDate(entry.createdAt)}`;
+      info.append(title, meta);
+
+      const badge = document.createElement('span');
+      badge.className = `history-status ${entry.classification}`;
+      badge.textContent = statusText(entry.classification);
+
+      const actions = document.createElement('div');
+      actions.className = 'history-actions';
+
+      const load = document.createElement('button');
+      load.type = 'button';
+      load.className = 'text-btn';
+      load.textContent = 'Cargar';
+      load.addEventListener('click', () => loadHistoryEntry(entry));
+
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'history-delete';
+      remove.setAttribute('aria-label', 'Eliminar sistema del historial');
+      remove.textContent = '×';
+      remove.addEventListener('click', () => deleteHistoryEntry(entry.id));
+
+      actions.append(load, remove);
+      item.append(info, badge, actions);
+      historyContainer.appendChild(item);
+    });
+  }
+
+  function formatHistoryDate(value) {
+    try {
+      return new Intl.DateTimeFormat('es-EC', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value));
+    } catch (error) {
+      return 'fecha no disponible';
+    }
+  }
+
+  function loadHistoryEntry(entry) {
+    equationsSelect.value = String(entry.equations);
+    variablesSelect.value = String(entry.variables);
+    methodSelect.value = entry.method;
+    buildMatrix(entry.matrix);
+    resetResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function deleteHistoryEntry(id) {
+    try {
+      const current = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      const updated = Array.isArray(current) ? current.filter(entry => entry.id !== id) : [];
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+    } catch (error) {}
+    renderHistory();
+  }
+
+  function clearHistory() {
+    try {
+      localStorage.removeItem(HISTORY_KEY);
+    } catch (error) {}
+    renderHistory();
+  }
+
+  function loadExample(name) {
+    const example = examples[name];
+    if (!example) return;
+    equationsSelect.value = String(example.equations);
+    variablesSelect.value = String(example.variables);
+    buildMatrix(example.matrix);
+    resetResults();
+  }
+
   function renderResult(result) {
     resultSection.hidden = false;
     resultBadge.className = `result-badge ${result.classification}`;
@@ -226,11 +357,17 @@
   variablesSelect.value = '2';
   exampleBtn.dataset.mode = 'unique';
   buildMatrix();
+  renderHistory();
 
   equationsSelect.addEventListener('change', () => { buildMatrix(); resetResults(); });
   variablesSelect.addEventListener('change', () => { buildMatrix(); resetResults(); });
   solveBtn.addEventListener('click', solveSystem);
   clearBtn.addEventListener('click', clearAll);
+  clearHistoryBtn.addEventListener('click', clearHistory);
+  presetButtons.forEach(button => {
+    button.addEventListener('click', () => loadExample(button.dataset.example));
+  });
+
   exampleBtn.addEventListener('click', () => {
     const order = ['unique', 'fraction', 'infinite', 'none'];
     const current = order.indexOf(exampleBtn.dataset.mode || 'unique');
@@ -240,6 +377,7 @@
   toggleStepsBtn.addEventListener('click', () => {
     const isHidden = stepsContainer.hidden;
     stepsContainer.hidden = !isHidden;
+    stepsHint.hidden = !isHidden;
     toggleStepsBtn.textContent = isHidden ? 'Ocultar pasos' : 'Mostrar pasos';
     toggleStepsBtn.setAttribute('aria-expanded', String(isHidden));
   });
