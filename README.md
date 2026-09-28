@@ -41,6 +41,12 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - Presentación más didáctica del procedimiento matemático.
 - Vista de impresión corregida para incluir correctamente el resultado y los pasos.
 
+## Fase 7
+- Conversión de la matriz de entrada a ecuaciones legibles, respetando signos, ceros y fracciones exactas.
+- Navegación paso a paso con botones Anterior/Siguiente y contador de progreso.
+- La impresión conserva todos los pasos aunque la vista normal muestre uno a la vez.
+- El reporte descargable también incluye las ecuaciones originales.
+
 ## Verificación
 
 Para ejecutar las pruebas:
