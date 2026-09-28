@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Resolución de sistemas de ecuaciones lineales de hasta 5x5.">
+  <title>Matrix Solver | Gauss-Jordan</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ÁLGEBRA LINEAL</p>
+        <h1>Matrix Solver</h1>
+        <p class="subtitle">Ingresa una matriz de hasta 5×5 y resuelve el sistema con Gauss‑Jordan o eliminación de Gauss.</p>
+      </div>
+      <span class="status-pill">sin conexión · funciona en tu navegador</span>
+    </header>
+
+    <section class="card input-card" aria-labelledby="entrada-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">PASO 1</p>
+          <h2 id="entrada-title">Configura el sistema</h2>
+        </div>
+        <button id="exampleBtn" class="secondary-btn" type="button">Cargar ejemplo</button>
+      </div>
+
+      <div class="controls-grid">
+        <label>
+          <span>Número de ecuaciones</span>
+          <select id="equationsSelect" aria-label="Número de ecuaciones"></select>
+        </label>
+        <label>
+          <span>Número de variables</span>
+          <select id="variablesSelect" aria-label="Número de variables"></select>
+        </label>
+        <label>
+          <span>Método</span>
+          <select id="methodSelect" aria-label="Método de resolución">
+            <option value="gauss-jordan">Gauss-Jordan</option>
+            <option value="gaussian">Eliminación de Gauss</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="matrix-wrap">
+        <div class="matrix-caption">
+          <div>
+            <h3>Matriz aumentada</h3>
+            <p>La última columna corresponde a los términos independientes.</p>
+          </div>
+          <span id="matrixSizeLabel" class="mini-label">2×3</span>
+        </div>
+        <div id="matrixContainer" class="matrix-container" aria-live="polite"></div>
+      </div>
+
+      <div class="action-row">
+        <button id="solveBtn" class="primary-btn" type="button">Resolver sistema</button>
+        <button id="clearBtn" class="ghost-btn" type="button">Limpiar</button>
+      </div>
+      <p id="inputError" class="message error" role="alert" hidden></p>
+    </section>
+
+    <section id="resultSection" class="card result-card" aria-labelledby="resultado-title" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">PASO 2</p>
+          <h2 id="resultado-title">Resultado</h2>
+        </div>
+        <span id="resultBadge" class="result-badge"></span>
+      </div>
+
+      <div id="resultSummary" class="result-summary"></div>
+
+      <div class="result-grid">
+        <div class="result-panel">
+          <div class="panel-heading">
+            <h3>Solución</h3>
+            <span id="rankLabel" class="mini-label"></span>
+          </div>
+          <div id="solutionContainer"></div>
+        </div>
+
+        <div class="result-panel">
+          <div class="panel-heading">
+            <h3>Matriz reducida</h3>
+            <span id="methodLabel" class="mini-label"></span>
+          </div>
+          <div id="reducedMatrixContainer" class="matrix-output"></div>
+        </div>
+      </div>
+
+      <div class="steps-panel">
+        <div class="panel-heading">
+          <h3>Procedimiento</h3>
+          <button id="toggleStepsBtn" class="text-btn" type="button" aria-expanded="false">Mostrar pasos</button>
+        </div>
+        <div id="stepsContainer" hidden></div>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      <span>Admite hasta 5 ecuaciones y 5 variables.</span>
+      <span>Tolerancia numérica aplicada para evitar errores por redondeo.</span>
+    </footer>
+  </main>
+
+  <script src="solver.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
