@@ -459,8 +459,14 @@
     resetResults();
     const matrix = getMatrixFromInputs();
     try {
-      renderResult(MatrixSolver.solve(matrix, methodSelect.value));
+      const result = MatrixSolver.solve(matrix, methodSelect.value);
+      lastMatrix = matrix.map(row => row.slice());
+      lastResult = result;
+      renderResult(result);
+      saveToHistory(matrix, result, methodSelect.value);
     } catch (error) {
+      lastResult = null;
+      lastMatrix = null;
       showError(error.message || 'No se pudo resolver el sistema.');
     }
   }
