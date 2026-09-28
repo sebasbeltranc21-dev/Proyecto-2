@@ -486,3 +486,36 @@ select:focus, input:focus { border-color: #8da6ff; box-shadow: 0 0 0 4px rgba(49
     box-shadow: inset 3px 0 0 #777;
   }
 }
+
+
+.contradiction-panel {
+  margin-bottom: 16px;
+  border: 1px solid #f1c8c4;
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.contradiction-panel strong {
+  display: block;
+  font-size: .9rem;
+  margin-bottom: 8px;
+}
+
+.contradiction-equation {
+  display: inline-block;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #efb7b1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 800;
+  font-size: .95rem;
+}
+
+.contradiction-panel p {
+  margin: 9px 0 0;
+  font-size: .8rem;
+  line-height: 1.5;
+}
