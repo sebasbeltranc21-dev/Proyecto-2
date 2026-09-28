@@ -26,10 +26,16 @@ for (const method of ['gauss-jordan', 'gaussian']) {
   let result = Solver.solve(unique, method);
   assert.equal(result.classification, 'unique');
   expectExact(result.solution, ['2', '1']);
+  assert.equal(result.verification.type, 'unique');
+  assert.equal(result.verification.verified, true);
+  assert.deepEqual(result.verification.residuals.map(exact), ['0', '0']);
 
   result = Solver.solve(fractional, method);
   assert.equal(result.classification, 'unique');
   expectExact(result.solution, ['1/3', '1/4']);
+  assert.equal(result.verification.type, 'unique');
+  assert.equal(result.verification.verified, true);
+  assert.deepEqual(result.verification.residuals.map(exact), ['0', '0']);
 
   result = Solver.solve(infinite, method);
   assert.equal(result.classification, 'infinite');
@@ -37,6 +43,12 @@ for (const method of ['gauss-jordan', 'gaussian']) {
   assert.deepEqual(result.parametricSolution.parameters.map(p => p.name), ['t1']);
   assert.equal(result.parametricSolution.expressions[0].text, '2 − t1');
   assert.equal(result.parametricSolution.expressions[1].text, 't1');
+  assert.equal(result.verification.type, 'infinite');
+  assert.equal(result.verification.verified, true);
+  assert.ok(result.verification.residuals.every(residual =>
+    residual.constant.isZero() &&
+    residual.parameters.every(item => item.coefficient.isZero())
+  ));
 
   result = Solver.solve(infinite3, method);
   assert.equal(result.classification, 'infinite');
@@ -44,6 +56,12 @@ for (const method of ['gauss-jordan', 'gaussian']) {
   assert.equal(result.parametricSolution.expressions[0].text, '-2 + t1');
   assert.equal(result.parametricSolution.expressions[1].text, '3 − t1');
   assert.equal(result.parametricSolution.expressions[2].text, 't1');
+  assert.equal(result.verification.type, 'infinite');
+  assert.equal(result.verification.verified, true);
+  assert.ok(result.verification.residuals.every(residual =>
+    residual.constant.isZero() &&
+    residual.parameters.every(item => item.coefficient.isZero())
+  ));
 
   result = Solver.solve(none, method);
   assert.equal(result.classification, 'none');
@@ -52,6 +70,8 @@ for (const method of ['gauss-jordan', 'gaussian']) {
   assert.ok(result.contradiction);
   assert.equal(result.contradiction.row, 1);
   assert.equal(result.contradiction.equation, '0 = -1/2');
+  assert.equal(result.verification.type, 'none');
+  assert.equal(result.verification.verified, null);
 
   const fractionalNone = Solver.solve([
     ['1/2', '1/3', '1/4'],
