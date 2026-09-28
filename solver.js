@@ -47,7 +47,7 @@
       const [wholePart, decimalPart = ''] = mantissa.split('.');
       const whole = wholePart || '0';
       const decimals = decimalPart;
-      const exponent = Number(decimalMatch[1] || 0);
+      const exponent = Number(decimalMatch[2] || 0);
       const digits = BigInt((whole + decimals) || '0');
       const decimalPlaces = decimals.length - exponent;
       if (decimalPlaces >= 0) {
