@@ -25,6 +25,7 @@
   const methodLabel = document.getElementById('methodLabel');
   const explanationPanel = document.getElementById('explanationPanel');
   const contradictionPanel = document.getElementById('contradictionPanel');
+  const verificationPanel = document.getElementById('verificationPanel');
   const stepsHint = document.getElementById('stepsHint');
   const historyContainer = document.getElementById('historyContainer');
   const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -118,6 +119,8 @@
     currentStepIndex = 0;
     contradictionPanel.hidden = true;
     contradictionPanel.innerHTML = '';
+    verificationPanel.hidden = true;
+    verificationPanel.innerHTML = '';
     updateStepNavigation();
   }
 
@@ -323,6 +326,56 @@
     return `Filas implicadas: F${focus.rows.map(row => row + 1).join(' y F')}.`;
   }
 
+  function renderVerification(result) {
+    verificationPanel.innerHTML = '';
+
+    if (result.verification?.type === 'none') {
+      verificationPanel.hidden = false;
+      verificationPanel.className = 'verification-panel neutral';
+      verificationPanel.innerHTML = '<strong>Verificación del resultado</strong><p>No existe una solución que sustituir. La validez del resultado se confirma mediante la contradicción detectada arriba.</p>';
+      return;
+    }
+
+    const verified = result.verification?.verified === true;
+    verificationPanel.hidden = false;
+    verificationPanel.className = `verification-panel ${verified ? 'verified' : 'failed'}`;
+
+    const title = document.createElement('strong');
+    title.textContent = verified
+      ? '✅ Verificación por sustitución correcta'
+      : '⚠️ La sustitución no coincide';
+
+    const note = document.createElement('p');
+    note.textContent = result.verification.type === 'infinite'
+      ? 'Se verificó simbólicamente toda la familia paramétrica: el término constante y el coeficiente de cada parámetro quedan en 0 en todas las ecuaciones.'
+      : 'Se sustituyó la solución obtenida en cada ecuación original y todos los residuos quedaron en 0.';
+
+    const list = document.createElement('div');
+    list.className = 'verification-list';
+
+    result.verification.residuals.forEach((residual, index) => {
+      const row = document.createElement('div');
+      row.className = 'verification-row';
+      const label = document.createElement('span');
+      label.textContent = `E${index + 1}`;
+      const value = document.createElement('strong');
+
+      if (result.verification.type === 'infinite') {
+        const terms = residual.parameters
+          .filter(item => !item.coefficient.isZero())
+          .map(item => `${item.coefficient.toString()}${item.name}`);
+        value.textContent = [residual.constant.toString(), ...terms].join(' + ') || '0';
+      } else {
+        value.textContent = MatrixSolver.formatNumber(residual);
+      }
+
+      row.append(label, value);
+      list.appendChild(row);
+    });
+
+    verificationPanel.append(title, note, list);
+  }
+
   function renderContradiction(result) {
     contradictionPanel.innerHTML = '';
     if (!result.contradiction) {
@@ -462,6 +515,18 @@
       ...(lastResult.contradiction
         ? ['CONTRADICCIÓN', '------------------------------', `Fila F${lastResult.contradiction.row + 1}: ${lastResult.contradiction.equation}`, '']
         : []),
+      'VERIFICACIÓN',
+      '------------------------------',
+      lastResult.verification?.type === 'none'
+        ? 'No hay solución que sustituir; el resultado se confirma mediante la contradicción.'
+        : `Verificada: ${lastResult.verification?.verified ? 'sí' : 'no'}`,
+      ...(lastResult.verification?.type === 'infinite'
+        ? lastResult.verification.residuals.map((residual, index) =>
+            `E${index + 1}: constante=${residual.constant.toString()}, parámetros=${residual.parameters.map(item => `${item.name}:${item.coefficient.toString()}`).join(', ')}`)
+        : lastResult.verification?.type === 'unique'
+          ? lastResult.verification.residuals.map((residual, index) => `E${index + 1}: residuo=${residual.toString()}`)
+          : []),
+      '',
       type.toUpperCase(),
       '------------------------------',
       matrixText(lastResult.matrix),
@@ -663,6 +728,7 @@
 
     renderEquations(lastMatrix);
     renderContradiction(result);
+    renderVerification(result);
     const explanation = classificationExplanation(result);
     explanationPanel.className = explanation.className;
     explanationPanel.innerHTML = `<strong>${explanation.title}</strong><p>${explanation.body}</p>`;
