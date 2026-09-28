@@ -19,6 +19,7 @@
   const toggleStepsBtn = document.getElementById('toggleStepsBtn');
   const rankLabel = document.getElementById('rankLabel');
   const methodLabel = document.getElementById('methodLabel');
+  const explanationPanel = document.getElementById('explanationPanel');
   const stepsHint = document.getElementById('stepsHint');
   const historyContainer = document.getElementById('historyContainer');
   const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -190,6 +191,47 @@
     solutionContainer.innerHTML = '<p class="empty-note">Las ecuaciones son incompatibles. No existe ningún conjunto de valores que satisfaga todo el sistema.</p>';
   }
 
+  function classificationExplanation(result) {
+    if (result.classification === 'unique') {
+      return {
+        title: '¿Por qué hay una solución única?',
+        body: `El rango de la matriz de coeficientes coincide con el número de variables (${result.rankA} = ${result.variables}) y también coincide con el rango de la matriz aumentada (${result.rankA} = ${result.rankAugmented}). Por eso cada variable queda determinada por el sistema.`,
+        className: 'explanation unique'
+      };
+    }
+
+    if (result.classification === 'infinite') {
+      const free = result.parametricSolution.parameters.map(item => variableName(item.column)).join(', ');
+      return {
+        title: '¿Por qué hay infinitas soluciones?',
+        body: `El rango de los coeficientes y de la matriz aumentada coincide (${result.rankA} = ${result.rankAugmented}), así que el sistema es compatible. Pero el rango es menor que el número de variables (${result.rankA} < ${result.variables}), por lo que existen variables libres (${free}) y aparecen infinitas soluciones.`,
+        className: 'explanation infinite'
+      };
+    }
+
+    return {
+      title: '¿Por qué no hay solución?',
+      body: `Los rangos son diferentes: r(A) = ${result.rankA} y r(A|b) = ${result.rankAugmented}. Eso significa que al reducir la matriz aparece una contradicción del tipo 0 = c, con c distinto de cero; por tanto, ninguna asignación de variables satisface simultáneamente todas las ecuaciones.`,
+      className: 'explanation none'
+    };
+  }
+
+  function stepExplanation(label) {
+    if (label === 'Matriz inicial') {
+      return 'Se parte de la matriz aumentada que representa todas las ecuaciones del sistema.';
+    }
+    if (label.startsWith('Intercambio')) {
+      return 'Se intercambian dos filas para colocar un pivote útil en la posición actual. Esta operación no cambia las soluciones del sistema.';
+    }
+    if (label.includes('÷')) {
+      return 'Se divide toda la fila por el pivote para convertirlo en 1 y facilitar la eliminación.';
+    }
+    if (label.includes('·F')) {
+      return 'Se combina la fila actual con la fila pivote para eliminar el coeficiente de la variable que se está trabajando. Es una operación elemental que conserva las soluciones.';
+    }
+    return 'Se aplica una operación elemental de filas que conserva el conjunto de soluciones.';
+  }
+
   function renderSteps(steps) {
     stepsContainer.innerHTML = '';
     const list = document.createElement('div');
@@ -201,6 +243,12 @@
       title.className = 'step-title';
       title.textContent = `${index + 1}. ${step.label}`;
       card.appendChild(title);
+
+      const explanation = document.createElement('div');
+      explanation.className = 'step-explanation';
+      explanation.textContent = stepExplanation(step.label);
+      card.appendChild(explanation);
+
       card.appendChild(renderMatrix(step.matrix));
       list.appendChild(card);
     });
@@ -446,6 +494,10 @@
       : result.classification === 'infinite'
         ? 'El sistema tiene infinitas soluciones. Se muestran en forma paramétrica y con fracciones exactas.'
         : `El sistema no tiene solución porque la matriz de coeficientes y la aumentada tienen rangos distintos (${result.rankA} y ${result.rankAugmented}).`;
+
+    const explanation = classificationExplanation(result);
+    explanationPanel.className = explanation.className;
+    explanationPanel.innerHTML = `<strong>${explanation.title}</strong><p>${explanation.body}</p>`;
 
     renderSolution(result);
     reducedMatrixContainer.innerHTML = '';
