@@ -23,8 +23,14 @@
   const historyContainer = document.getElementById('historyContainer');
   const clearHistoryBtn = document.getElementById('clearHistoryBtn');
   const presetButtons = [...document.querySelectorAll('[data-example]')];
+  const copyResultBtn = document.getElementById('copyResultBtn');
+  const downloadReportBtn = document.getElementById('downloadReportBtn');
+  const printResultBtn = document.getElementById('printResultBtn');
+  const exportStatus = document.getElementById('exportStatus');
   const HISTORY_KEY = 'matrix-solver-history-v1';
   const MAX_HISTORY = 8;
+  let lastResult = null;
+  let lastMatrix = null;
 
   const examples = {
     unique: { equations: 2, variables: 2, matrix: [['2', '1', '5'], ['1', '-1', '1']] },
@@ -201,6 +207,122 @@
     stepsContainer.appendChild(list);
   }
 
+  function solutionText(result) {
+    if (result.classification === 'unique') {
+      return result.solution
+        .map((value, index) => `${variableName(index)} = ${MatrixSolver.formatNumber(value)}`)
+        .join('\\n');
+    }
+
+    if (result.classification === 'infinite') {
+      return result.parametricSolution.expressions
+        .map(expression => `${variableName(expression.variable)} = ${expression.text}`)
+        .join('\\n');
+    }
+
+    return 'El sistema no tiene solución.';
+  }
+
+  function matrixText(matrix) {
+    return matrix.map(row => row.map(value => MatrixSolver.formatNumber(value)).join('   |   ')).join('\\n');
+  }
+
+  function buildReport() {
+    if (!lastResult || !lastMatrix) return '';
+    const method = lastResult.method;
+    const type = lastResult.matrixType;
+    const status = statusText(lastResult.classification);
+    const lines = [
+      'MATRIX SOLVER',
+      '==============================',
+      `Método: ${method}`,
+      `Estado: ${status}`,
+      `Rango A: ${lastResult.rankA}`,
+      `Rango (A|b): ${lastResult.rankAugmented}`,
+      '',
+      'MATRIZ DE ENTRADA',
+      '------------------------------',
+      matrixText(lastMatrix),
+      '',
+      'SOLUCIÓN',
+      '------------------------------',
+      solutionText(lastResult),
+      '',
+      type.toUpperCase(),
+      '------------------------------',
+      matrixText(lastResult.matrix),
+      '',
+      'PROCEDIMIENTO',
+      '------------------------------'
+    ];
+
+    lastResult.steps.forEach((step, index) => {
+      lines.push(`${index + 1}. ${step.label}`);
+      lines.push(matrixText(step.matrix));
+      lines.push('');
+    });
+
+    lines.push('Generado por Matrix Solver.');
+    return lines.join('\\n');
+  }
+
+  function notifyExport(message, isError = false) {
+    exportStatus.textContent = message;
+    exportStatus.className = `export-status${isError ? ' error' : ''}`;
+    exportStatus.hidden = false;
+    window.clearTimeout(notifyExport.timer);
+    notifyExport.timer = window.setTimeout(() => {
+      exportStatus.hidden = true;
+    }, 3000);
+  }
+
+  async function copyResult() {
+    if (!lastResult) return;
+    const text = solutionText(lastResult);
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+      }
+      notifyExport('✅ Solución copiada al portapapeles.');
+    } catch (error) {
+      notifyExport('No se pudo copiar automáticamente. Selecciona y copia el resultado manualmente.', true);
+    }
+  }
+
+  function downloadReport() {
+    if (!lastResult || !lastMatrix) return;
+    try {
+      const blob = new Blob([buildReport()], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'matrix-solver-reporte.txt';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      notifyExport('✅ Reporte descargado.');
+    } catch (error) {
+      notifyExport('No se pudo generar el reporte.', true);
+    }
+  }
+
+  function printResult() {
+    if (!lastResult) return;
+    notifyExport('Se abrió el diálogo de impresión. Puedes elegir “Guardar como PDF”.');
+    window.print();
+  }
+
   function saveToHistory(matrix, result, method) {
     const entry = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -364,6 +486,9 @@
   solveBtn.addEventListener('click', solveSystem);
   clearBtn.addEventListener('click', clearAll);
   clearHistoryBtn.addEventListener('click', clearHistory);
+  copyResultBtn.addEventListener('click', copyResult);
+  downloadReportBtn.addEventListener('click', downloadReport);
+  printResultBtn.addEventListener('click', printResult);
   presetButtons.forEach(button => {
     button.addEventListener('click', () => loadExample(button.dataset.example));
   });
