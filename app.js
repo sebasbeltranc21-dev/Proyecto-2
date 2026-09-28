@@ -27,8 +27,10 @@
     none: { equations: 2, variables: 2, matrix: [['1', '1', '2'], ['2', '2', '5']] }
   };
 
+  const VARIABLE_NAMES = ['x', 'y', 'z', 'w', 'v'];
+
   function variableName(index) {
-    return String.fromCharCode(120 + index);
+    return VARIABLE_NAMES[index] || `x${index + 1}`;
   }
 
   function populateSelect(select, label) {
