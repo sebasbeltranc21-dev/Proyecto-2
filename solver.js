@@ -189,6 +189,23 @@
     });
   }
 
+  function findContradiction(matrix, variables) {
+    for (let row = 0; row < matrix.length; row += 1) {
+      const allCoefficientsZero = matrix[row]
+        .slice(0, variables)
+        .every(value => value.isZero());
+      const constant = matrix[row][variables];
+      if (allCoefficientsZero && !constant.isZero()) {
+        return {
+          row,
+          value: constant,
+          equation: `0 = ${constant.toString()}`
+        };
+      }
+    }
+    return null;
+  }
+
   function classify(echelonOrReduced, variables) {
     for (const row of echelonOrReduced) {
       const allCoefficientsZero = row.slice(0, variables).every(value => value.isZero());
@@ -332,6 +349,7 @@
     const classification = classify(work, variables);
     const rankA = rankOf(matrix.map(row => row.slice(0, variables)));
     const rankAugmented = rankOf(matrix);
+    const contradiction = findContradiction(work, variables);
 
     return {
       method: 'Gauss-Jordan',
@@ -342,6 +360,7 @@
       classification,
       rankA,
       rankAugmented,
+      contradiction,
       solution: classification === 'unique' ? extractSolution(work, variables) : null,
       parametricSolution: classification === 'infinite' ? buildParametricSolution(work, variables) : null
     };
@@ -391,6 +410,7 @@
     const classification = classify(work, variables);
     const rankA = rankOf(matrix.map(row => row.slice(0, variables)));
     const rankAugmented = rankOf(matrix);
+    const contradiction = findContradiction(work, variables);
     let solution = null;
     let parametricSolution = null;
 
@@ -411,6 +431,7 @@
       classification,
       rankA,
       rankAugmented,
+      contradiction,
       solution,
       parametricSolution
     };
