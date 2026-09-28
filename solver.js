@@ -500,7 +500,7 @@
         ? verifyParametricSolution(matrix, parametricSolution, variables)
         : {
             type: 'none',
-            verified: false,
+            verified: null,
             residuals: []
           };
 
