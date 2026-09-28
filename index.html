@@ -27,6 +27,14 @@
         <button id="exampleBtn" class="secondary-btn" type="button">Cargar ejemplo</button>
       </div>
 
+      <div class="preset-grid" aria-label="Sistemas de ejemplo">
+        <button class="preset-btn" type="button" data-example="unique"><strong>2×2</strong><span>Solución única</span></button>
+        <button class="preset-btn" type="button" data-example="fraction"><strong>Fracciones</strong><span>Resultado exacto</span></button>
+        <button class="preset-btn" type="button" data-example="infinite"><strong>Infinitas</strong><span>Variables libres</span></button>
+        <button class="preset-btn" type="button" data-example="none"><strong>Incompatible</strong><span>Sin solución</span></button>
+        <button class="preset-btn" type="button" data-example="five"><strong>5×5</strong><span>Prueba máxima</span></button>
+      </div>
+
       <div class="controls-grid">
         <label>
           <span>Número de ecuaciones</span>
@@ -63,6 +71,19 @@
       <p id="inputError" class="message error" role="alert" hidden></p>
     </section>
 
+    <section class="card history-card" aria-labelledby="historial-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">HISTORIAL</p>
+          <h2 id="historial-title">Sistemas recientes</h2>
+        </div>
+        <button id="clearHistoryBtn" class="ghost-btn small" type="button">Borrar historial</button>
+      </div>
+      <div id="historyContainer" class="history-list">
+        <p class="empty-note">Todavía no hay sistemas guardados.</p>
+      </div>
+    </section>
+
     <section id="resultSection" class="card result-card" aria-labelledby="resultado-title" hidden>
       <div class="section-heading">
         <div>
@@ -94,9 +115,10 @@
 
       <div class="steps-panel">
         <div class="panel-heading">
-          <h3>Procedimiento</h3>
+          <h3>Procedimiento matemático</h3>
           <button id="toggleStepsBtn" class="text-btn" type="button" aria-expanded="false">Mostrar pasos</button>
         </div>
+        <p id="stepsHint" class="steps-hint" hidden>Las operaciones se muestran en el orden exacto en que fueron aplicadas.</p>
         <div id="stepsContainer" hidden></div>
       </div>
     </section>
