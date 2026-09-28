@@ -10,20 +10,25 @@ Aplicación web para resolver sistemas de ecuaciones lineales de hasta **5 varia
 - Interfaz responsive y compatible con GitHub Pages.
 
 ## Fase 2
-- Las soluciones con infinitas posibilidades ahora se muestran **en forma paramétrica**.
-- Se identifican automáticamente las variables libres (`t1`, `t2`, etc.).
-- Gauss-Jordan muestra la **matriz reducida (RREF)**.
-- Gauss muestra la **matriz escalonada** y usa la forma reducida para construir la solución paramétrica.
-- Se agregaron pruebas para sistemas con varias variables libres.
+- Soluciones con infinitas posibilidades en forma paramétrica.
+- Detección de variables libres.
+- Matriz reducida (RREF) para Gauss-Jordan.
+- Matriz escalonada para Gauss.
 
-## Probar localmente
+## Fase 3
+- **Aritmética exacta con fracciones** mediante `BigInt`.
+- Puedes escribir entradas como `1/3`, `-5/2`, `0.125` o notación científica.
+- Las operaciones de eliminación se realizan sin redondear a coma flotante.
+- Los resultados se muestran como fracciones reducidas.
+- Ejemplo adicional para probar sistemas con fracciones.
+- Tests ampliados para precisión exacta y entradas inválidas.
 
-Puedes abrir `index.html` directamente en el navegador.
+## Verificación
 
-Para comprobar el motor matemático:
+Para ejecutar las pruebas:
 
 ```bash
 node tests/solver.test.js
 ```
 
-Los tests verifican ambos métodos, soluciones únicas, infinitas, sistemas incompatibles, 5×5 y validación de entradas.
+También hay una acción de GitHub que comprueba sintaxis y tests en cada push a `main`.
