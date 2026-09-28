@@ -129,7 +129,7 @@
     for (let col = 0; col < cols && pivotRow < rows; col += 1) {
       let best = pivotRow;
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        if (work[r][col].abs().toNumber() > work[best][col].abs().toNumber()) best = r;
+        if (work[r][col].compareAbs(work[best][col]) > 0) best = r;
       }
       if (work[best][col].isZero()) continue;
       [work[pivotRow], work[best]] = [work[best], work[pivotRow]];
@@ -273,7 +273,7 @@
     for (let col = 0; col < variables && pivotRow < rows; col += 1) {
       let bestRow = pivotRow;
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        if (work[r][col].abs().toNumber() > work[bestRow][col].abs().toNumber()) bestRow = r;
+        if (work[r][col].compareAbs(work[bestRow][col]) > 0) bestRow = r;
       }
       if (work[bestRow][col].isZero()) continue;
 
@@ -331,7 +331,7 @@
     for (let col = 0; col < variables && pivotRow < rows; col += 1) {
       let bestRow = pivotRow;
       for (let r = pivotRow + 1; r < rows; r += 1) {
-        if (work[r][col].abs().toNumber() > work[bestRow][col].abs().toNumber()) bestRow = r;
+        if (work[r][col].compareAbs(work[bestRow][col]) > 0) bestRow = r;
       }
       if (work[bestRow][col].isZero()) continue;
 
