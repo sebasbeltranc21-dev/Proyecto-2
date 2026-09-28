@@ -215,3 +215,94 @@ select:focus, input:focus { border-color: #8da6ff; box-shadow: 0 0 0 4px rgba(49
     grid-row: 1 / span 2;
   }
 }
+
+
+.export-panel {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 16px;
+}
+
+.export-note {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.export-status {
+  margin: 10px 0 0;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: var(--success-bg);
+  color: var(--success);
+  font-size: .78rem;
+}
+
+.export-status.error {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+@media (max-width: 760px) {
+  .export-actions {
+    flex-direction: column;
+  }
+
+  .export-actions button {
+    width: 100%;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .hero .status-pill,
+  .input-card,
+  .history-card,
+  .footer-note,
+  .export-panel,
+  .steps-panel .text-btn {
+    display: none !important;
+  }
+
+  .app-shell {
+    width: 100%;
+    padding: 0;
+  }
+
+  .card.result-card {
+    border: 0;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .result-section,
+  .result-panel,
+  .steps-panel {
+    break-inside: avoid;
+  }
+
+  .steps-panel {
+    margin-top: 14px;
+  }
+
+  #stepsContainer {
+    display: block !important;
+  }
+
+  #stepsHint {
+    display: block !important;
+  }
+}
