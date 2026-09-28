@@ -89,6 +89,13 @@
       return new Fraction(absBigInt(this.n), this.d);
     }
 
+    compareAbs(other) {
+      const b = Fraction.parse(other);
+      const left = absBigInt(this.n) * b.d;
+      const right = absBigInt(b.n) * this.d;
+      return left === right ? 0 : (left > right ? 1 : -1);
+    }
+
     toNumber() {
       return Number(this.n) / Number(this.d);
     }
