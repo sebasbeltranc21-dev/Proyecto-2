@@ -28,5 +28,13 @@ assert.ok(app.includes('navigator.clipboard'));
 assert.ok(app.includes('new Blob([buildReport()]'));
 assert.ok(app.includes('window.print()'));
 assert.ok(app.includes('Guardar como PDF'));
+assert.ok(html.includes('id="explanationPanel"'));
+for (const text of ['¿Por qué hay una solución única?', '¿Por qué hay infinitas soluciones?', '¿Por qué no hay solución?']) {
+  assert.ok(app.includes(text), 'Falta explicación: ' + text);
+}
+assert.ok(app.includes('function stepExplanation'));
+assert.ok(app.includes('stepExplanation(step.label)'));
+assert.ok(html.includes('Procedimiento matemático'));
+assert.ok(html.includes('Aritmética exacta para números y fracciones.'));
 
 console.log('✅ Contrato de interfaz verificado.');
