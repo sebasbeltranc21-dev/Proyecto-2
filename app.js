@@ -21,9 +21,10 @@
   const methodLabel = document.getElementById('methodLabel');
 
   const examples = {
-    unique: { equations: 2, variables: 2, matrix: [[2, 1, 5], [1, -1, 1]] },
-    infinite: { equations: 2, variables: 2, matrix: [[1, 1, 2], [2, 2, 4]] },
-    none: { equations: 2, variables: 2, matrix: [[1, 1, 2], [2, 2, 5]] }
+    unique: { equations: 2, variables: 2, matrix: [['2', '1', '5'], ['1', '-1', '1']] },
+    fraction: { equations: 2, variables: 2, matrix: [['1/3', '1/2', '5/6'], ['2/3', '-1/2', '1/6']] },
+    infinite: { equations: 2, variables: 2, matrix: [['1', '1', '2'], ['2', '2', '4']] },
+    none: { equations: 2, variables: 2, matrix: [['1', '1', '2'], ['2', '2', '5']] }
   };
 
   function variableName(index) {
@@ -52,9 +53,10 @@
       for (let c = 0; c <= variables; c += 1) {
         const input = document.createElement('input');
         input.className = `matrix-cell${c === variables ? ' constant' : ''}`;
-        input.type = 'number';
-        input.step = 'any';
+        input.type = 'text';
         input.inputMode = 'decimal';
+        input.autocomplete = 'off';
+        input.placeholder = '0 · 1/2';
         input.setAttribute('aria-label', c === variables
           ? `Ecuación ${r + 1}, término independiente`
           : `Ecuación ${r + 1}, variable ${variableName(c)}`);
@@ -67,10 +69,7 @@
 
   function getMatrixFromInputs() {
     return [...matrixContainer.querySelectorAll('.matrix-row')].map(row =>
-      [...row.querySelectorAll('input')].map(input => {
-        const value = input.value.trim();
-        return value === '' ? NaN : Number(value);
-      })
+      [...row.querySelectorAll('input')].map(input => input.value.trim())
     );
   }
 
@@ -118,19 +117,6 @@
     return wrapper;
   }
 
-  function formatExpression(expression) {
-    let text = MatrixSolver.formatNumber(expression.constant);
-    for (const term of expression.terms) {
-      const coefficient = term.coefficient;
-      const abs = Math.abs(coefficient);
-      const coeffText = Math.abs(abs - 1) < MatrixSolver.EPSILON ? '' : MatrixSolver.formatNumber(abs);
-      const signed = coefficient >= 0 ? ' + ' : ' − ';
-      text += `${signed}${coeffText}${term.parameter}`;
-    }
-    if (text === '0' && expression.terms.length === 0) return '0';
-    return text;
-  }
-
   function renderSolution(result) {
     solutionContainer.innerHTML = '';
 
@@ -167,7 +153,7 @@
       result.parametricSolution.expressions.forEach(expression => {
         const row = document.createElement('div');
         row.className = 'solution-row';
-        row.innerHTML = `<strong>${variableName(expression.variable)}</strong><span class="expression">${formatExpression(expression)}</span>`;
+        row.innerHTML = `<strong>${variableName(expression.variable)}</strong><span class="expression">${expression.text}</span>`;
         list.appendChild(row);
       });
       wrap.appendChild(list);
@@ -201,9 +187,9 @@
     resultBadge.textContent = statusText(result.classification);
 
     resultSummary.textContent = result.classification === 'unique'
-      ? `El sistema tiene una solución única. Rango de A: ${result.rankA}; rango de la matriz aumentada: ${result.rankAugmented}.`
+      ? `El sistema tiene una solución única. Los resultados se muestran como fracciones exactas cuando es necesario.`
       : result.classification === 'infinite'
-        ? `El sistema tiene infinitas soluciones. Rango de A: ${result.rankA}; rango de la matriz aumentada: ${result.rankAugmented}. Se muestran en forma paramétrica.`
+        ? 'El sistema tiene infinitas soluciones. Se muestran en forma paramétrica y con fracciones exactas.'
         : `El sistema no tiene solución porque la matriz de coeficientes y la aumentada tienen rangos distintos (${result.rankA} y ${result.rankAugmented}).`;
 
     renderSolution(result);
@@ -218,9 +204,6 @@
     resetResults();
     const matrix = getMatrixFromInputs();
     try {
-      if (matrix.some(row => row.some(value => !Number.isFinite(value)))) {
-        throw new Error('Completa todos los campos de la matriz con números válidos.');
-      }
       renderResult(MatrixSolver.solve(matrix, methodSelect.value));
     } catch (error) {
       showError(error.message || 'No se pudo resolver el sistema.');
@@ -247,7 +230,7 @@
   solveBtn.addEventListener('click', solveSystem);
   clearBtn.addEventListener('click', clearAll);
   exampleBtn.addEventListener('click', () => {
-    const order = ['unique', 'infinite', 'none'];
+    const order = ['unique', 'fraction', 'infinite', 'none'];
     const current = order.indexOf(exampleBtn.dataset.mode || 'unique');
     exampleBtn.dataset.mode = order[(current + 1) % order.length];
     loadExample();
