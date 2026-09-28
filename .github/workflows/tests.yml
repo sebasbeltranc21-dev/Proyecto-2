@@ -22,3 +22,5 @@ jobs:
           node --check app.js
       - name: Ejecutar pruebas matemáticas
         run: node tests/solver.test.js
+      - name: Verificar contrato de interfaz
+        run: node tests/ui-contract.test.js
