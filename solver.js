@@ -177,8 +177,16 @@
     return cloneMatrix(matrix);
   }
 
-  function recordStep(steps, label, matrix) {
-    steps.push({ label, matrix: cloneForOutput(matrix) });
+  function recordStep(steps, label, matrix, focus = {}) {
+    steps.push({
+      label,
+      matrix: cloneForOutput(matrix),
+      focus: {
+        rows: Array.isArray(focus.rows) ? focus.rows.slice() : [],
+        targetRow: Number.isInteger(focus.targetRow) ? focus.targetRow : -1,
+        pivot: Array.isArray(focus.pivot) ? focus.pivot.slice() : null
+      }
+    });
   }
 
   function classify(echelonOrReduced, variables) {
@@ -289,13 +297,20 @@
 
       if (bestRow !== pivotRow) {
         [work[pivotRow], work[bestRow]] = [work[bestRow], work[pivotRow]];
-        recordStep(steps, `Intercambio F${pivotRow + 1} ↔ F${bestRow + 1}`, work);
+        recordStep(steps, `Intercambio F${pivotRow + 1} ↔ F${bestRow + 1}`, work, {
+          rows: [pivotRow, bestRow],
+          pivot: [pivotRow, col]
+        });
       }
 
       const pivot = work[pivotRow][col];
       if (pivot.toString() !== '1') {
         for (let c = 0; c < cols; c += 1) work[pivotRow][c] = work[pivotRow][c].div(pivot);
-        recordStep(steps, `F${pivotRow + 1} ← F${pivotRow + 1} ÷ ${pivot}`, work);
+        recordStep(steps, `F${pivotRow + 1} ← F${pivotRow + 1} ÷ ${pivot}`, work, {
+          rows: [pivotRow],
+          targetRow: pivotRow,
+          pivot: [pivotRow, col]
+        });
       }
 
       for (let r = 0; r < rows; r += 1) {
@@ -305,7 +320,11 @@
         for (let c = 0; c < cols; c += 1) {
           work[r][c] = work[r][c].sub(factor.mul(work[pivotRow][c]));
         }
-        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(factor.neg())}·F${pivotRow + 1}`, work);
+        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(factor.neg())}·F${pivotRow + 1}`, work, {
+          rows: [r, pivotRow],
+          targetRow: r,
+          pivot: [pivotRow, col]
+        });
       }
       pivotRow += 1;
     }
@@ -347,7 +366,10 @@
 
       if (bestRow !== pivotRow) {
         [work[pivotRow], work[bestRow]] = [work[bestRow], work[pivotRow]];
-        recordStep(steps, `Intercambio F${pivotRow + 1} ↔ F${bestRow + 1}`, work);
+        recordStep(steps, `Intercambio F${pivotRow + 1} ↔ F${bestRow + 1}`, work, {
+          rows: [pivotRow, bestRow],
+          pivot: [pivotRow, col]
+        });
       }
 
       const pivot = work[pivotRow][col];
@@ -357,7 +379,11 @@
         for (let c = col; c < cols; c += 1) {
           work[r][c] = work[r][c].sub(factor.mul(work[pivotRow][c]));
         }
-        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(factor.neg())}·F${pivotRow + 1}`, work);
+        recordStep(steps, `F${r + 1} ← F${r + 1} ${formatSignedFactor(factor.neg())}·F${pivotRow + 1}`, work, {
+          rows: [r, pivotRow],
+          targetRow: r,
+          pivot: [pivotRow, col]
+        });
       }
       pivotRow += 1;
     }
