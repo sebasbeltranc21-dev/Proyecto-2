@@ -189,6 +189,66 @@
     });
   }
 
+  function verifyUniqueSolution(matrix, solution, variables) {
+    const residuals = matrix.map(row => {
+      let total = new Fraction(0);
+      for (let column = 0; column < variables; column += 1) {
+        total = total.add(row[column].mul(solution[column]));
+      }
+      return total.sub(row[variables]);
+    });
+    return {
+      type: 'unique',
+      verified: residuals.every(value => value.isZero()),
+      residuals
+    };
+  }
+
+  function verifyParametricSolution(matrix, parametricSolution, variables) {
+    const parameterNames = parametricSolution.parameters.map(parameter => parameter.name);
+    const residuals = matrix.map(row => {
+      const constant = row
+        .slice(0, variables)
+        .reduce(
+          (total, coefficient, column) => total.add(coefficient.mul(parametricSolution.expressions[column].constant)),
+          new Fraction(0)
+        )
+        .sub(row[variables]);
+
+      const parameterCoefficients = Object.fromEntries(
+        parameterNames.map(name => [name, new Fraction(0)])
+      );
+
+      for (let column = 0; column < variables; column += 1) {
+        const coefficient = row[column];
+        for (const term of parametricSolution.expressions[column].terms) {
+          parameterCoefficients[term.parameter] = parameterCoefficients[term.parameter]
+            .add(coefficient.mul(term.coefficient));
+        }
+      }
+
+      return {
+        constant,
+        parameters: parameterNames.map(name => ({
+          name,
+          coefficient: parameterCoefficients[name]
+        }))
+      };
+    });
+
+    const verified = residuals.every(residual =>
+      residual.constant.isZero() &&
+      residual.parameters.every(item => item.coefficient.isZero())
+    );
+
+    return {
+      type: 'infinite',
+      verified,
+      parameters: parameterNames,
+      residuals
+    };
+  }
+
   function findContradiction(matrix, variables) {
     for (let row = 0; row < matrix.length; row += 1) {
       const allCoefficientsZero = matrix[row]
@@ -350,6 +410,17 @@
     const rankA = rankOf(matrix.map(row => row.slice(0, variables)));
     const rankAugmented = rankOf(matrix);
     const contradiction = findContradiction(work, variables);
+    const solution = classification === 'unique' ? extractSolution(work, variables) : null;
+    const parametricSolution = classification === 'infinite' ? buildParametricSolution(work, variables) : null;
+    const verification = classification === 'unique'
+      ? verifyUniqueSolution(matrix, solution, variables)
+      : classification === 'infinite'
+        ? verifyParametricSolution(matrix, parametricSolution, variables)
+        : {
+            type: 'none',
+            verified: false,
+            residuals: []
+          };
 
     return {
       method: 'Gauss-Jordan',
@@ -361,8 +432,9 @@
       rankA,
       rankAugmented,
       contradiction,
-      solution: classification === 'unique' ? extractSolution(work, variables) : null,
-      parametricSolution: classification === 'infinite' ? buildParametricSolution(work, variables) : null
+      verification,
+      solution,
+      parametricSolution
     };
   }
 
@@ -422,6 +494,16 @@
       parametricSolution = reducedResult.parametricSolution;
     }
 
+    const verification = classification === 'unique'
+      ? verifyUniqueSolution(matrix, solution, variables)
+      : classification === 'infinite'
+        ? verifyParametricSolution(matrix, parametricSolution, variables)
+        : {
+            type: 'none',
+            verified: false,
+            residuals: []
+          };
+
     return {
       method: 'Eliminación de Gauss',
       matrixType: 'Matriz escalonada',
@@ -432,6 +514,7 @@
       rankA,
       rankAugmented,
       contradiction,
+      verification,
       solution,
       parametricSolution
     };
