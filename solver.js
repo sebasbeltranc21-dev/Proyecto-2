@@ -69,18 +69,27 @@
     steps.push({ label, matrix: cloneMatrix(matrix).map(row => row.map(clean)), note });
   }
 
+  function classify(echelonOrReduced, variables) {
+    for (const row of echelonOrReduced) {
+      const allCoefficientsZero = row.slice(0, variables).every(v => Math.abs(v) <= EPSILON);
+      const rhsNonZero = Math.abs(row[variables]) > EPSILON;
+      if (allCoefficientsZero && rhsNonZero) return 'none';
+    }
+    const rankA = rankOf(echelonOrReduced.map(row => row.slice(0, variables)));
+    return rankA === variables ? 'unique' : 'infinite';
+  }
+
   function gaussJordan(augmented) {
     const { matrix, variables } = validateAugmented(augmented);
     const rows = matrix.length;
     const cols = matrix[0].length;
-    const coefficientCols = variables;
     const work = cloneMatrix(matrix);
     const steps = [];
     let pivotRow = 0;
 
     recordStep(steps, 'Matriz inicial', work);
 
-    for (let col = 0; col < coefficientCols && pivotRow < rows; col += 1) {
+    for (let col = 0; col < variables && pivotRow < rows; col += 1) {
       let bestRow = pivotRow;
       for (let r = pivotRow + 1; r < rows; r += 1) {
         if (Math.abs(work[r][col]) > Math.abs(work[bestRow][col])) bestRow = r;
@@ -117,13 +126,15 @@
 
     return {
       method: 'Gauss-Jordan',
+      matrixType: 'Matriz reducida (RREF)',
       matrix: work.map(row => row.map(clean)),
       steps,
       variables,
       classification,
       rankA,
       rankAugmented,
-      solution: extractSolution(work, variables, classification)
+      solution: classification === 'unique' ? extractSolution(work, variables) : null,
+      parametricSolution: classification === 'infinite' ? extractParametricSolution(work, variables) : null
     };
   }
 
@@ -165,38 +176,73 @@
     const classification = classify(work, variables);
     const rankA = rankOf(matrix.map(row => row.slice(0, variables)));
     const rankAugmented = rankOf(matrix);
-    const solution = classification === 'unique' ? backSubstitute(work, variables, pivots) : null;
 
     return {
       method: 'Eliminación de Gauss',
+      matrixType: 'Matriz escalonada',
       matrix: work.map(row => row.map(clean)),
       steps,
       variables,
       classification,
       rankA,
       rankAugmented,
-      solution
+      solution: classification === 'unique' ? backSubstitute(work, variables, pivots) : null,
+      parametricSolution: classification === 'infinite'
+        ? extractParametricSolution(gaussJordan(matrix).matrix, variables)
+        : null
     };
   }
 
-  function classify(echelonOrReduced, variables) {
-    for (const row of echelonOrReduced) {
-      const allCoefficientsZero = row.slice(0, variables).every(v => Math.abs(v) <= EPSILON);
-      const rhsNonZero = Math.abs(row[variables]) > EPSILON;
-      if (allCoefficientsZero && rhsNonZero) return 'none';
-    }
-    const rankA = rankOf(echelonOrReduced.map(row => row.slice(0, variables)));
-    return rankA === variables ? 'unique' : 'infinite';
-  }
-
-  function extractSolution(reduced, variables, classification) {
-    if (classification !== 'unique') return null;
+  function extractSolution(reduced, variables) {
     const solution = Array(variables).fill(0);
     for (const row of reduced) {
       const pivotIndex = row.slice(0, variables).findIndex(v => Math.abs(v) > EPSILON);
       if (pivotIndex !== -1) solution[pivotIndex] = clean(row[variables] / row[pivotIndex]);
     }
     return solution;
+  }
+
+  function extractParametricSolution(reduced, variables) {
+    const pivotForColumn = Array(variables).fill(-1);
+    const freeColumns = [];
+
+    for (let r = 0; r < reduced.length; r += 1) {
+      const pivot = reduced[r].slice(0, variables).findIndex(v => Math.abs(v) > EPSILON);
+      if (pivot !== -1 && pivotForColumn[pivot] === -1) pivotForColumn[pivot] = r;
+    }
+
+    for (let c = 0; c < variables; c += 1) {
+      if (pivotForColumn[c] === -1) freeColumns.push(c);
+    }
+
+    const parameters = freeColumns.map((column, index) => ({
+      column,
+      name: `t${index + 1}`
+    }));
+
+    const expressions = Array.from({ length: variables }, (_, column) => {
+      const pivotRow = pivotForColumn[column];
+      if (pivotRow === -1) {
+        const parameter = parameters.find(item => item.column === column);
+        return { variable: column, constant: 0, terms: [{ parameter: parameter.name, coefficient: 1 }] };
+      }
+
+      const row = reduced[pivotRow];
+      const terms = freeColumns
+        .map((freeColumn, index) => ({
+          parameter: parameters[index].name,
+          coefficient: clean(-row[freeColumn])
+        }))
+        .filter(term => Math.abs(term.coefficient) > EPSILON);
+
+      return {
+        variable: column,
+        constant: clean(row[variables]),
+        terms
+      };
+    });
+
+    return { parameters, expressions };
   }
 
   function backSubstitute(matrix, variables, pivots) {
@@ -227,5 +273,13 @@
     return value >= 0 ? `+ ${n}` : `- ${formatNumber(Math.abs(value))}`;
   }
 
-  return { EPSILON, solve, gaussJordan, gaussian, rankOf, formatNumber };
+  return {
+    EPSILON,
+    solve,
+    gaussJordan,
+    gaussian,
+    rankOf,
+    formatNumber,
+    extractParametricSolution
+  };
 });
