@@ -13,10 +13,14 @@
   const resultSection = document.getElementById('resultSection');
   const resultBadge = document.getElementById('resultBadge');
   const resultSummary = document.getElementById('resultSummary');
+  const equationsPreview = document.getElementById('equationsPreview');
   const solutionContainer = document.getElementById('solutionContainer');
   const reducedMatrixContainer = document.getElementById('reducedMatrixContainer');
   const stepsContainer = document.getElementById('stepsContainer');
   const toggleStepsBtn = document.getElementById('toggleStepsBtn');
+  const stepPrevBtn = document.getElementById('stepPrevBtn');
+  const stepNextBtn = document.getElementById('stepNextBtn');
+  const stepCounter = document.getElementById('stepCounter');
   const rankLabel = document.getElementById('rankLabel');
   const methodLabel = document.getElementById('methodLabel');
   const explanationPanel = document.getElementById('explanationPanel');
@@ -32,6 +36,8 @@
   const MAX_HISTORY = 8;
   let lastResult = null;
   let lastMatrix = null;
+  let currentStepIndex = 0;
+  let currentSteps = [];
 
   const examples = {
     unique: { equations: 2, variables: 2, matrix: [['2', '1', '5'], ['1', '-1', '1']] },
@@ -107,6 +113,9 @@
     stepsHint.hidden = true;
     toggleStepsBtn.textContent = 'Mostrar pasos';
     toggleStepsBtn.setAttribute('aria-expanded', 'false');
+    currentSteps = [];
+    currentStepIndex = 0;
+    updateStepNavigation();
   }
 
   function clearAll() {
@@ -191,6 +200,78 @@
     solutionContainer.innerHTML = '<p class="empty-note">Las ecuaciones son incompatibles. No existe ningún conjunto de valores que satisfaga todo el sistema.</p>';
   }
 
+  function signedEquationTerm(coefficient, variable, isFirst) {
+    const value = MatrixSolver.formatNumber(coefficient);
+    const negative = value.startsWith('-');
+    const absolute = negative ? value.slice(1) : value;
+    const coefficientText = absolute === '1' ? '' : absolute;
+    const body = coefficientText + variable;
+
+    if (isFirst) return negative ? `− ${body}` : body;
+    return negative ? ` − ${body}` : ` + ${body}`;
+  }
+
+  function renderEquations(matrix) {
+    equationsPreview.innerHTML = '';
+    const heading = document.createElement('div');
+    heading.className = 'panel-heading';
+    const title = document.createElement('h3');
+    title.textContent = 'Sistema de ecuaciones';
+    const note = document.createElement('span');
+    note.className = 'mini-label';
+    note.textContent = `${matrix.length} ecuaciones`;
+    heading.append(title, note);
+
+    const list = document.createElement('div');
+    list.className = 'equations-list';
+
+    matrix.forEach((row, rowIndex) => {
+      const equation = document.createElement('div');
+      equation.className = 'equation-row';
+
+      let text = '';
+      let hasTerm = false;
+      for (let column = 0; column < row.length - 1; column += 1) {
+        const coefficient = row[column];
+        if (MatrixSolver.formatNumber(coefficient) === '0') continue;
+        text += signedEquationTerm(coefficient, variableName(column), !hasTerm);
+        hasTerm = true;
+      }
+
+      if (!hasTerm) text = '0';
+      text += ` = ${MatrixSolver.formatNumber(row[row.length - 1])}`;
+
+      equation.textContent = `E${rowIndex + 1}: ${text}`;
+      list.appendChild(equation);
+    });
+
+    equationsPreview.append(heading, list);
+  }
+
+  function updateStepNavigation() {
+    const total = currentSteps.length;
+    stepCounter.textContent = `Paso ${total ? currentStepIndex + 1 : 0} de ${total}`;
+    stepPrevBtn.disabled = total === 0 || currentStepIndex === 0;
+    stepNextBtn.disabled = total === 0 || currentStepIndex === total - 1;
+    stepPrevBtn.hidden = total <= 1;
+    stepNextBtn.hidden = total <= 1;
+    stepCounter.hidden = total <= 1;
+  }
+
+  function showStep(index) {
+    if (!currentSteps.length) {
+      updateStepNavigation();
+      return;
+    }
+
+    currentStepIndex = Math.max(0, Math.min(index, currentSteps.length - 1));
+    [...stepsContainer.querySelectorAll('.step')].forEach((card, cardIndex) => {
+      card.classList.toggle('active', cardIndex === currentStepIndex);
+      card.setAttribute('aria-hidden', String(cardIndex !== currentStepIndex));
+    });
+    updateStepNavigation();
+  }
+
   function classificationExplanation(result) {
     if (result.classification === 'unique') {
       return {
@@ -234,6 +315,8 @@
 
   function renderSteps(steps) {
     stepsContainer.innerHTML = '';
+    currentSteps = steps;
+    currentStepIndex = 0;
     const list = document.createElement('div');
     list.className = 'steps-list';
     steps.forEach((step, index) => {
@@ -253,6 +336,7 @@
       list.appendChild(card);
     });
     stepsContainer.appendChild(list);
+    showStep(0);
   }
 
   function solutionText(result) {
@@ -273,6 +357,26 @@
 
   function matrixText(matrix) {
     return matrix.map(row => row.map(value => MatrixSolver.formatNumber(value)).join('   |   ')).join('\\n');
+  }
+
+  function formatEquationsForReport(matrix) {
+    return matrix.map(row => {
+      let text = '';
+      let hasTerm = false;
+      for (let column = 0; column < row.length - 1; column += 1) {
+        const coefficient = MatrixSolver.formatNumber(row[column]);
+        if (coefficient === '0') continue;
+        const negative = coefficient.startsWith('-');
+        const absolute = negative ? coefficient.slice(1) : coefficient;
+        const coefficientText = absolute === '1' ? '' : absolute;
+        const body = coefficientText + variableName(column);
+        if (!hasTerm) text += negative ? `− ${body}` : body;
+        else text += negative ? ` − ${body}` : ` + ${body}`;
+        hasTerm = true;
+      }
+      if (!hasTerm) text = '0';
+      return text + ` = ${MatrixSolver.formatNumber(row[row.length - 1])}`;
+    });
   }
 
   function buildReport() {
@@ -495,6 +599,7 @@
         ? 'El sistema tiene infinitas soluciones. Se muestran en forma paramétrica y con fracciones exactas.'
         : `El sistema no tiene solución porque la matriz de coeficientes y la aumentada tienen rangos distintos (${result.rankA} y ${result.rankAugmented}).`;
 
+    renderEquations(lastMatrix);
     const explanation = classificationExplanation(result);
     explanationPanel.className = explanation.className;
     explanationPanel.innerHTML = `<strong>${explanation.title}</strong><p>${explanation.body}</p>`;
@@ -557,6 +662,9 @@
     exampleBtn.dataset.mode = order[(current + 1) % order.length];
     loadExample();
   });
+  stepPrevBtn.addEventListener('click', () => showStep(currentStepIndex - 1));
+  stepNextBtn.addEventListener('click', () => showStep(currentStepIndex + 1));
+
   toggleStepsBtn.addEventListener('click', () => {
     const isHidden = stepsContainer.hidden;
     stepsContainer.hidden = !isHidden;
