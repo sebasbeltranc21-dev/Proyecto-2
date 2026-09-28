@@ -21,22 +21,14 @@
   const methodLabel = document.getElementById('methodLabel');
 
   const examples = {
-    unique: {
-      equations: 2,
-      variables: 2,
-      matrix: [[2, 1, 5], [1, -1, 1]]
-    },
-    infinite: {
-      equations: 2,
-      variables: 2,
-      matrix: [[1, 1, 2], [2, 2, 4]]
-    },
-    none: {
-      equations: 2,
-      variables: 2,
-      matrix: [[1, 1, 2], [2, 2, 5]]
-    }
+    unique: { equations: 2, variables: 2, matrix: [[2, 1, 5], [1, -1, 1]] },
+    infinite: { equations: 2, variables: 2, matrix: [[1, 1, 2], [2, 2, 4]] },
+    none: { equations: 2, variables: 2, matrix: [[1, 1, 2], [2, 2, 5]] }
   };
+
+  function variableName(index) {
+    return String.fromCharCode(120 + index);
+  }
 
   function populateSelect(select, label) {
     select.innerHTML = '';
@@ -63,7 +55,9 @@
         input.type = 'number';
         input.step = 'any';
         input.inputMode = 'decimal';
-        input.setAttribute('aria-label', c === variables ? `Ecuación ${r + 1}, término independiente` : `Ecuación ${r + 1}, variable ${String.fromCharCode(120 + c)}`);
+        input.setAttribute('aria-label', c === variables
+          ? `Ecuación ${r + 1}, término independiente`
+          : `Ecuación ${r + 1}, variable ${variableName(c)}`);
         input.value = values?.[r]?.[c] ?? '';
         row.appendChild(input);
       }
@@ -72,11 +66,12 @@
   }
 
   function getMatrixFromInputs() {
-    const rows = [...matrixContainer.querySelectorAll('.matrix-row')];
-    return rows.map(row => [...row.querySelectorAll('input')].map(input => {
-      const value = input.value.trim();
-      return value === '' ? NaN : Number(value);
-    }));
+    return [...matrixContainer.querySelectorAll('.matrix-row')].map(row =>
+      [...row.querySelectorAll('input')].map(input => {
+        const value = input.value.trim();
+        return value === '' ? NaN : Number(value);
+      })
+    );
   }
 
   function resetResults() {
@@ -123,23 +118,64 @@
     return wrapper;
   }
 
+  function formatExpression(expression) {
+    let text = MatrixSolver.formatNumber(expression.constant);
+    for (const term of expression.terms) {
+      const coefficient = term.coefficient;
+      const abs = Math.abs(coefficient);
+      const coeffText = Math.abs(abs - 1) < MatrixSolver.EPSILON ? '' : MatrixSolver.formatNumber(abs);
+      const signed = coefficient >= 0 ? ' + ' : ' − ';
+      text += `${signed}${coeffText}${term.parameter}`;
+    }
+    if (text === '0' && expression.terms.length === 0) return '0';
+    return text;
+  }
+
   function renderSolution(result) {
     solutionContainer.innerHTML = '';
+
     if (result.classification === 'unique') {
       const list = document.createElement('div');
       list.className = 'solution-list';
       result.solution.forEach((value, index) => {
         const row = document.createElement('div');
         row.className = 'solution-row';
-        row.innerHTML = `<strong>${String.fromCharCode(120 + index)}</strong><span>${MatrixSolver.formatNumber(value)}</span>`;
+        row.innerHTML = `<strong>${variableName(index)}</strong><span>${MatrixSolver.formatNumber(value)}</span>`;
         list.appendChild(row);
       });
       solutionContainer.appendChild(list);
-    } else if (result.classification === 'infinite') {
-      solutionContainer.innerHTML = '<p class="empty-note">El sistema es compatible indeterminado: hay variables libres y, por tanto, infinitas soluciones.</p>';
-    } else {
-      solutionContainer.innerHTML = '<p class="empty-note">Las ecuaciones son incompatibles. No existe ningún conjunto de valores que satisfaga todo el sistema.</p>';
+      return;
     }
+
+    if (result.classification === 'infinite') {
+      const wrap = document.createElement('div');
+      wrap.className = 'parametric-solution';
+      const intro = document.createElement('p');
+      intro.className = 'empty-note';
+      intro.textContent = result.parametricSolution.parameters.length === 1
+        ? 'La variable libre se representa con un parámetro.'
+        : 'Las variables libres se representan con parámetros.';
+      wrap.appendChild(intro);
+
+      const parameterRow = document.createElement('div');
+      parameterRow.className = 'parameter-box';
+      parameterRow.innerHTML = `<strong>Libres:</strong> ${result.parametricSolution.parameters.map(item => `<span>${variableName(item.column)} = ${item.name}</span>`).join(' · ')}`;
+      wrap.appendChild(parameterRow);
+
+      const list = document.createElement('div');
+      list.className = 'solution-list';
+      result.parametricSolution.expressions.forEach(expression => {
+        const row = document.createElement('div');
+        row.className = 'solution-row';
+        row.innerHTML = `<strong>${variableName(expression.variable)}</strong><span class="expression">${formatExpression(expression)}</span>`;
+        list.appendChild(row);
+      });
+      wrap.appendChild(list);
+      solutionContainer.appendChild(wrap);
+      return;
+    }
+
+    solutionContainer.innerHTML = '<p class="empty-note">Las ecuaciones son incompatibles. No existe ningún conjunto de valores que satisfaga todo el sistema.</p>';
   }
 
   function renderSteps(steps) {
@@ -154,12 +190,6 @@
       title.textContent = `${index + 1}. ${step.label}`;
       card.appendChild(title);
       card.appendChild(renderMatrix(step.matrix));
-      if (step.note) {
-        const note = document.createElement('div');
-        note.className = 'step-note';
-        note.textContent = step.note;
-        card.appendChild(note);
-      }
       list.appendChild(card);
     });
     stepsContainer.appendChild(list);
@@ -169,17 +199,18 @@
     resultSection.hidden = false;
     resultBadge.className = `result-badge ${result.classification}`;
     resultBadge.textContent = statusText(result.classification);
+
     resultSummary.textContent = result.classification === 'unique'
       ? `El sistema tiene una solución única. Rango de A: ${result.rankA}; rango de la matriz aumentada: ${result.rankAugmented}.`
       : result.classification === 'infinite'
-        ? `El sistema tiene infinitas soluciones. Rango de A: ${result.rankA}; rango de la matriz aumentada: ${result.rankAugmented}.`
+        ? `El sistema tiene infinitas soluciones. Rango de A: ${result.rankA}; rango de la matriz aumentada: ${result.rankAugmented}. Se muestran en forma paramétrica.`
         : `El sistema no tiene solución porque la matriz de coeficientes y la aumentada tienen rangos distintos (${result.rankA} y ${result.rankAugmented}).`;
-    solutionContainer.innerHTML = '';
+
     renderSolution(result);
     reducedMatrixContainer.innerHTML = '';
     reducedMatrixContainer.appendChild(renderMatrix(result.matrix));
     rankLabel.textContent = `r(A) = ${result.rankA} · r(A|b) = ${result.rankAugmented}`;
-    methodLabel.textContent = result.method;
+    methodLabel.textContent = result.matrixType;
     renderSteps(result.steps);
   }
 
@@ -190,8 +221,7 @@
       if (matrix.some(row => row.some(value => !Number.isFinite(value)))) {
         throw new Error('Completa todos los campos de la matriz con números válidos.');
       }
-      const result = MatrixSolver.solve(matrix, methodSelect.value);
-      renderResult(result);
+      renderResult(MatrixSolver.solve(matrix, methodSelect.value));
     } catch (error) {
       showError(error.message || 'No se pudo resolver el sistema.');
     }
