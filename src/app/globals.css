@@ -481,7 +481,7 @@ dd {
 }
 .method-top span {
   font-size: 11px;
-  color: #73827a;
+  color: #87978e;
   font-family: monospace;
 }
 .method-grid h3 {
@@ -1726,4 +1726,12 @@ dialog.modal {
 dialog.modal::backdrop {
   background: #000b;
   backdrop-filter: blur(5px);
+}
+@media (max-width: 760px) {
+  .case-visual {
+    aspect-ratio: 0.82;
+  }
+  .evidence-tag {
+    top: 18%;
+  }
 }

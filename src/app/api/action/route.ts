@@ -2,8 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { serverClient } from "@/lib/supabase/server";
 import { isConfigured } from "@/lib/config";
 import { actionSchema } from "@/lib/validation";
+import { sameOrigin } from "@/lib/origin";
 export async function POST(request: NextRequest) {
-  if (request.headers.get("origin") !== request.nextUrl.origin)
+  if (!sameOrigin(request.headers.get("origin"), request.headers.get("host")))
     return NextResponse.json(
       { error: "Origen no permitido." },
       { status: 403 },

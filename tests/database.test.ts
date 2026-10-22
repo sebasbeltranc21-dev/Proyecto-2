@@ -1,6 +1,6 @@
 import { PGlite } from "@electric-sql/pglite";
 import { readFileSync, readdirSync } from "node:fs";
-import { beforeAll, afterAll, test, expect } from "vitest";
+import { beforeAll, afterAll, beforeEach, test, expect } from "vitest";
 let db: PGlite;
 const a = "30000000-0000-4000-8000-000000000001",
   b = "30000000-0000-4000-8000-000000000002",
@@ -16,7 +16,9 @@ async function action(value: Record<string, unknown>) {
     "select public.mm_action($1::jsonb) v",
     [JSON.stringify(value)],
   );
-  return r.rows[0].v;
+  const result = r.rows[0].v as { code: string; error?: string };
+  if (result.error) throw new Error(result.error);
+  return result;
 }
 async function snap(code: string) {
   return (
@@ -63,6 +65,12 @@ beforeAll(async () => {
     });
   }
 }, 30000);
+beforeEach(async () => {
+  await db.exec(
+    "reset role;truncate public.mm_rooms cascade;truncate mm_private.join_limits;",
+  );
+  await as(a);
+});
 afterAll(async () => {
   await db.close();
 });
@@ -214,4 +222,63 @@ test("chat text, rate limit and reconnect do not duplicate participants or state
   expect(data.messages).toHaveLength(1);
   await as(c);
   await expect(action({ action: "join", code })).rejects.toThrow("ya comenzó");
+});
+test("invite attempts persist on failures and internal action cannot bypass the limiter", async () => {
+  await as(c);
+  for (let i = 0; i < 20; i++)
+    await expect(action({ action: "join", code: "FFFFFFFF" })).rejects.toThrow(
+      "No se encontró",
+    );
+  await expect(action({ action: "join", code: "FFFFFFFF" })).rejects.toThrow(
+    "Demasiados intentos",
+  );
+  await expect(
+    db.query('select mm_private.action(\'{"action":"tick"}\')'),
+  ).rejects.toThrow("permission denied");
+});
+test("host takeover requires an absent host; the original identity can reconnect", async () => {
+  const code = await room();
+  await as(b);
+  await expect(action({ action: "claim", code })).rejects.toThrow(
+    "sigue conectado",
+  );
+  await owner(
+    `update public.mm_participants set last_seen=now()-interval '1 minute' where user_id='${a}'`,
+  );
+  await as(b);
+  await action({ action: "claim", code });
+  expect((await snap(code)).room.host_id).toBe(b);
+  await as(a);
+  await action({ action: "join", code });
+  expect((await snap(code)).participants).toHaveLength(2);
+});
+test("room capacity, votes for another case and arbitrary score changes are rejected", async () => {
+  const code = await room();
+  await owner(
+    `insert into public.mm_cases(id,slug,title,intro,stages) values('10000000-0000-4000-8000-000000000002','otro','Otro','Otro','[]');insert into public.mm_suspects(id,case_id,name,description,motive,alibi) values('20000000-0000-4000-8000-000000000005','10000000-0000-4000-8000-000000000002','Otro','Otro','Otro','Otro'); update public.mm_games set stage=2,phase_ends_at=now()+interval '1 minute' where room_id=(select id from public.mm_rooms where code='${code}');`,
+  );
+  await expect(
+    action({
+      action: "vote",
+      code,
+      suspect: "20000000-0000-4000-8000-000000000005",
+    }),
+  ).rejects.toThrow("Sospechoso inválido");
+  await expect(
+    db.query("update public.mm_results set points=150"),
+  ).rejects.toThrow("permission denied");
+  await as(a);
+  const lobby = await action({
+    action: "create",
+    minutes: 1,
+    voteMinutes: 1,
+    allowGuests: false,
+  });
+  await owner(
+    `insert into auth.users select ('40000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid from generate_series(1,7) n;insert into public.mm_profiles select id,'Test','lupa' from auth.users where id::text like '40000000%';insert into public.mm_participants(room_id,user_id) select r.id,p.id from public.mm_rooms r cross join public.mm_profiles p where r.code='${lobby.code}' and p.id::text like '40000000%';`,
+  );
+  await as(c);
+  await expect(action({ action: "join", code: lobby.code })).rejects.toThrow(
+    "llena",
+  );
 });
