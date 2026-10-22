@@ -44,12 +44,13 @@ export async function POST(request: NextRequest) {
   const { data, error } = await client.rpc("mm_action", {
     payload: parsed.data,
   });
-  if (error) {
-    const known = error.message.startsWith("MM:");
+  if (error || data?.error) {
+    const message = error?.message || String(data.error);
+    const known = message.startsWith("MM:");
     return NextResponse.json(
       {
         error: known
-          ? error.message.slice(3)
+          ? message.slice(3)
           : "No se pudo completar la acción. Revisa la conexión y las migraciones de Supabase.",
       },
       { status: known ? 400 : 503 },
