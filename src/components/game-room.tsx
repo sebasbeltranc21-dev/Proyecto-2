@@ -30,6 +30,7 @@ import { Avatar, ErrorNotice, Skeleton } from "./ui";
 import { SuspectPortrait } from "./case-art";
 import { CaseScene } from "./case-scene";
 import { EvidenceWorkspace, TimelineBoard } from "./evidence-workspace";
+import { CaseEnding } from "./ending-cinematic";
 export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const [data, setData] = useState<RoomSnapshot | null>(null);
   const [error, setError] = useState("");
@@ -348,51 +349,59 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
               </div>
             </section>
           ) : finished ? (
-            <section className="panel results-panel">
-              <Trophy className="gold" size={40} />
-              <p className="eyebrow">LA VERDAD SALE A LA LUZ</p>
-              <h2>
-                {game.success ? "Caso resuelto." : "El caso os ha sorprendido."}
-              </h2>
-              <p>
-                {game.team_suspect
-                  ? `El equipo acusó a ${data.suspects.find((s) => s.id === game.team_suspect)?.name}.`
-                  : "No hubo una acusación única del equipo: empate o ausencia de votos."}
-              </p>
-              <div className="solution">
-                {solved && (
-                  <SuspectPortrait id={solved.id} portrait={solved.portrait} />
-                )}
-                <span className="eyebrow">RESPONSABLE DEL CASO</span>
-                <h3>{solved?.name}</h3>
-                <p>{data.solution?.explanation}</p>
-              </div>
-              <h3>Resultados del equipo</h3>
-              <ul className="data-list">
-                {data.results.map((r) => (
-                  <li className="result-row" key={r.user_id}>
-                    <span>
-                      {r.name}
-                      {r.user_id === uid ? " (tú)" : ""}
-                      <small className="muted">
-                        {r.correct
-                          ? "Acusación correcta"
-                          : "Acusación incorrecta o sin voto"}
-                      </small>
-                    </span>
-                    <b className="gold">{r.points} pts</b>
-                  </li>
-                ))}
-              </ul>
-              <p className="muted">
-                100 puntos por acertar tu voto + 50 para cada integrante si el
-                equipo resuelve el caso. La puntuación se registra una sola vez.
-              </p>
-              <Link href="/panel" className="button primary">
-                Volver al panel
-                <ArrowRight size={17} />
-              </Link>
-            </section>
+            <CaseEnding data={data} uid={uid}>
+              <section className="panel results-panel">
+                <Trophy className="gold" size={40} />
+                <p className="eyebrow">LA VERDAD SALE A LA LUZ</p>
+                <h2>
+                  {game.success
+                    ? "Caso resuelto."
+                    : "El caso os ha sorprendido."}
+                </h2>
+                <p>
+                  {game.team_suspect
+                    ? `El equipo acusó a ${data.suspects.find((s) => s.id === game.team_suspect)?.name}.`
+                    : "No hubo una acusación única del equipo: empate o ausencia de votos."}
+                </p>
+                <div className="solution">
+                  {solved && (
+                    <SuspectPortrait
+                      id={solved.id}
+                      portrait={solved.portrait}
+                    />
+                  )}
+                  <span className="eyebrow">RESPONSABLE DEL CASO</span>
+                  <h3>{solved?.name}</h3>
+                  <p>{data.solution?.explanation}</p>
+                </div>
+                <h3>Resultados del equipo</h3>
+                <ul className="data-list">
+                  {data.results.map((r) => (
+                    <li className="result-row" key={r.user_id}>
+                      <span>
+                        {r.name}
+                        {r.user_id === uid ? " (tú)" : ""}
+                        <small className="muted">
+                          {r.correct
+                            ? "Acusación correcta"
+                            : "Acusación incorrecta o sin voto"}
+                        </small>
+                      </span>
+                      <b className="gold">{r.points} pts</b>
+                    </li>
+                  ))}
+                </ul>
+                <p className="muted">
+                  100 puntos por acertar tu voto + 50 para cada integrante si el
+                  equipo resuelve el caso. La puntuación se registra una sola
+                  vez.
+                </p>
+                <Link href="/panel" className="button primary">
+                  Volver al panel
+                  <ArrowRight size={17} />
+                </Link>
+              </section>
+            </CaseEnding>
           ) : (
             <>
               <section className="panel story-panel">

@@ -45,6 +45,12 @@ Los lugares del mapa son metadatos públicos del caso. Cada evidencia conserva s
 
 La restricción `(game_id,evidence_id)` evita duplicados. Solo el autor de la tarjeta puede cambiar la hora o retirarla; todas las escrituras directas están denegadas. Las horas son minutos de un día ficticio (0–1439), elegidos por los jugadores; no hay validación automática de teorías ni puntos por ordenar. Al comenzar la votación la cronología queda de consulta y se conserva al terminar. `mm_timeline` tiene RLS de pertenencia y publicación Realtime; las consultas periódicas recuperan cambios si se pierde el canal.
 
+## Cinemáticas finales
+
+`CaseEnding` envuelve el expediente final únicamente cuando el snapshot autorizado tiene fase 3 y una solución cuyo sospechoso existe en el catálogo recibido. La identidad procede de esa solución; no hay culpables codificados en las ilustraciones. La detención exige éxito oficial y coincidencia con la acusación del equipo. Un fallo, empate o ausencia de votos muestra otro desenlace, sin agentes ni detención.
+
+Las cuatro escenas SVG/CSS duran 3,5 segundos cada una. La reproducción es local por jugador y no ejecuta RPCs ni cambia puntos o estado. Un callback estable evita que las actualizaciones periódicas reinicien el reloj. La pestaña oculta pausa la reproducción; `prefers-reduced-motion` ofrece escenas estáticas con avance manual. Pausa, avance, omisión y repetición funcionan de forma independiente para cada usuario. Al terminar u omitir se recuerda la visualización en `sessionStorage` con usuario y partida; si el almacenamiento falla, los resultados siguen disponibles. Ese indicador solo evita repeticiones en esa sesión del navegador y no tiene valor de autorización.
+
 ## Reglas
 
 Dos fases de investigación (1–15 minutos cada una) y una votación (1–5 minutos). Una mayoría relativa única decide la acusación del equipo. Un empate o cero votos es fallo colectivo. Una respuesta correcta da 100 puntos individuales; resolver colectivamente suma 50 a cada participante. Los resultados se insertan una sola vez. No hay roles secretos.

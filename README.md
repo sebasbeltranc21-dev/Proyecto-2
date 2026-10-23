@@ -15,6 +15,7 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 - Mapas por zonas y vagones, aperturas por fase y evidencias ampliables. Pistas privadas por identidad; Supabase Realtime y recuperación por consultas periódicas.
 - Cronología compartida: cada investigador elige la hora de su hipótesis. Compartir una pista privada requiere confirmación expresa de su contenido completo. Solo su autor cambia la hora o retira la tarjeta durante la investigación.
 - Votos inmutables, cierre transaccional, puntos, historial, estadísticas y clasificación.
+- Cinemáticas finales originales de museo y tren: cuatro escenas (14 segundos), detención del responsable cuando el equipo resuelve el caso y desenlace distinto ante fallo o empate. Controles de pausa, avance, omisión y repetición; con movimiento reducido se leen como una historieta estática.
 - Migraciones con RLS y funciones para acciones críticas. No se necesita `service_role`.
 - Diseño adaptable con dos escenarios originales, nueve retratos SVG y dibujos de las evidencias. Animaciones breves de entrada, parpadeo y grabación, con soporte para movimiento reducido; confirmaciones, errores y estados vacíos.
 

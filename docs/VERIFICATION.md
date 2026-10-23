@@ -2,6 +2,15 @@
 
 Supabase ya está conectado y las siete migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
 
+## Cinemáticas de cierre
+
+Los dos casos incluyen cuatro escenas ilustradas de 14 segundos. La victoria representa la detención del responsable oficial; una acusación errónea, empate o ausencia de votos conserva el caso abierto y revela la verdad al final, sin representar una detención. Se puede pausar, avanzar, omitir o repetir. La preferencia de movimiento reducido activa una historieta estática y la pestaña oculta pausa el reloj. No se modifican funciones SQL, dependencias ni datos existentes.
+
+- **35 pruebas locales aprobadas:** las 27 anteriores y ocho comprobaciones del componente de cierre. Cubren ambos temas, requisito de cierre/solución oficial, desenlaces, temporización ante nuevos snapshots, pausa, visibilidad, omisión, repetición, aislamiento por usuario/partida, movimiento reducido y almacenamiento bloqueado.
+- **ESLint y compilación de producción con TypeScript:** aprobados.
+- **Navegador:** componente real y estilos del proyecto en un harness temporal, rotulado explícitamente con datos ficticios ajenos a las soluciones reales. Revisados museo, detención del tren a 390 px, fallo sin agentes, pausa con avance, omisión y repetición. Sin desbordamiento horizontal a 390 px y sin errores de consola de la aplicación. Se corrigió la aparición de personajes al avanzar en pausa y se limitó la animación de escolta a la victoria.
+- **Límite:** no se ejecutó una partida autenticada nueva con dos personas para comprobar este cierre. La prueba E2E existente ahora omite la cinemática antes de comprobar los resultados, pero requiere cuentas de pruebas y continúa siendo optativa. El harness y sus datos no se publican.
+
 ## Segundo caso, mapa y cronología
 
 Implementación: «El Expreso Medianoche» (5 sospechosos, 14 pistas y solución fija), selector de caso, 5 vagones con apertura por fase, 5 retratos nuevos, escena del tren, evidencias ampliables y cronología persistente de hipótesis. El museo conserva sus 4 sospechosos y 12 pistas y ahora tiene su propio mapa. Compartir el texto completo de una pista privada exige confirmación del propietario. Solo quien añadió una tarjeta puede mover su hora o retirarla, durante la investigación.

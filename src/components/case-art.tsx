@@ -28,22 +28,27 @@ const portraitStyles: Record<string, { kind: string; color: string }> = {
   photographer: { kind: "photographer", color: "#b9a8ca" },
   chef: { kind: "chef", color: "#d6d9c8" },
   traveler: { kind: "traveler", color: "#97acbd" },
+  agent: { kind: "agent", color: "#7b93ad" },
 };
 export function SuspectPortrait({
   id,
   portrait,
+  presentation = "dossier",
 }: {
   id: string;
   portrait?: string;
+  presentation?: "dossier" | "scene";
 }) {
   const { kind, color } = portraitStyles[portrait ?? ""] ??
     characters[id] ?? {
       kind: "unknown",
       color: "#b7b4a0",
     };
+  const uniformed =
+    kind === "guard" || kind === "conductor" || kind === "agent";
   return (
     <div
-      className="suspect-art"
+      className={`suspect-art ${presentation === "scene" ? "portrait-scene" : ""}`}
       style={{ "--portrait-accent": color } as CSSProperties}
     >
       <div className="portrait-drawing">
@@ -53,17 +58,27 @@ export function SuspectPortrait({
           aria-hidden="true"
           focusable="false"
         >
-          <path
-            d="M24 48H216M24 80H216M24 112H216M24 144H216M24 176H216"
-            stroke="currentColor"
-            opacity=".13"
-          />
-          <circle cx="120" cy="97" r="66" fill="currentColor" opacity=".07" />
-          <path
-            d="M37 20H22V35M203 20H218V35M22 165V180H37M203 180H218V165"
-            stroke="currentColor"
-            opacity=".5"
-          />
+          {presentation === "dossier" && (
+            <>
+              <path
+                d="M24 48H216M24 80H216M24 112H216M24 144H216M24 176H216"
+                stroke="currentColor"
+                opacity=".13"
+              />
+              <circle
+                cx="120"
+                cy="97"
+                r="66"
+                fill="currentColor"
+                opacity=".07"
+              />
+              <path
+                d="M37 20H22V35M203 20H218V35M22 165V180H37M203 180H218V165"
+                stroke="currentColor"
+                opacity=".5"
+              />
+            </>
+          )}
           <g
             stroke="#303d39"
             strokeWidth="3"
@@ -108,7 +123,7 @@ export function SuspectPortrait({
                 d="M90 73Q121 61 135 42Q151 49 151 78L150 54Q143 30 119 34Q89 33 90 73Z"
                 fill="#594239"
               />
-            ) : kind === "guard" || kind === "conductor" ? (
+            ) : uniformed ? (
               <>
                 <path d="M91 57L96 33L120 28L145 34L151 57Z" fill="#72949d" />
                 <path d="M87 58Q120 47 153 58L142 66H98Z" fill="#425f69" />
@@ -197,7 +212,7 @@ export function SuspectPortrait({
                   strokeWidth="4"
                 />
               </>
-            ) : kind === "guard" || kind === "conductor" ? (
+            ) : uniformed ? (
               <>
                 <path d="M100 127L120 143L139 127M120 143V194M99 155H110V166H99Z" />
                 <path
@@ -211,17 +226,21 @@ export function SuspectPortrait({
             )}
             <path d="M89 158L86 194M152 158L156 194" opacity=".5" />
           </g>
-          <path
-            d="M71 194H169"
-            stroke="currentColor"
-            strokeWidth="2"
-            opacity=".5"
-          />
+          {presentation === "dossier" && (
+            <path
+              d="M71 194H169"
+              stroke="currentColor"
+              strokeWidth="2"
+              opacity=".5"
+            />
+          )}
         </svg>
       </div>
-      <span className="portrait-annotation" aria-hidden="true">
-        RETRATO / ARCHIVO
-      </span>
+      {presentation === "dossier" && (
+        <span className="portrait-annotation" aria-hidden="true">
+          RETRATO / ARCHIVO
+        </span>
+      )}
     </div>
   );
 }

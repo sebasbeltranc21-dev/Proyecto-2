@@ -121,6 +121,12 @@ for (const scenario of [
           .click();
         await page.getByRole("button", { name: "Confirmar voto" }).click();
       }
+      for (const page of [host, player]) {
+        await expect(
+          page.getByRole("button", { name: "Omitir cinemática" }),
+        ).toBeVisible({ timeout: 15000 });
+        await page.getByRole("button", { name: "Omitir cinemática" }).click();
+      }
       await expect(
         host.getByRole("heading", { name: "Caso resuelto." }),
       ).toBeVisible();
