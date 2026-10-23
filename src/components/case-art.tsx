@@ -1,4 +1,9 @@
 import type { CSSProperties, ReactNode } from "react";
+import {
+  CharacterFigure,
+  type CharacterExpression,
+  type CharacterPose,
+} from "./character-figure";
 
 // Only public character IDs and visual attributes live here. Clue bodies and
 // their visibility continue to come exclusively from the authorized snapshot.
@@ -29,212 +34,41 @@ const portraitStyles: Record<string, { kind: string; color: string }> = {
   chef: { kind: "chef", color: "#d6d9c8" },
   traveler: { kind: "traveler", color: "#97acbd" },
   agent: { kind: "agent", color: "#7b93ad" },
+  investigator: { kind: "investigator", color: "#b09d70" },
 };
 export function SuspectPortrait({
   id,
   portrait,
   presentation = "dossier",
+  expression = "neutral",
+  pose = "relaxed",
 }: {
   id: string;
   portrait?: string;
   presentation?: "dossier" | "scene";
+  expression?: CharacterExpression;
+  pose?: CharacterPose;
 }) {
   const { kind, color } = portraitStyles[portrait ?? ""] ??
     characters[id] ?? {
       kind: "unknown",
       color: "#b7b4a0",
     };
-  const uniformed =
-    kind === "guard" || kind === "conductor" || kind === "agent";
   return (
     <div
       className={`suspect-art ${presentation === "scene" ? "portrait-scene" : ""}`}
       style={{ "--portrait-accent": color } as CSSProperties}
     >
+      {presentation === "dossier" && (
+        <div className="portrait-halo" aria-hidden="true" />
+      )}
       <div className="portrait-drawing">
-        <svg
-          viewBox="0 0 240 200"
-          fill="none"
-          aria-hidden="true"
-          focusable="false"
-        >
-          {presentation === "dossier" && (
-            <>
-              <path
-                d="M24 48H216M24 80H216M24 112H216M24 144H216M24 176H216"
-                stroke="currentColor"
-                opacity=".13"
-              />
-              <circle
-                cx="120"
-                cy="97"
-                r="66"
-                fill="currentColor"
-                opacity=".07"
-              />
-              <path
-                d="M37 20H22V35M203 20H218V35M22 165V180H37M203 180H218V165"
-                stroke="currentColor"
-                opacity=".5"
-              />
-            </>
-          )}
-          <g
-            stroke="#303d39"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path
-              d="M80 194L86 141Q90 124 107 122H133Q150 124 154 141L162 194"
-              fill="currentColor"
-            />
-            <path d="M108 112V127L120 136L132 127V112" fill="#d9c4a7" />
-            {kind === "restorer" ? (
-              <>
-                <path
-                  d="M91 99Q72 46 103 36Q140 21 153 56L151 117L133 121L100 117Z"
-                  fill="#4b4940"
-                />
-                <circle cx="155" cy="59" r="16" fill="#4b4940" />
-              </>
-            ) : kind === "reporter" || kind === "photographer" ? (
-              <path
-                d="M88 99Q74 45 101 33Q141 20 154 58L161 120L136 125L92 117Z"
-                fill="#594239"
-              />
-            ) : (
-              <path
-                d="M92 68Q86 33 116 34Q151 29 149 69Z"
-                fill={kind === "collector" ? "#a9a69a" : "#46473f"}
-              />
-            )}
-            <path
-              d="M94 65Q96 47 120 46Q145 48 146 67L142 101Q137 118 120 119Q103 116 98 100Z"
-              fill="#d9c4a7"
-            />
-            {kind === "restorer" ? (
-              <path
-                d="M93 71Q115 70 126 47Q144 49 148 72V59Q142 35 118 38Q91 39 91 62Z"
-                fill="#4b4940"
-              />
-            ) : kind === "reporter" || kind === "photographer" ? (
-              <path
-                d="M90 73Q121 61 135 42Q151 49 151 78L150 54Q143 30 119 34Q89 33 90 73Z"
-                fill="#594239"
-              />
-            ) : uniformed ? (
-              <>
-                <path d="M91 57L96 33L120 28L145 34L151 57Z" fill="#72949d" />
-                <path d="M87 58Q120 47 153 58L142 66H98Z" fill="#425f69" />
-                <path d="M116 38L124 38V46L120 49L116 46Z" fill="#d6b57a" />
-              </>
-            ) : kind === "chef" ? (
-              <path
-                d="M94 62V42Q78 23 99 19Q109 3 123 17Q145 8 150 29Q165 35 146 47V62Z"
-                fill="#eee9d8"
-              />
-            ) : kind === "mechanic" ? (
-              <path
-                d="M91 61L96 40Q123 24 147 44L150 63L96 66L87 63Z"
-                fill="#ba985f"
-              />
-            ) : null}
-            <g className="portrait-eyes">
-              <path d="M105 80H109M131 80H135" strokeWidth="4" />
-            </g>
-            <path
-              d="M120 83L117 95H123M113 104Q120 107 127 103"
-              strokeWidth="2"
-            />
-            {kind === "collector" || kind === "traveler" ? (
-              <>
-                {kind === "collector" && (
-                  <path
-                    d="M99 78H115V89H99ZM126 78H142V89H126ZM115 82H126"
-                    strokeWidth="2"
-                  />
-                )}
-                <path
-                  d="M106 128L120 143L133 128M109 140L115 160L101 149L106 128M131 140L125 160L139 149L133 128"
-                  fill="#e6ddc7"
-                />
-                <path
-                  d="M119 142L114 151L120 163L126 151L121 142"
-                  fill="#5b475a"
-                />
-              </>
-            ) : kind === "restorer" ? (
-              <>
-                <path
-                  d="M101 129L98 194H143L139 129M104 154H137V176H104Z"
-                  fill="#e0d9c1"
-                />
-                <path d="M116 160L120 143M125 161L130 146" />
-              </>
-            ) : kind === "reporter" ? (
-              <>
-                <path
-                  d="M100 127L112 150L121 136L131 150L141 128"
-                  fill="#e1ccac"
-                />
-                <path d="M142 135L100 193" />
-                <path d="M140 158L155 156L162 181L146 184Z" fill="#e8dfce" />
-                <path d="M145 166L152 165M147 171L154 170" strokeWidth="2" />
-              </>
-            ) : kind === "photographer" ? (
-              <>
-                <path d="M100 129L114 157M141 129L126 157" />
-                <rect
-                  x="103"
-                  y="156"
-                  width="38"
-                  height="26"
-                  rx="4"
-                  fill="#59635d"
-                />
-                <circle cx="122" cy="169" r="9" fill="#bfc9bd" />
-                <path d="M106 156L110 150H122L126 156" />
-              </>
-            ) : kind === "chef" ? (
-              <>
-                <path d="M103 127L126 146V194M135 128L119 142" />
-                <path
-                  d="M108 153H109M139 153H140M108 169H109M139 169H140M108 185H109M139 185H140"
-                  strokeWidth="5"
-                />
-              </>
-            ) : kind === "mechanic" ? (
-              <>
-                <path d="M101 128L107 150L120 141L134 150L140 128M120 141V194M131 157H144V176H131Z" />
-                <path
-                  d="M100 174L105 158M99 155L102 149M107 157L110 151"
-                  strokeWidth="4"
-                />
-              </>
-            ) : uniformed ? (
-              <>
-                <path d="M100 127L120 143L139 127M120 143V194M99 155H110V166H99Z" />
-                <path
-                  d="M134 151L142 155L139 165H131L128 155Z"
-                  fill="#d6b57a"
-                />
-                <path d="M93 138H102V150H93Z" fill="#425f69" />
-              </>
-            ) : (
-              <path d="M102 129L120 145L138 129M120 145V194" />
-            )}
-            <path d="M89 158L86 194M152 158L156 194" opacity=".5" />
-          </g>
-          {presentation === "dossier" && (
-            <path
-              d="M71 194H169"
-              stroke="currentColor"
-              strokeWidth="2"
-              opacity=".5"
-            />
-          )}
-        </svg>
+        <CharacterFigure
+          kind={kind}
+          fullBody={presentation === "scene"}
+          expression={expression}
+          pose={pose}
+        />
       </div>
       {presentation === "dossier" && (
         <span className="portrait-annotation" aria-hidden="true">

@@ -17,7 +17,7 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 - Votos inmutables, cierre transaccional, puntos, historial, estadísticas y clasificación.
 - Cinemáticas finales originales de museo y tren: cuatro escenas (14 segundos), detención del responsable cuando el equipo resuelve el caso y desenlace distinto ante fallo o empate. Controles de pausa, avance, omisión y repetición; con movimiento reducido se leen como una historieta estática.
 - Migraciones con RLS y funciones para acciones críticas. No se necesita `service_role`.
-- Diseño adaptable con dos escenarios originales, nueve retratos SVG y dibujos de las evidencias. Animaciones breves de entrada, parpadeo y grabación, con soporte para movimiento reducido; confirmaciones, errores y estados vacíos.
+- Diseño adaptable con dos escenarios originales y nueve personajes SVG de estilo cómic: facciones, peinados, ropa y accesorios por profesión. Los mismos personajes aparecen de cuerpo completo en las cinemáticas, con manos, poses y expresiones; investigador y agentes tienen diseños propios. Dibujos de las evidencias y animaciones breves, con soporte para movimiento reducido; confirmaciones, errores y estados vacíos.
 
 Los modos competitivo y traidor son futuros. Hoy solo se ofrece investigación cooperativa. [Arquitectura y límites](docs/ARCHITECTURE.md).
 

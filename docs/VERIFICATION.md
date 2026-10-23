@@ -2,6 +2,12 @@
 
 Supabase ya está conectado y las siete migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
 
+## Rediseño de personajes
+
+Los nueve sospechosos, el investigador y los agentes comparten un nuevo sistema de ilustración SVG de estilo cómic. Los personajes conservan su identidad pública y se distinguen por facciones, cabello, tonos de piel, vestuario y accesorios de su profesión. El cuerpo completo integra brazos, manos, pantalones y zapatos; la pose de custodia alinea las manos con las esposas. La identificación usa una expresión de alerta y la custodia una expresión preocupada. El retrato de expediente y el personaje de escena utilizan la misma figura; los tipos desconocidos conservan una figura neutra. No se añaden imágenes externas, dependencias, soluciones ni pistas al módulo visual.
+
+Verificación: las 35 pruebas existentes, ESLint y la compilación de producción con TypeScript aprobadas. Galería de las once identidades y figura neutra revisada en navegador; finales de museo y tren revisados con los componentes reales en un harness temporal de datos ficticios rotulado. Comprobados encuadre de cuerpo completo y ausencia de desbordamiento horizontal en iframes de 390 y 800 px, además de escritorio; sin errores de consola de la aplicación. Se ajustaron las proporciones para que las cabezas no se recorten en tablet y la posición del expediente junto a la mano del investigador. El harness no se publica y esta revisión visual no equivale a ejecutar otra partida autenticada entre dos personas.
+
 ## Cinemáticas de cierre
 
 Los dos casos incluyen cuatro escenas ilustradas de 14 segundos. La victoria representa la detención del responsable oficial; una acusación errónea, empate o ausencia de votos conserva el caso abierto y revela la verdad al final, sin representar una detención. Se puede pausar, avanzar, omitir o repetir. La preferencia de movimiento reducido activa una historieta estática y la pestaña oculta pausa el reloj. No se modifican funciones SQL, dependencias ni datos existentes.

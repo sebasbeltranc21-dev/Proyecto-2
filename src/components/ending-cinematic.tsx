@@ -290,7 +290,7 @@ function CinematicPlayer({
         <div className="ending-camera">
           <EndingBackdrop theme={theme} recovered={won && frame === 3} />
           <div className="ending-presenter">
-            <EndingActor portrait="traveler" id="investigator" />
+            <EndingActor portrait="investigator" id="investigator" />
           </div>
           <div className="ending-file">
             <svg viewBox="0 0 72 90" fill="none" focusable="false">
@@ -316,6 +316,7 @@ function CinematicPlayer({
                   id={responsible.id}
                   portrait={responsible.portrait}
                   detained={won && frame >= 2}
+                  identified={won}
                 />
               </div>
             )}
@@ -401,45 +402,28 @@ function EndingActor({
   id,
   portrait,
   detained = false,
+  identified = false,
 }: {
   id: string;
   portrait?: string;
   detained?: boolean;
+  identified?: boolean;
 }) {
   return (
     <div className="ending-actor">
-      <SuspectPortrait id={id} portrait={portrait} presentation="scene" />
-      <svg
-        className="ending-legs"
-        viewBox="0 0 240 110"
-        fill="none"
-        focusable="false"
-      >
-        <path
-          d="M105 0L103 44L93 90M136 0L139 44L149 90"
-          stroke="#647773"
-          strokeWidth="14"
-          strokeLinecap="round"
-        />
-        <path
-          d="M80 94H104M140 94H163"
-          stroke="#1c2b2e"
-          strokeWidth="16"
-          strokeLinecap="round"
-        />
-      </svg>
-      {detained && (
-        <svg
-          className="ending-cuffs"
-          viewBox="0 0 80 36"
-          fill="none"
-          focusable="false"
-        >
-          <circle cx="20" cy="18" r="11" stroke="#e2dfcb" strokeWidth="4" />
-          <circle cx="60" cy="18" r="11" stroke="#e2dfcb" strokeWidth="4" />
-          <path d="M31 18H49" stroke="#e2dfcb" strokeWidth="4" />
-        </svg>
-      )}
+      <SuspectPortrait
+        id={id}
+        portrait={portrait}
+        presentation="scene"
+        expression={detained ? "worried" : identified ? "alert" : "neutral"}
+        pose={
+          detained
+            ? "detained"
+            : id === "investigator"
+              ? "presenting"
+              : "relaxed"
+        }
+      />
     </div>
   );
 }
