@@ -1,4 +1,7 @@
+import { existsSync } from "node:fs";
+import { loadEnvFile } from "node:process";
 import { defineConfig, devices } from "@playwright/test";
+if (existsSync(".env.local")) loadEnvFile(".env.local");
 const baseURL = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 export default defineConfig({
   testDir: "./tests/e2e",

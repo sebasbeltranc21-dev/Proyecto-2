@@ -2,7 +2,9 @@
 
 Juego web cooperativo de investigación para 2–8 personas. Un equipo entra a una sala privada, recibe pistas públicas y privadas, debate en el chat y vota para resolver un misterio con solución fija.
 
-**Estado:** MVP implementado en este repositorio, con comprobaciones locales. **Sin conexión a una base remota ni despliegue confirmado.** En la inspección del 22 de octubre de 2026, el repositorio estaba vacío, Supabase devolvió cero proyectos y Vercel no tenía un proyecto asociado. No se modificó ninguna base existente. Sin variables de entorno, la interfaz muestra «Conexión pendiente» y desactiva el acceso; no inventa jugadores ni partidas.
+**Estado al 23 de octubre de 2026:** las migraciones están aplicadas al proyecto Supabase **Proyecto 2**. La base alojada pasó una prueba transaccional de salas, RLS, pistas, chat, votos y puntuación; las identidades de Auth se emularon y todas las filas de prueba se revirtieron. Email está habilitado y exige confirmación. **El despliegue sigue pendiente:** la conexión de Vercel devuelve 403 para el equipo `sebastian-beltran`. Todavía no se ha validado el recorrido real de dos navegadores con Auth y entrega de eventos Realtime. [Detalle de integración](docs/INTEGRATION.md).
+
+La inspección inicial encontró el repositorio vacío y ninguna base accesible. Al habilitar Supabase se comprobó que no había tablas del juego antes de aplicar las migraciones. La aplicación sigue mostrando «Conexión pendiente» cuando faltan sus variables de entorno.
 
 ## Implementación
 
@@ -63,7 +65,7 @@ Abre <http://localhost:3000>. Tras cambiar variables públicas, reinicia el serv
    npx supabase db push --help
    ```
 
-3. Enlaza el ID real y revisa los cambios antes de aplicarlos:
+3. Enlaza el ID real y revisa los cambios antes de aplicarlos. En el proyecto conectado actual las cuatro migraciones ya están aplicadas; no vuelvas a ejecutarlas desde SQL Editor:
 
    ```bash
    npx supabase link --project-ref ID_REAL_DEL_PROYECTO
@@ -71,13 +73,13 @@ Abre <http://localhost:3000>. Tras cambiar variables públicas, reinicia el serv
    npx supabase db push
    ```
 
-   Las tres migraciones crean esquema, caso y restricciones; no eliminan datos. No ejecutes `db reset` sobre una base remota. Alternativa: ejecutar los tres SQL en orden desde SQL Editor y registrar su aplicación. No mezcles ambos métodos sin reconciliar el historial.
+   Las cuatro migraciones crean esquema, caso, restricciones e índices; no eliminan datos. No ejecutes `db reset` sobre una base remota. Alternativa: ejecutar los cuatro SQL en orden desde SQL Editor y registrar su aplicación. No mezcles ambos métodos sin reconciliar el historial.
 
 4. En Auth habilita Email y confirmación de correo. Configura **Site URL** y autoriza `http://localhost:3000/auth/callback` y tu URL exacta de producción con `/auth/callback`. Para producción y pruebas fiables configura SMTP.
 5. Invitados opcionales: habilita **Anonymous Sign-Ins** en Supabase y establece `NEXT_PUBLIC_ALLOW_GUESTS=true`. Configura límites de Auth adecuados. El MVP no incluye widget CAPTCHA: si lo haces obligatorio en Auth, deja invitados desactivados hasta incorporar el widget y enviar su token.
 6. En Data API expón `public`; **nunca `mm_private`**. Las migraciones conceden lectura y ejecución explícitas, bloqueando escrituras directas. No agregues políticas permisivas globales.
 7. En Database / Replication comprueba que `supabase_realtime` incluye `mm_rooms`, `mm_participants`, `mm_games`, `mm_messages`, `mm_evidence` y `mm_results`. La migración los agrega si existe la publicación. Si no existía, habilítala para esas tablas desde el panel.
-8. Ejecuta los asesores de seguridad y rendimiento de Supabase. No se han podido ejecutar contra un proyecto remoto. Las pruebas locales no reemplazan esta revisión ni la comprobación de Auth/Realtime alojados.
+8. Ejecuta los asesores de seguridad y rendimiento de Supabase. Ya se ejecutaron sobre Proyecto 2; el detalle está en `docs/INTEGRATION.md`. Las pruebas locales no reemplazan esta revisión ni la comprobación de Auth/Realtime alojados.
 
 Para Supabase local necesitas Docker: consulta `npx supabase start --help`. El caso está en las migraciones, sin `seed.sql` adicional. Los invitados permanecen desactivados por defecto.
 
@@ -104,7 +106,7 @@ npm run test:e2e
 
 `npm test` ejecuta las migraciones reales en PostgreSQL embebido (PGlite), emulando solo las funciones mínimas de identidad de Auth y cambiando entre roles `anon` y `authenticated`. Prueba RLS, pertenencia, pistas privadas/futuras, plazos, votos, puntos, límites de códigos y reconexión. También valida entradas y origen HTTP.
 
-Playwright comprueba rutas públicas, navegación, configuración ausente, accesibilidad automatizada y desbordamiento en 1440 y 390 px. Sin Supabase, verifica el acceso desactivado y la respuesta 503 explícita. Next.js puede responder HTTP 200 al mostrar `notFound()` en una ruta dinámica que ya comenzó a transmitir: se comprueba su pantalla de recuperación y el 404 de una ruta inexistente.
+Playwright carga `.env.local` si existe y comprueba rutas públicas, navegación, configuración ausente, accesibilidad automatizada y desbordamiento en 1440 y 390 px. Sin Supabase, verifica el acceso desactivado y la respuesta 503 explícita. Next.js puede responder HTTP 200 al mostrar `notFound()` en una ruta dinámica que ya comenzó a transmitir: se comprueba su pantalla de recuperación y el 404 de una ruta inexistente.
 
 La prueba multijugador necesita dos cuentas **verificadas y de pruebas**, con contraseña de pruebas compartida. Inyecta `E2E_HOST_EMAIL`, `E2E_PLAYER_EMAIL`, `E2E_PASSWORD` y opcionalmente `E2E_BASE_URL` en el proceso; nunca guardes estas credenciales en GitHub. No uses cuentas personales. Espera dos minutos mientras avanzan las fases y utiliza servidor y Supabase reales. La prueba de registro requiere `E2E_ALLOW_REGISTRATION=true` en un proyecto aislado con email y confirmación habilitados; comprueba el aviso de confirmación, no la entrega del correo. Ambas se omiten explícitamente sin configuración.
 

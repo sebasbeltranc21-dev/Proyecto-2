@@ -1,3 +1,9 @@
+# Actualización de integración — 23 de octubre de 2026
+
+Supabase ya está conectado y las cuatro migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
+
+Los siguientes resultados describen la verificación inicial del 22 de octubre, antes de conectar los servicios.
+
 # Verificación — 22 de octubre de 2026
 
 ## Resultado local
