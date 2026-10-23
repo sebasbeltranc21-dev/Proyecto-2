@@ -1,6 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -33,6 +34,11 @@ export function Dashboard({
   const [name, setName] = useState(initialData?.profile?.name || "");
   const [joinError, setJoinError] = useState("");
   const [avatar, setAvatar] = useState(initialData?.profile?.avatar || "lupa");
+  const [caseSlug, setCaseSlug] = useState(
+    initialData?.cases?.find((c) => c.slug === "ultima-luz")?.slug ||
+      initialData?.cases?.[0]?.slug ||
+      "",
+  );
   async function load() {
     try {
       const { data, error } = await browserClient().rpc("mm_home");
@@ -40,6 +46,11 @@ export function Dashboard({
       setData(data as HomeSnapshot);
       setAvatar(data.profile?.avatar || "lupa");
       setName(data.profile?.name || "");
+      setCaseSlug((current) =>
+        data.cases?.some((c: { slug: string }) => c.slug === current)
+          ? current
+          : data.cases?.[0]?.slug || "",
+      );
       setError("");
     } catch {
       setError(
@@ -69,6 +80,7 @@ export function Dashboard({
   async function create(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
+    setError("");
     const f = new FormData(e.currentTarget);
     try {
       const result = await act({
@@ -76,6 +88,7 @@ export function Dashboard({
         minutes: Number(f.get("minutes")),
         voteMinutes: Number(f.get("voteMinutes")),
         allowGuests: f.get("guests") === "on",
+        caseSlug: String(f.get("caseSlug")),
       });
       router.push(`/sala/${result.code}`);
     } catch (e) {
@@ -201,8 +214,57 @@ export function Dashboard({
             <section className="panel create-panel">
               <p className="eyebrow">02 / ABRIR EXPEDIENTE</p>
               <h2>Crea una sala privada</h2>
-              <p className="muted">La última luz del museo · 2–8 personas</p>
+              <p className="muted">Elige el escenario · 2–8 personas</p>
               <form onSubmit={create}>
+                <fieldset className="case-picker">
+                  <legend>Elige el caso</legend>
+                  <div className="case-options">
+                    {(data.cases ?? []).map((c) => (
+                      <label
+                        className={`case-option ${caseSlug === c.slug ? "selected" : ""}`}
+                        key={c.slug}
+                      >
+                        <input
+                          type="radio"
+                          name="caseSlug"
+                          value={c.slug}
+                          checked={caseSlug === c.slug}
+                          onChange={() => setCaseSlug(c.slug)}
+                          required
+                        />
+                        <Image
+                          unoptimized
+                          src={
+                            c.theme === "train" ? "/train.svg" : "/museum.svg"
+                          }
+                          alt=""
+                          width={420}
+                          height={240}
+                        />
+                        <span>
+                          <b>{c.title}</b>
+                          <small>
+                            {c.suspect_count} sospechosos · Cooperativo
+                          </small>
+                        </span>
+                        {caseSlug === c.slug && (
+                          <Check size={17} aria-hidden="true" />
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                {caseSlug && (
+                  <p className="case-brief">
+                    {data.cases?.find((c) => c.slug === caseSlug)?.intro}
+                  </p>
+                )}
+                {!data.cases?.length && (
+                  <p className="notice">
+                    El catálogo de casos no está disponible. Reintenta la
+                    conexión y comprueba las migraciones.
+                  </p>
+                )}
                 <div className="form-row">
                   <label>
                     Minutos por investigación
@@ -235,7 +297,7 @@ export function Dashboard({
                 </label>
                 <button
                   className="button primary"
-                  disabled={busy || !data.profile}
+                  disabled={busy || !data.profile || !caseSlug}
                 >
                   <Plus size={17} />
                   Crear sala
@@ -333,6 +395,9 @@ export function Dashboard({
                     <li key={r.code}>
                       <Link href={`/sala/${r.code}`}>
                         <b className="mono">{r.code}</b>
+                        {r.title && (
+                          <small className="recent-case-title">{r.title}</small>
+                        )}
                         <span className="muted">
                           {r.status === "lobby"
                             ? "En espera"

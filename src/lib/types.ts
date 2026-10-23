@@ -13,6 +13,31 @@ export type Suspect = {
   description: string;
   motive: string;
   alibi: string;
+  portrait?: string;
+};
+export type CaseLocation = {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+  stage: number;
+};
+export type CaseSummary = {
+  slug: string;
+  title: string;
+  intro: string;
+  theme: "museum" | "train";
+  suspect_count: number;
+};
+export type TimelineEntry = {
+  id: string;
+  evidence_id: string;
+  user_id: string;
+  name: string;
+  minute: number;
+  title: string;
+  body: string;
+  shared_private: boolean;
 };
 export type Evidence = {
   id: string;
@@ -20,6 +45,7 @@ export type Evidence = {
   body: string;
   user_id: string | null;
   stage: number;
+  location_id: string | null;
 };
 export type RoomSnapshot = {
   room: {
@@ -39,13 +65,17 @@ export type RoomSnapshot = {
     team_suspect: string | null;
   } | null;
   case: {
+    slug: string;
+    theme: "museum" | "train";
     title: string;
     intro: string;
+    locations: CaseLocation[];
     stages: { title: string; story: string }[];
   };
   participants: Participant[];
   suspects: Suspect[];
   evidence: Evidence[];
+  timeline: TimelineEntry[];
   messages: {
     id: string;
     user_id: string;
@@ -65,8 +95,9 @@ export type RoomSnapshot = {
   server_now: string;
 };
 export type HomeSnapshot = {
+  cases: CaseSummary[];
   profile: Profile | null;
-  rooms: { code: string; status: string; created_at: string }[];
+  rooms: { code: string; status: string; created_at: string; title?: string }[];
   history: {
     points: number;
     correct: boolean;

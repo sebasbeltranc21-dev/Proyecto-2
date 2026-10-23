@@ -2,55 +2,47 @@
 
 ## Destinos comprobados
 
-- Repositorio: `sebasbeltranc21-dev/Proyecto-2`, rama `main`.
-- Supabase: **Proyecto 2**, referencia `tlmgyzfsebceahhgfsar`, región `us-east-2`, PostgreSQL 17. Proyecto saludable.
-- Vercel: proyecto `proyecto-2`, ID `prj_qICEwZRpQ0g1o1EMfBzfklgnhwgz`, equipo `sebastian-beltran`. La lectura de configuración devuelve 403 por falta de autorización de ese equipo. No se han cambiado variables ni iniciado despliegues en Vercel.
+- GitHub: `sebasbeltranc21-dev/Proyecto-2`, rama `main`.
+- Supabase: **Proyecto 2**, referencia `tlmgyzfsebceahhgfsar`, región `us-east-2`, PostgreSQL 17, saludable.
+- Web existente: <https://proyecto-2-rho.vercel.app>. El enlace GitHub/Vercel publica los commits de `main`. La conexión administrativa de Vercel devolvió 403 para el equipo `sebastian-beltran`; no se han cambiado variables, permisos ni credenciales para eludirlo.
 
 ## Migraciones aplicadas
 
-Se inspeccionaron las tablas y el historial antes de cambiar la base: ambos estaban vacíos. Las migraciones se aplicaron mediante la conexión Supabase y los archivos se renombraron para reflejar las versiones reales registradas por el servicio. Su SQL original se conserva; la cuarta migración completa los índices sugeridos por el asesor alojado.
+Se inspeccionaron tablas e historial antes de cada ampliación. La instalación inicial estaba vacía; al añadir el tren ya existían partidas del museo que se conservaron. Los archivos generados con Supabase CLI se renombraron a las versiones que registró el servicio al aplicarlos.
 
-| Versión remota / archivo                          | Contenido                                               |
-| ------------------------------------------------- | ------------------------------------------------------- |
-| `20261023165250_mystery_core.sql`                 | Tablas, funciones, permisos, RLS y publicación Realtime |
-| `20261023165305_museum_case.sql`                  | Caso fijo, sospechosos, solución y doce pistas          |
-| `20261023165310_harden_room_access.sql`           | Límite de invitaciones e índices iniciales              |
-| `20261023165540_complete_foreign_key_indexes.sql` | Índices de las claves foráneas restantes                |
+| Archivo                                           | Contenido                                                                      |
+| ------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `20261023165250_mystery_core.sql`                 | Esquema, funciones, permisos, RLS y Realtime                                   |
+| `20261023165305_museum_case.sql`                  | Caso del museo, 4 sospechosos y 12 pistas                                      |
+| `20261023165310_harden_room_access.sql`           | Límite de invitaciones e índices                                               |
+| `20261023165540_complete_foreign_key_indexes.sql` | Índices de relaciones originales                                               |
+| `20261023190759_investigation_board.sql`          | Ubicaciones, catálogo seleccionable, metadatos visuales, cronología y permisos |
+| `20261023190803_midnight_express.sql`             | Caso del tren, 5 sospechosos, 14 pistas y 5 lugares                            |
+| `20261023191316_investigation_indexes.sql`        | Índices de las dos relaciones compuestas nuevas                                |
 
-Al actualizar un checkout antiguo, obtener estos archivos antes de ejecutar `supabase db push`. No volver a aplicar los archivos con las versiones del 22 de octubre. El historial remoto debe mostrar las cuatro versiones de esta tabla; no es necesario repararlo ni ejecutar `db reset`.
+Obtener el historial actual antes de ejecutar `supabase db push --dry-run`. No volver a ejecutar migraciones ya aplicadas ni usar `db reset` sobre la base alojada. La creación sigue admitiendo clientes antiguos sin `caseSlug`, que seleccionan el museo.
 
-## Comprobaciones realizadas
+## Verificado en la base alojada
 
-- Trece tablas con RLS activado: diez públicas y tres privadas.
-- Un caso, cuatro sospechosos y doce pistas.
-- Las seis tablas previstas pertenecen a `supabase_realtime`.
-- `tests/remote-smoke.sql` pasó en PostgreSQL alojado. Crea tres usuarios temporales dentro de una transacción, emula su identidad en el límite SQL y comprueba creación/inicio de sala, aislamiento de evidencias, chat, reconexión, denegación a terceros, voto único, solución oficial y 150 puntos por jugador correcto. La transacción se revierte y se confirmó que quedaron **cero usuarios de prueba**.
-- Auth HTTP: configuración disponible (200), Email habilitado, registro permitido y confirmación de correo obligatoria.
-- La RPC `mm_home` por REST sin sesión fue rechazada con 401.
-- Solicitar el esquema `mm_private` por REST devolvió 406 (`PGRST106`): no está expuesto en Data API.
-- No se creó ni envió correo a una cuenta de pruebas. El script SQL no prueba Supabase Auth HTTP ni la entrega de eventos WebSocket.
-- La configuración local usa únicamente URL y clave publicable en `.env.local`, ignorado por Git. No se leyó ni usó `service_role`.
+- Quince tablas con RLS: doce públicas y tres en `mm_private`. Las nuevas tablas solo conceden lectura; las escrituras de cronología pasan por funciones internas verificadas.
+- Dos casos con sus soluciones privadas. Museo: 4 sospechosos, 12 pistas, 4 zonas. Tren: 5 sospechosos, 14 pistas, 5 zonas.
+- Siete tablas publicadas en `supabase_realtime`, incluida `mm_timeline`.
+- `tests/remote-smoke.sql` pasó de nuevo: sala, inicio, pistas privadas, chat, reconexión, denegación a terceros, voto único y resultados del museo.
+- `tests/remote-express-smoke.sql` pasó: selección del tren, cambio de fase, aislamiento del original privado, confirmación antes de compartir, copia del texto oficial, propiedad de la tarjeta, RLS frente a terceros, denegación de escrituras directas y llamadas internas, bloqueo de edición al votar, solución fija y 150 puntos por jugador correcto.
+- Ambos scripts emulan identidades de Auth en el límite SQL, crean sus propios usuarios y datos de juego dentro de una transacción y ejecutan `ROLLBACK`. Se confirmó que no quedaban usuarios de esas pruebas. Los recuentos anteriores siguieron siendo 4 salas, 2 partidas, 24 evidencias, 8 mensajes, 4 votos y 4 resultados; las pruebas no generaron tarjetas permanentes.
+- Comprobaciones HTTP iniciales: configuración Auth 200, correo habilitado y confirmación obligatoria; `mm_home` sin sesión recibió 401; `mm_private` por REST recibió 406/PGRST106 porque no está expuesto. No se enviaron correos ni se crearon sesiones Auth reales mediante estos scripts.
+- Solo se usa la URL y la clave publicable en `.env.local`, ignorado por Git. No se necesita ni se utilizó `service_role`.
 
-## Regresión local con la configuración conectada
+## Asesores posteriores a la ampliación
 
-`npm test`: 12 pruebas aprobadas. ESLint, TypeScript y compilación de producción correctos. Playwright: 3 pruebas públicas aprobadas en Chromium Headless Shell (móvil, escritorio y navegación/404); se omitieron las dos que requieren cuentas reales y la de configuración ausente, porque ahora existe `.env.local`. La prueba transaccional alojada y las comprobaciones HTTP anteriores complementan estos resultados, sin sustituir la prueba Auth/Realtime entre dos navegadores.
+Se corrigieron dos avisos nuevos de claves foráneas sin índice. Rendimiento quedó con avisos informativos de índices todavía no utilizados; no quedan relaciones sin índice según el asesor. [Referencia de índices](https://supabase.com/docs/guides/database/database-linter?lint=0001_unindexed_foreign_keys).
 
-## Asesores
+Seguridad mantiene los tres avisos informativos de RLS sin políticas sobre tablas privadas: el cliente no tiene permisos de tabla y solo las funciones internas autorizadas acceden a ellas. No añadir políticas permisivas para silenciarlos. [Referencia](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
 
-Seguridad: solo tres avisos informativos `rls_enabled_no_policy` para las tablas de `mm_private`. Es intencional: el cliente no tiene permisos sobre esas tablas ni políticas que le concedan filas; las funciones internas autorizadas acceden como propietario. No se deben añadir políticas públicas para eliminar el aviso. [Referencia del asesor](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+El asesor también detectó, antes y después de esta ampliación, `auth_leaked_password_protection` desactivado. Es una configuración pendiente de Auth, ajena a las tablas del juego; no se cambió ni se declara resuelta. [Configuración de contraseñas comprometidas](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
 
-Rendimiento: se corrigieron los siete avisos de claves foráneas sin índice. Solo quedaron avisos informativos de índices aún no utilizados, esperables en una base recién creada; se conservan los índices para sus consultas previstas. [Referencia](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index).
+## Verificación de interfaz y límites
 
-## Bloqueo y continuación
+Las 27 pruebas locales, ESLint y la compilación con TypeScript pasaron. Se revisaron los componentes reales en un harness temporal de navegador con fixtures obtenidos del SQL local y respuestas de interfaz explícitamente simuladas: filtro de vagones, aperturas por fase, evidencias ampliadas, consentimiento, cronología y cierre con Escape. Anchos de escritorio y un iframe móvil de 390 px; el contenido no produjo desplazamiento horizontal. Este harness no está en el repositorio ni en el despliegue.
 
-Vercel respondió que la conexión no está autorizada para el equipo `sebastian-beltran`. El servicio solicita autorización de acceso a ese equipo; la herramienta para generar ese enlace no está expuesta en esta sesión. No se intentó usar otra identidad o credenciales para eludir el bloqueo.
-
-Tras autorizar el equipo:
-
-1. Leer la configuración del proyecto y sus variables existentes.
-2. Configurar la URL y clave publicable de Supabase en el entorno previsto de Vercel, manteniendo invitados desactivados hasta probarlos.
-3. Revisar los redirects de Auth para la URL final; no se han cambiado en este paso.
-4. Desplegar el commit verificado y comprobar estado Ready y URL.
-5. Probar registro/confirmación de correo y dos sesiones reales, incluida entrega de eventos Realtime, recarga, chat, votación y resultados.
-
-Actualización posterior: el panel mostró Ready para la rama `main` y se verificó HTTP 200 en <https://proyecto-2-rho.vercel.app>. El usuario confirmó inicio de sesión y creación de una sala. Se corrigió el requisito de perfil guardado en el formulario de invitación y se añadieron cinco pruebas del componente. La autorización administrativa de Vercel y la validación de una partida completa entre dos navegadores siguen pendientes.
+El usuario confirmó jugar el museo. No se atribuye a las pruebas SQL ni a la revisión visual una partida autenticada del tren entre dos navegadores. Los E2E preparados recorren ambos casos y comprueban la conexión Realtime y la pista compartida; requieren dos cuentas de pruebas verificadas descritas en el README. La entrega de correos y las credenciales administrativas de Vercel siguen fuera de estas verificaciones.

@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import {
   useEffect,
   useState,
@@ -14,7 +13,6 @@ import {
   Check,
   Clock3,
   Copy,
-  LockKeyhole,
   MessagesSquare,
   Send,
   Users,
@@ -29,7 +27,9 @@ import { act } from "@/lib/api";
 import type { Action } from "@/lib/validation";
 import type { RoomSnapshot } from "@/lib/types";
 import { Avatar, ErrorNotice, Skeleton } from "./ui";
-import { EvidenceIllustration, SuspectPortrait } from "./case-art";
+import { SuspectPortrait } from "./case-art";
+import { CaseScene } from "./case-scene";
+import { EvidenceWorkspace, TimelineBoard } from "./evidence-workspace";
 export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const [data, setData] = useState<RoomSnapshot | null>(null);
   const [error, setError] = useState("");
@@ -37,7 +37,9 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const [connection, setConnection] = useState("connecting");
   const [now, setNow] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [tab, setTab] = useState("evidence");
+  const [tab, setTab] = useState<"evidence" | "suspects" | "timeline">(
+    "evidence",
+  );
   const [selection, setSelection] = useState("");
   const [confirm, setConfirm] = useState(false);
   const offset = useRef(0);
@@ -104,6 +106,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
       "mm_messages",
       "mm_evidence",
       "mm_results",
+      "mm_timeline",
     ])
       channel = channel.on(
         "postgres_changes",
@@ -214,7 +217,10 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
       </Link>
       <div className="room-top">
         <div>
-          <p className="eyebrow">EXPEDIENTE 001 / COOPERATIVO</p>
+          <p className="eyebrow">
+            EXPEDIENTE {data.case.theme === "train" ? "002" : "001"} /
+            COOPERATIVO
+          </p>
           <h1>{data.case.title}</h1>
         </div>
         <div className="room-code">
@@ -258,27 +264,31 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
           {lobby ? (
             <section className="panel lobby-story">
               <div className="scene-small">
-                <Image
-                  unoptimized
-                  src="/museum.svg"
-                  alt="La vitrina del zafiro en el Museo Áurea"
-                  width="1000"
-                  height="1000"
-                />
+                <CaseScene theme={data.case.theme} />
                 <span className="eyebrow">ANTES DE ENTRAR EN LA ESCENA</span>
               </div>
               <div className="lobby-content">
                 <p className="eyebrow">BRIEFING DEL CASO</p>
                 <h2>
-                  La luz volvió.
-                  <br />
-                  La joya ya no estaba.
+                  {data.case.theme === "train" ? (
+                    <>
+                      El tren se detuvo.
+                      <br />
+                      Alguien lo planeó.
+                    </>
+                  ) : (
+                    <>
+                      La luz volvió.
+                      <br />
+                      La joya ya no estaba.
+                    </>
+                  )}
                 </h2>
                 <p>{data.case.intro}</p>
                 <div className="case-lineup" aria-label="Personas de interés">
                   {data.suspects.map((s) => (
                     <figure key={s.id}>
-                      <SuspectPortrait id={s.id} />
+                      <SuspectPortrait id={s.id} portrait={s.portrait} />
                       <figcaption>{s.name}</figcaption>
                     </figure>
                   ))}
@@ -350,8 +360,10 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                   : "No hubo una acusación única del equipo: empate o ausencia de votos."}
               </p>
               <div className="solution">
-                {solved && <SuspectPortrait id={solved.id} />}
-                <span className="eyebrow">RESPONSABLE DEL ROBO</span>
+                {solved && (
+                  <SuspectPortrait id={solved.id} portrait={solved.portrait} />
+                )}
+                <span className="eyebrow">RESPONSABLE DEL CASO</span>
                 <h3>{solved?.name}</h3>
                 <p>{data.solution?.explanation}</p>
               </div>
@@ -384,6 +396,9 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
           ) : (
             <>
               <section className="panel story-panel">
+                <div className="story-scene">
+                  <CaseScene theme={data.case.theme} />
+                </div>
                 <div className="phase-track" aria-label="Fases de la partida">
                   {data.case.stages.slice(0, 3).map((s, i) => (
                     <span
@@ -425,50 +440,35 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                   aria-selected={tab === "suspects"}
                   onClick={() => setTab("suspects")}
                 >
-                  Sospechosos <span>4</span>
+                  Sospechosos <span>{data.suspects.length}</span>
+                </button>
+                <button
+                  role="tab"
+                  id="tab-timeline"
+                  aria-controls="timeline-panel"
+                  aria-selected={tab === "timeline"}
+                  onClick={() => setTab("timeline")}
+                >
+                  Cronología <span>{data.timeline?.length ?? 0}</span>
                 </button>
               </div>
-              {tab === "evidence" ? (
+              {tab !== "suspects" ? (
                 <section
                   role="tabpanel"
-                  id="evidence-panel"
-                  aria-labelledby="tab-evidence"
-                  className="evidence-grid"
+                  id={tab === "timeline" ? "timeline-panel" : "evidence-panel"}
+                  aria-labelledby={
+                    tab === "timeline" ? "tab-timeline" : "tab-evidence"
+                  }
                 >
-                  {data.evidence.length === 0 ? (
-                    <p className="empty">
-                      Aún no hay evidencias para esta fase.
-                    </p>
-                  ) : (
-                    data.evidence.map((e) => (
-                      <article
-                        key={e.id}
-                        className={`evidence-card ${e.user_id ? "private" : ""}`}
-                      >
-                        <span className="evidence-type">
-                          {e.user_id ? (
-                            <>
-                              <LockKeyhole size={13} />
-                              SOLO TÚ PUEDES VERLA
-                            </>
-                          ) : (
-                            <>
-                              <FileSearch size={13} />
-                              EVIDENCIA PÚBLICA
-                            </>
-                          )}
-                        </span>
-                        <EvidenceIllustration title={e.title} />
-                        <h3>{e.title}</h3>
-                        <p>{e.body}</p>
-                        {e.user_id && (
-                          <small>
-                            Comparte esta información con tu equipo en el chat.
-                          </small>
-                        )}
-                      </article>
-                    ))
-                  )}
+                  <EvidenceWorkspace
+                    data={data}
+                    uid={uid}
+                    mode={tab}
+                    busy={busy}
+                    error={error}
+                    onAction={send}
+                    onTimeline={() => setTab("timeline")}
+                  />
                 </section>
               ) : (
                 <section
@@ -482,7 +482,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                       className={`panel suspect ${data.my_vote === s.id ? "voted" : ""}`}
                       key={s.id}
                     >
-                      <SuspectPortrait id={s.id} />
+                      <SuspectPortrait id={s.id} portrait={s.portrait} />
                       <div className="suspect-heading">
                         <span className="suspect-number">0{i + 1}</span>
                         <div>
@@ -535,16 +535,21 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
           {finished && (
             <details className="panel final-evidence">
               <summary>Consultar las evidencias de tu expediente</summary>
-              {data.evidence.map((e) => (
-                <article key={e.id}>
-                  <EvidenceIllustration title={e.title} />
-                  <h3>
-                    {e.title}
-                    {e.user_id ? " · Privada" : ""}
-                  </h3>
-                  <p>{e.body}</p>
-                </article>
-              ))}
+              <EvidenceWorkspace
+                data={data}
+                uid={uid}
+                mode="evidence"
+                busy={busy}
+                error={error}
+                onAction={send}
+                onTimeline={() => setTab("timeline")}
+              />
+            </details>
+          )}
+          {finished && (
+            <details className="panel final-timeline">
+              <summary>Consultar la cronología del equipo</summary>
+              <TimelineBoard entries={data.timeline ?? []} uid={uid} />
             </details>
           )}
         </div>

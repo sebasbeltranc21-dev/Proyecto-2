@@ -1,6 +1,19 @@
 # Actualización de integración — 23 de octubre de 2026
 
-Supabase ya está conectado y las cuatro migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
+Supabase ya está conectado y las siete migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
+
+## Segundo caso, mapa y cronología
+
+Implementación: «El Expreso Medianoche» (5 sospechosos, 14 pistas y solución fija), selector de caso, 5 vagones con apertura por fase, 5 retratos nuevos, escena del tren, evidencias ampliables y cronología persistente de hipótesis. El museo conserva sus 4 sospechosos y 12 pistas y ahora tiene su propio mapa. Compartir el texto completo de una pista privada exige confirmación del propietario. Solo quien añadió una tarjeta puede mover su hora o retirarla, durante la investigación.
+
+Verificaciones de esta ampliación:
+
+- **27 pruebas locales:** 14 de PostgreSQL, 6 de Dashboard, 4 del área de evidencias y 3 de validación/origen. Comprueban también la compatibilidad del museo, privacidad, copia canónica de pistas, pertenencia, autoría y cierre de edición por fase.
+- **Compilación y ESLint:** aprobados. Se corrigió una opción de selector no válida en los tipos de React Testing Library detectada por TypeScript.
+- **Base alojada:** scripts transaccionales del museo y del tren aprobados, con identidades Auth emuladas y rollback. No quedaron usuarios de prueba ni se alteraron los recuentos de partidas existentes.
+- **Asesores:** RLS confirmado en las tablas nuevas; corregidos los dos índices compuestos sugeridos. La advertencia preexistente de protección de contraseñas comprometidas está documentada en [Integración](INTEGRATION.md).
+- **Navegador:** componentes reales en harness temporal con fixtures SQL locales y transporte de UI simulado, identificado en pantalla. Se comprobaron filtro por vagón, bloqueo/desbloqueo por fase, 5 retratos, diálogo nativo, confirmación de compartir, orden de la cronología y Escape. Sin desbordamiento a 1363 px y dentro de iframe de 390 px; diálogo móvil de 339 px sin desbordamiento interno. El control nativo de hora se comprobó con teclado; el `fill` del conector de navegador no emitía el cambio de React, por lo que se usaron las teclas del control, sin modificar la aplicación para la automatización.
+- **Límite:** no se ha ejecutado una partida nueva del tren con dos sesiones Supabase Auth reales. Los E2E se ampliaron para ambos casos, incluido compartir una pista y verificar el estado de conexión Realtime, y se omiten si faltan cuentas de pruebas. El harness y sus datos no se publican.
 
 ## Personajes y evidencias ilustradas
 

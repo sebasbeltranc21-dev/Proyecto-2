@@ -2,7 +2,7 @@
 
 Juego web cooperativo de investigación para 2–8 personas. Un equipo entra a una sala privada, recibe pistas públicas y privadas, debate en el chat y vota para resolver un misterio con solución fija.
 
-**Estado al 23 de octubre de 2026:** las migraciones están aplicadas al proyecto Supabase **Proyecto 2**. La base alojada pasó una prueba transaccional de salas, RLS, pistas, chat, votos y puntuación; las identidades de Auth se emularon y todas las filas de prueba se revirtieron. Email está habilitado y exige confirmación. La web está publicada en <https://proyecto-2-rho.vercel.app>, con estado Ready confirmado en el panel y respuesta HTTP 200 verificada. El usuario confirmó inicio de sesión y creación de sala. La conexión de administración de Vercel sigue devolviendo 403 para el equipo `sebastian-beltran`. Falta completar la validación de una partida con dos navegadores y entrega de eventos Realtime. [Detalle de integración](docs/INTEGRATION.md).
+**Estado al 23 de octubre de 2026:** dos casos disponibles y siete migraciones aplicadas al proyecto Supabase **Proyecto 2**. La web está publicada en <https://proyecto-2-rho.vercel.app>. El usuario confirmó jugar el caso del museo. Ambos casos y los permisos de la cronología pasaron pruebas transaccionales contra PostgreSQL alojado, con identidades emuladas y datos temporales revertidos. Las nuevas interfaces se revisaron con fixtures locales; la prueba automatizada con dos cuentas reales para el tren y la entrega de eventos Realtime sigue pendiente. La conexión administrativa de Vercel mantiene su bloqueo de equipo; los cambios se publican mediante el enlace GitHub existente. [Detalle de integración](docs/INTEGRATION.md).
 
 La inspección inicial encontró el repositorio vacío y ninguna base accesible. Al habilitar Supabase se comprobó que no había tablas del juego antes de aplicar las migraciones. La aplicación sigue mostrando «Conexión pendiente» cuando faltan sus variables de entorno.
 
@@ -11,11 +11,12 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 - Next.js App Router, TypeScript y Tailwind CSS, versiones exactas y lockfile.
 - Supabase Auth: correo/contraseña, confirmación, cierre de sesión e invitados opcionales.
 - Perfiles con emblemas, salas privadas con código, anfitrión y preparación. Al unirse por código, un usuario nuevo puede escribir su nombre y guardar el perfil desde el mismo formulario.
-- Caso original «La última luz del museo»: cuatro sospechosos, doce evidencias, investigación, chat, votación y solución fija.
-- Pistas privadas por identidad; Supabase Realtime y recuperación por consultas periódicas.
+- Selector de dos casos originales con solución fija: «La última luz del museo» (4 sospechosos, 12 pistas) y «El Expreso Medianoche» (5 sospechosos, 14 pistas).
+- Mapas por zonas y vagones, aperturas por fase y evidencias ampliables. Pistas privadas por identidad; Supabase Realtime y recuperación por consultas periódicas.
+- Cronología compartida: cada investigador elige la hora de su hipótesis. Compartir una pista privada requiere confirmación expresa de su contenido completo. Solo su autor cambia la hora o retira la tarjeta durante la investigación.
 - Votos inmutables, cierre transaccional, puntos, historial, estadísticas y clasificación.
 - Migraciones con RLS y funciones para acciones críticas. No se necesita `service_role`.
-- Diseño adaptable con escenario original, cuatro retratos SVG y dibujos de las evidencias. Animaciones breves de entrada, parpadeo y grabación, con soporte para movimiento reducido; confirmaciones, errores y estados vacíos.
+- Diseño adaptable con dos escenarios originales, nueve retratos SVG y dibujos de las evidencias. Animaciones breves de entrada, parpadeo y grabación, con soporte para movimiento reducido; confirmaciones, errores y estados vacíos.
 
 Los modos competitivo y traidor son futuros. Hoy solo se ofrece investigación cooperativa. [Arquitectura y límites](docs/ARCHITECTURE.md).
 
@@ -65,7 +66,7 @@ Abre <http://localhost:3000>. Tras cambiar variables públicas, reinicia el serv
    npx supabase db push --help
    ```
 
-3. Enlaza el ID real y revisa los cambios antes de aplicarlos. En el proyecto conectado actual las cuatro migraciones ya están aplicadas; no vuelvas a ejecutarlas desde SQL Editor:
+3. Enlaza el ID real y revisa los cambios antes de aplicarlos. En el proyecto conectado actual las siete migraciones ya están aplicadas; no vuelvas a ejecutarlas desde SQL Editor:
 
    ```bash
    npx supabase link --project-ref ID_REAL_DEL_PROYECTO
@@ -73,15 +74,15 @@ Abre <http://localhost:3000>. Tras cambiar variables públicas, reinicia el serv
    npx supabase db push
    ```
 
-   Las cuatro migraciones crean esquema, caso, restricciones e índices; no eliminan datos. No ejecutes `db reset` sobre una base remota. Alternativa: ejecutar los cuatro SQL en orden desde SQL Editor y registrar su aplicación. No mezcles ambos métodos sin reconciliar el historial.
+   Las siete migraciones crean esquema, caso, restricciones e índices; no eliminan datos. No ejecutes `db reset` sobre una base remota. Alternativa: ejecutar los siete SQL en orden desde SQL Editor y registrar su aplicación. No mezcles ambos métodos sin reconciliar el historial.
 
 4. En Auth habilita Email y confirmación de correo. Configura **Site URL** y autoriza `http://localhost:3000/auth/callback` y tu URL exacta de producción con `/auth/callback`. Para producción y pruebas fiables configura SMTP.
 5. Invitados opcionales: habilita **Anonymous Sign-Ins** en Supabase y establece `NEXT_PUBLIC_ALLOW_GUESTS=true`. Configura límites de Auth adecuados. El MVP no incluye widget CAPTCHA: si lo haces obligatorio en Auth, deja invitados desactivados hasta incorporar el widget y enviar su token.
 6. En Data API expón `public`; **nunca `mm_private`**. Las migraciones conceden lectura y ejecución explícitas, bloqueando escrituras directas. No agregues políticas permisivas globales.
-7. En Database / Replication comprueba que `supabase_realtime` incluye `mm_rooms`, `mm_participants`, `mm_games`, `mm_messages`, `mm_evidence` y `mm_results`. La migración los agrega si existe la publicación. Si no existía, habilítala para esas tablas desde el panel.
+7. En Database / Replication comprueba que `supabase_realtime` incluye `mm_rooms`, `mm_participants`, `mm_games`, `mm_messages`, `mm_evidence`, `mm_results` y `mm_timeline`. La migración los agrega si existe la publicación. Si no existía, habilítala para esas tablas desde el panel.
 8. Ejecuta los asesores de seguridad y rendimiento de Supabase. Ya se ejecutaron sobre Proyecto 2; el detalle está en `docs/INTEGRATION.md`. Las pruebas locales no reemplazan esta revisión ni la comprobación de Auth/Realtime alojados.
 
-Para Supabase local necesitas Docker: consulta `npx supabase start --help`. El caso está en las migraciones, sin `seed.sql` adicional. Los invitados permanecen desactivados por defecto.
+Para Supabase local necesitas Docker: consulta `npx supabase start --help`. Los casos están en las migraciones, sin `seed.sql` adicional. Los invitados permanecen desactivados por defecto.
 
 ## Desplegar en Vercel
 
@@ -108,20 +109,20 @@ npm run test:e2e
 
 Playwright carga `.env.local` si existe y comprueba rutas públicas, navegación, configuración ausente, accesibilidad automatizada y desbordamiento en 1440 y 390 px. Sin Supabase, verifica el acceso desactivado y la respuesta 503 explícita. Next.js puede responder HTTP 200 al mostrar `notFound()` en una ruta dinámica que ya comenzó a transmitir: se comprueba su pantalla de recuperación y el 404 de una ruta inexistente.
 
-La prueba multijugador necesita dos cuentas **verificadas y de pruebas**, con contraseña de pruebas compartida. Inyecta `E2E_HOST_EMAIL`, `E2E_PLAYER_EMAIL`, `E2E_PASSWORD` y opcionalmente `E2E_BASE_URL` en el proceso; nunca guardes estas credenciales en GitHub. No uses cuentas personales. Espera dos minutos mientras avanzan las fases y utiliza servidor y Supabase reales. La prueba de registro requiere `E2E_ALLOW_REGISTRATION=true` en un proyecto aislado con email y confirmación habilitados; comprueba el aviso de confirmación, no la entrega del correo. Ambas se omiten explícitamente sin configuración.
+Las pruebas multijugador cubren ambos casos, la confirmación al compartir pistas privadas y la cronología. Necesitan dos cuentas **verificadas y de pruebas**, con contraseña de pruebas compartida. Inyecta `E2E_HOST_EMAIL`, `E2E_PLAYER_EMAIL`, `E2E_PASSWORD` y opcionalmente `E2E_BASE_URL` en el proceso; nunca guardes estas credenciales en GitHub. No uses cuentas personales. Espera dos minutos mientras avanzan las fases y utiliza servidor y Supabase reales. La prueba de registro requiere `E2E_ALLOW_REGISTRATION=true` en un proyecto aislado con email y confirmación habilitados; comprueba el aviso de confirmación, no la entrega del correo. Se omiten explícitamente sin las cuentas o la configuración requerida.
 
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` permite usar un Chromium compatible ya instalado. No compartas trazas ni estados de navegador con sesiones privadas. [Informe de verificación](docs/VERIFICATION.md).
 
 ## Estructura
 
-| Ruta                   | Contenido                                 |
-| ---------------------- | ----------------------------------------- |
-| `src/app/`             | Páginas y API                             |
-| `src/components/`      | Acceso, panel y sala                      |
-| `src/lib/`             | Clientes Supabase, tipos y validación     |
-| `src/proxy.ts`         | Renovación de sesión sin caché compartida |
-| `supabase/migrations/` | Esquema, caso y seguridad                 |
-| `public/museum.svg`    | Ilustración original                      |
-| `tests/`, `tests/e2e/` | Pruebas de datos, validación y navegador  |
+| Ruta                                    | Contenido                                 |
+| --------------------------------------- | ----------------------------------------- |
+| `src/app/`                              | Páginas y API                             |
+| `src/components/`                       | Acceso, panel y sala                      |
+| `src/lib/`                              | Clientes Supabase, tipos y validación     |
+| `src/proxy.ts`                          | Renovación de sesión sin caché compartida |
+| `supabase/migrations/`                  | Esquema, caso y seguridad                 |
+| `public/museum.svg`, `public/train.svg` | Escenarios originales                     |
+| `tests/`, `tests/e2e/`                  | Pruebas de datos, validación y navegador  |
 
 [Arquitectura y reglas](docs/ARCHITECTURE.md) · [Verificación](docs/VERIFICATION.md)

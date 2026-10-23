@@ -25,7 +25,7 @@ export default async function Page({
   if (!user) redirect("/acceso");
   return (
     <main id="contenido" className="shell room-page">
-      <GameRoom code={parsed.data} uid={user.id} />
+      <GameRoom key={parsed.data} code={parsed.data} uid={user.id} />
     </main>
   );
 }

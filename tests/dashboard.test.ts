@@ -34,6 +34,15 @@ const profile = {
   avatar: "lupa",
 };
 const home: HomeSnapshot = {
+  cases: [
+    {
+      slug: "ultima-luz",
+      title: "La última luz del museo",
+      intro: "Una joya desaparecida.",
+      theme: "museum",
+      suspect_count: 4,
+    },
+  ],
   profile: null,
   rooms: [],
   history: [],
@@ -98,6 +107,35 @@ test("existing player joins without overwriting the saved profile", async () => 
   expect(mocks.act).toHaveBeenCalledExactlyOnceWith({
     action: "join",
     code: "29551BF7",
+  });
+});
+test("the selected case is submitted when creating a room", async () => {
+  mocks.act.mockResolvedValueOnce({ code: "A1B2C3D4" });
+  show({
+    ...home,
+    profile,
+    cases: [
+      ...home.cases,
+      {
+        slug: "expreso-medianoche",
+        title: "El Expreso Medianoche",
+        intro: "Un tren detenido.",
+        theme: "train",
+        suspect_count: 5,
+      },
+    ],
+  });
+  fireEvent.click(screen.getByRole("radio", { name: /El Expreso Medianoche/ }));
+  fireEvent.click(screen.getByRole("button", { name: "Crear sala" }));
+  await waitFor(() =>
+    expect(mocks.push).toHaveBeenCalledWith("/sala/A1B2C3D4"),
+  );
+  expect(mocks.act).toHaveBeenCalledExactlyOnceWith({
+    action: "create",
+    caseSlug: "expreso-medianoche",
+    minutes: 5,
+    voteMinutes: 2,
+    allowGuests: false,
   });
 });
 test("blank names show an error beside the invitation and do not send a join request", async () => {

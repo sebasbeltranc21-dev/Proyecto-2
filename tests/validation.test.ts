@@ -29,6 +29,24 @@ test("normalizes room codes and rejects oversized or invalid actions", () => {
   ).toBe(false);
 });
 import { sameOrigin } from "../src/lib/origin";
+test("timeline accepts bounded minutes and rejects forged identifiers and consent types", () => {
+  const pin = {
+    action: "timeline_pin",
+    code: "A1B2C3D4",
+    evidence: "50000000-0000-4000-8000-000000000001",
+    minute: 1417,
+    sharePrivate: true,
+  };
+  expect(actionSchema.safeParse(pin).success).toBe(true);
+  for (const minute of [-1, 1440, 1.5])
+    expect(actionSchema.safeParse({ ...pin, minute }).success).toBe(false);
+  expect(actionSchema.safeParse({ ...pin, sharePrivate: "true" }).success).toBe(
+    false,
+  );
+  expect(actionSchema.safeParse({ ...pin, evidence: "unknown" }).success).toBe(
+    false,
+  );
+});
 test("same-origin validation supports local and hosted requests and rejects forged origins", () => {
   expect(sameOrigin("http://127.0.0.1:3000", "127.0.0.1:3000")).toBe(true);
   expect(sameOrigin("https://modo.example", "modo.example")).toBe(true);

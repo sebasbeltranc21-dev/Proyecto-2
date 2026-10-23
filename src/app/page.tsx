@@ -11,6 +11,7 @@ import {
   Fingerprint,
 } from "lucide-react";
 import { ConfigNotice } from "@/components/ui";
+import { CaseScene } from "@/components/case-scene";
 export default function Page() {
   return (
     <main id="contenido" className="shell landing">
@@ -132,6 +133,22 @@ export default function Page() {
         </div>
       </section>
       <section className="closing">
+        <div className="new-case-promo">
+          <div className="new-case-scene">
+            <CaseScene theme="train" />
+          </div>
+          <div>
+            <p className="eyebrow">NUEVO EXPEDIENTE / 002</p>
+            <h2>El Expreso Medianoche</h2>
+            <p>
+              Un tren detenido. Cinco coartadas. Explora los vagones y
+              reconstruye una noche que alguien quiso interrumpir.
+            </p>
+            <Link href="/panel" className="text-link">
+              Elegir mi próximo caso <ArrowRight size={17} />
+            </Link>
+          </div>
+        </div>
         <span className="eyebrow">INVESTIGACIÓN COOPERATIVA</span>
         <h2>
           Todo el equipo.

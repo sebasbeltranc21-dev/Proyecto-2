@@ -33,13 +33,14 @@ async function owner(sql: string) {
   await db.exec(sql);
   await as(a);
 }
-async function room() {
+async function room(caseSlug = "ultima-luz") {
   await as(a);
   const { code } = await action({
     action: "create",
     minutes: 1,
     voteMinutes: 1,
     allowGuests: false,
+    caseSlug,
   });
   await as(b);
   await action({ action: "join", code });
@@ -70,6 +71,227 @@ beforeEach(async () => {
     "reset role;truncate public.mm_rooms cascade;truncate mm_private.join_limits;",
   );
   await as(a);
+});
+test("catalog selects the train without changing the museum or exposing either solution", async () => {
+  const home = (
+    await db.query<{ v: import("../src/lib/types").HomeSnapshot }>(
+      "select public.mm_home() v",
+    )
+  ).rows[0].v;
+  expect(home.cases.map((c) => c.slug)).toEqual(
+    expect.arrayContaining(["ultima-luz", "expreso-medianoche"]),
+  );
+  expect(
+    home.cases.find((c) => c.slug === "expreso-medianoche")?.suspect_count,
+  ).toBe(5);
+  expect(JSON.stringify(home.cases)).not.toContain("suspect_id");
+  await expect(
+    action({
+      action: "create",
+      caseSlug: "missing-case",
+      minutes: 1,
+      voteMinutes: 1,
+      allowGuests: false,
+    }),
+  ).rejects.toThrow("no está disponible");
+  const code = await room("expreso-medianoche");
+  const data = await snap(code);
+  expect(data.case.theme).toBe("train");
+  expect(data.suspects).toHaveLength(5);
+  expect(data.case.locations).toHaveLength(5);
+  expect(data.solution).toBeNull();
+  expect(data.evidence.every((e) => e.stage === 0 && e.location_id)).toBe(true);
+  expect(data.evidence).toHaveLength(5);
+  const museum = await snap(await room());
+  expect(museum.case.title).toBe("La última luz del museo");
+  expect(museum.suspects).toHaveLength(4);
+});
+test("sharing a private clue requires explicit consent and copies only canonical content", async () => {
+  const code = await room("expreso-medianoche");
+  const data = await snap(code);
+  const evidence = data.evidence.find((e) => e.user_id === a)!;
+  await expect(
+    action({
+      action: "timeline_pin",
+      code,
+      evidence: evidence.id,
+      minute: 1420,
+    }),
+  ).rejects.toThrow("Confirma");
+  await action({
+    action: "timeline_pin",
+    code,
+    evidence: evidence.id,
+    minute: 1420,
+    sharePrivate: true,
+    title: "FORGED",
+    body: "FORGED",
+  });
+  await action({
+    action: "timeline_pin",
+    code,
+    evidence: evidence.id,
+    minute: 1417,
+    sharePrivate: true,
+  });
+  await as(b);
+  const other = await snap(code);
+  expect(other.evidence.some((e) => e.id === evidence.id)).toBe(false);
+  expect(other.timeline).toHaveLength(1);
+  expect(other.timeline[0]).toMatchObject({
+    title: evidence.title,
+    body: evidence.body,
+    minute: 1417,
+    shared_private: true,
+    user_id: a,
+  });
+  expect(
+    (await db.query("select * from public.mm_timeline")).rows,
+  ).toHaveLength(1);
+  await expect(
+    action({
+      action: "timeline_pin",
+      code,
+      evidence: evidence.id,
+      minute: 1418,
+      sharePrivate: true,
+    }),
+  ).rejects.toThrow("No puedes compartir");
+  await expect(
+    action({ action: "timeline_remove", code, entry: other.timeline[0].id }),
+  ).rejects.toThrow("Solo puedes");
+  await as(c);
+  expect(
+    (await db.query("select * from public.mm_timeline")).rows,
+  ).toHaveLength(0);
+  await expect(
+    action({ action: "timeline_remove", code, entry: other.timeline[0].id }),
+  ).rejects.toThrow("No perteneces");
+  await expect(
+    db.query("select mm_private.timeline_action('{}'::jsonb)"),
+  ).rejects.toThrow("permission denied");
+  await as(a);
+  await action({
+    action: "timeline_remove",
+    code,
+    entry: other.timeline[0].id,
+  });
+  expect((await snap(code)).timeline).toHaveLength(0);
+});
+test("timeline denies future, cross-room and direct writes and locks once voting opens", async () => {
+  const code = await room("expreso-medianoche");
+  const first = await snap(code);
+  const publicClue = first.evidence.find((e) => !e.user_id)!;
+  await owner(`select 1`);
+  await db.exec("reset role");
+  const future = (
+    await db.query<{ id: string }>(
+      "select id from public.mm_evidence where stage=1 limit 1",
+    )
+  ).rows[0].id;
+  await as(a);
+  await expect(
+    action({
+      action: "timeline_pin",
+      code,
+      evidence: future,
+      minute: 1417,
+      sharePrivate: true,
+    }),
+  ).rejects.toThrow("No puedes compartir");
+  await expect(
+    action({
+      action: "timeline_pin",
+      code,
+      evidence: publicClue.id,
+      minute: 1440,
+    }),
+  ).rejects.toThrow("hora válida");
+  await action({
+    action: "timeline_pin",
+    code,
+    evidence: publicClue.id,
+    minute: 1417,
+  });
+  await as(b);
+  await expect(
+    action({
+      action: "timeline_pin",
+      code,
+      evidence: publicClue.id,
+      minute: 1418,
+    }),
+  ).rejects.toThrow("Solo quien");
+  await expect(
+    db.query("update public.mm_timeline set minute=0"),
+  ).rejects.toThrow("permission denied");
+  const otherCode = await room();
+  await expect(
+    action({
+      action: "timeline_pin",
+      code: otherCode,
+      evidence: publicClue.id,
+      minute: 1417,
+    }),
+  ).rejects.toThrow("No puedes compartir");
+  await owner(
+    `update public.mm_games set stage=2,phase_ends_at=now()+interval '1 minute' where room_id=(select id from public.mm_rooms where code='${code}')`,
+  );
+  await expect(
+    action({
+      action: "timeline_remove",
+      code,
+      entry: (await snap(code)).timeline[0].id,
+    }),
+  ).rejects.toThrow("solo se edita");
+  await expect(
+    action({
+      action: "timeline_pin",
+      code,
+      evidence: publicClue.id,
+      minute: 1418,
+    }),
+  ).rejects.toThrow("solo se edita");
+  expect((await snap(code)).timeline[0].minute).toBe(1417);
+});
+test("the train unlocks its second phase, keeps fourteen distinct clues and settles its own answer", async () => {
+  const code = await room("expreso-medianoche");
+  await owner(
+    `update public.mm_games set phase_ends_at=now()-interval '1 second' where room_id=(select id from public.mm_rooms where code='${code}')`,
+  );
+  await action({ action: "tick", code });
+  const first = await snap(code);
+  expect(first.game?.stage).toBe(1);
+  expect(first.evidence).toHaveLength(10);
+  expect(
+    first.evidence.every((e) =>
+      first.case.locations.some(
+        (l) => l.id === e.location_id && l.stage <= e.stage,
+      ),
+    ),
+  ).toBe(true);
+  const own = first.evidence.filter((e) => e.user_id === a).map((e) => e.id);
+  await as(b);
+  const second = await snap(code);
+  expect(second.evidence).toHaveLength(10);
+  expect(second.evidence.some((e) => own.includes(e.id))).toBe(false);
+  expect(
+    new Set([...first.evidence, ...second.evidence].map((e) => e.id)).size,
+  ).toBe(14);
+  const responsible = first.suspects.find((s) => s.name === "Elena Cruz")!.id;
+  await owner(
+    `update public.mm_games set stage=2,phase_ends_at=now()+interval '1 minute' where room_id=(select id from public.mm_rooms where code='${code}')`,
+  );
+  await expect(
+    action({ action: "vote", code, suspect: culprit }),
+  ).rejects.toThrow("Sospechoso inválido");
+  await action({ action: "vote", code, suspect: responsible });
+  await as(b);
+  await action({ action: "vote", code, suspect: responsible });
+  const final = await snap(code);
+  expect(final.game?.success).toBe(true);
+  expect(final.solution?.suspect_id).toBe(responsible);
+  expect(final.results.map((r) => r.points)).toEqual([150, 150]);
 });
 afterAll(async () => {
   await db.close();

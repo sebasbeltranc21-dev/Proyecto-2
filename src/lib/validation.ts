@@ -15,12 +15,28 @@ export const actionSchema = z.discriminatedUnion("action", [
     allowGuests: z.boolean(),
     minutes: z.number().int().min(1).max(15),
     voteMinutes: z.number().int().min(1).max(5),
+    caseSlug: z
+      .string()
+      .regex(/^[a-z0-9-]{1,60}$/)
+      .default("ultima-luz"),
   }),
   z.object({ action: z.literal("join"), code: roomCode }),
   z.object({ action: z.literal("ready"), code: roomCode, ready: z.boolean() }),
   z.object({ action: z.literal("start"), code: roomCode }),
   z.object({ action: z.literal("tick"), code: roomCode }),
   z.object({ action: z.literal("claim"), code: roomCode }),
+  z.object({
+    action: z.literal("timeline_pin"),
+    code: roomCode,
+    evidence: z.string().uuid(),
+    minute: z.number().int().min(0).max(1439),
+    sharePrivate: z.boolean().default(false),
+  }),
+  z.object({
+    action: z.literal("timeline_remove"),
+    code: roomCode,
+    entry: z.string().uuid(),
+  }),
   z.object({
     action: z.literal("chat"),
     code: roomCode,

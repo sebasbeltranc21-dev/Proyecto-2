@@ -18,11 +18,29 @@ const characters: Record<string, { kind: string; color: string }> = {
   },
 };
 
-export function SuspectPortrait({ id }: { id: string }) {
-  const { kind, color } = characters[id] ?? {
-    kind: "unknown",
-    color: "#b7b4a0",
-  };
+const portraitStyles: Record<string, { kind: string; color: string }> = {
+  restorer: { kind: "restorer", color: "#b5bda0" },
+  guard: { kind: "guard", color: "#98b8be" },
+  reporter: { kind: "reporter", color: "#d4a790" },
+  collector: { kind: "collector", color: "#c4add1" },
+  conductor: { kind: "conductor", color: "#92b8b2" },
+  mechanic: { kind: "mechanic", color: "#c7a773" },
+  photographer: { kind: "photographer", color: "#b9a8ca" },
+  chef: { kind: "chef", color: "#d6d9c8" },
+  traveler: { kind: "traveler", color: "#97acbd" },
+};
+export function SuspectPortrait({
+  id,
+  portrait,
+}: {
+  id: string;
+  portrait?: string;
+}) {
+  const { kind, color } = portraitStyles[portrait ?? ""] ??
+    characters[id] ?? {
+      kind: "unknown",
+      color: "#b7b4a0",
+    };
   return (
     <div
       className="suspect-art"
@@ -65,7 +83,7 @@ export function SuspectPortrait({ id }: { id: string }) {
                 />
                 <circle cx="155" cy="59" r="16" fill="#4b4940" />
               </>
-            ) : kind === "reporter" ? (
+            ) : kind === "reporter" || kind === "photographer" ? (
               <path
                 d="M88 99Q74 45 101 33Q141 20 154 58L161 120L136 125L92 117Z"
                 fill="#594239"
@@ -85,17 +103,27 @@ export function SuspectPortrait({ id }: { id: string }) {
                 d="M93 71Q115 70 126 47Q144 49 148 72V59Q142 35 118 38Q91 39 91 62Z"
                 fill="#4b4940"
               />
-            ) : kind === "reporter" ? (
+            ) : kind === "reporter" || kind === "photographer" ? (
               <path
                 d="M90 73Q121 61 135 42Q151 49 151 78L150 54Q143 30 119 34Q89 33 90 73Z"
                 fill="#594239"
               />
-            ) : kind === "guard" ? (
+            ) : kind === "guard" || kind === "conductor" ? (
               <>
                 <path d="M91 57L96 33L120 28L145 34L151 57Z" fill="#72949d" />
                 <path d="M87 58Q120 47 153 58L142 66H98Z" fill="#425f69" />
                 <path d="M116 38L124 38V46L120 49L116 46Z" fill="#d6b57a" />
               </>
+            ) : kind === "chef" ? (
+              <path
+                d="M94 62V42Q78 23 99 19Q109 3 123 17Q145 8 150 29Q165 35 146 47V62Z"
+                fill="#eee9d8"
+              />
+            ) : kind === "mechanic" ? (
+              <path
+                d="M91 61L96 40Q123 24 147 44L150 63L96 66L87 63Z"
+                fill="#ba985f"
+              />
             ) : null}
             <g className="portrait-eyes">
               <path d="M105 80H109M131 80H135" strokeWidth="4" />
@@ -104,12 +132,14 @@ export function SuspectPortrait({ id }: { id: string }) {
               d="M120 83L117 95H123M113 104Q120 107 127 103"
               strokeWidth="2"
             />
-            {kind === "collector" ? (
+            {kind === "collector" || kind === "traveler" ? (
               <>
-                <path
-                  d="M99 78H115V89H99ZM126 78H142V89H126ZM115 82H126"
-                  strokeWidth="2"
-                />
+                {kind === "collector" && (
+                  <path
+                    d="M99 78H115V89H99ZM126 78H142V89H126ZM115 82H126"
+                    strokeWidth="2"
+                  />
+                )}
                 <path
                   d="M106 128L120 143L133 128M109 140L115 160L101 149L106 128M131 140L125 160L139 149L133 128"
                   fill="#e6ddc7"
@@ -137,7 +167,37 @@ export function SuspectPortrait({ id }: { id: string }) {
                 <path d="M140 158L155 156L162 181L146 184Z" fill="#e8dfce" />
                 <path d="M145 166L152 165M147 171L154 170" strokeWidth="2" />
               </>
-            ) : kind === "guard" ? (
+            ) : kind === "photographer" ? (
+              <>
+                <path d="M100 129L114 157M141 129L126 157" />
+                <rect
+                  x="103"
+                  y="156"
+                  width="38"
+                  height="26"
+                  rx="4"
+                  fill="#59635d"
+                />
+                <circle cx="122" cy="169" r="9" fill="#bfc9bd" />
+                <path d="M106 156L110 150H122L126 156" />
+              </>
+            ) : kind === "chef" ? (
+              <>
+                <path d="M103 127L126 146V194M135 128L119 142" />
+                <path
+                  d="M108 153H109M139 153H140M108 169H109M139 169H140M108 185H109M139 185H140"
+                  strokeWidth="5"
+                />
+              </>
+            ) : kind === "mechanic" ? (
+              <>
+                <path d="M101 128L107 150L120 141L134 150L140 128M120 141V194M131 157H144V176H131Z" />
+                <path
+                  d="M100 174L105 158M99 155L102 149M107 157L110 151"
+                  strokeWidth="4"
+                />
+              </>
+            ) : kind === "guard" || kind === "conductor" ? (
               <>
                 <path d="M100 127L120 143L139 127M120 143V194M99 155H110V166H99Z" />
                 <path
@@ -332,6 +392,42 @@ const drawings: Record<string, ReactNode> = {
       <path d="M132 109L152 129M89 63H139" />
     </>
   ),
+  key: (
+    <>
+      <circle cx="91" cy="66" r="28" fill="#ccba86" />
+      <circle cx="91" cy="66" r="11" fill="#e7dfc8" />
+      <path
+        d="M110 85L163 137L180 120L168 108L157 119L145 106L153 98L139 84L130 92L117 78"
+        fill="#ccba86"
+      />
+      <path d="M61 45L51 35M59 68H43M70 32L66 21" opacity=".4" />
+    </>
+  ),
+  ticket: (
+    <>
+      <path
+        d="M44 60L176 29L196 117L64 147L58 121Q72 114 66 101Q60 88 53 94Z"
+        fill="#e8d9b7"
+      />
+      <path d="M144 39L164 124" strokeDasharray="3 6" />
+      <path d="M65 70L125 55M70 86L130 72M76 111L115 102" />
+      <path d="M157 52L169 106M164 51L177 105M171 49L184 103" strokeWidth="4" />
+    </>
+  ),
+  meal: (
+    <>
+      <ellipse cx="120" cy="89" rx="48" ry="43" fill="#e9e2cd" />
+      <ellipse cx="120" cy="89" rx="33" ry="29" />
+      <path
+        d="M52 35V79Q64 92 76 79V35M64 35V142M58 35V67M70 35V67M188 35Q165 48 176 88H188V142M188 35V88"
+        fill="#c6ccb8"
+      />
+      <path
+        d="M109 84Q122 64 135 84Q143 101 122 109Q100 101 109 84Z"
+        fill="#afb995"
+      />
+    </>
+  ),
 };
 
 // Classify only the title already delivered to this player. Unknown cases get
@@ -349,6 +445,15 @@ function illustrationFor(title: string) {
   if (name.includes("llamada")) return "phone";
   if (name.includes("embalaje")) return "parcel";
   if (name.includes("temporizador")) return "timer";
+  if (name.includes("reloj") || name.includes("orden diferida")) return "timer";
+  if (name.includes("precinto")) return "electrical";
+  if (name.includes("trayecto")) return "ticket";
+  if (name.includes("llave")) return "key";
+  if (name.includes("reflejo") || name.includes("registro de tomás"))
+    return "camera";
+  if (name.includes("foto")) return "camera";
+  if (name.includes("comanda") || name.includes("informe")) return "report";
+  if (name.includes("restaurante")) return "meal";
   return "file";
 }
 
