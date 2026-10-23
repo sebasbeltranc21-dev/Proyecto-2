@@ -2,7 +2,7 @@
 
 Juego web cooperativo de investigación para 2–8 personas. Un equipo entra a una sala privada, recibe pistas públicas y privadas, debate en el chat y vota para resolver un misterio con solución fija.
 
-**Estado al 23 de octubre de 2026:** las migraciones están aplicadas al proyecto Supabase **Proyecto 2**. La base alojada pasó una prueba transaccional de salas, RLS, pistas, chat, votos y puntuación; las identidades de Auth se emularon y todas las filas de prueba se revirtieron. Email está habilitado y exige confirmación. **El despliegue sigue pendiente:** la conexión de Vercel devuelve 403 para el equipo `sebastian-beltran`. Todavía no se ha validado el recorrido real de dos navegadores con Auth y entrega de eventos Realtime. [Detalle de integración](docs/INTEGRATION.md).
+**Estado al 23 de octubre de 2026:** las migraciones están aplicadas al proyecto Supabase **Proyecto 2**. La base alojada pasó una prueba transaccional de salas, RLS, pistas, chat, votos y puntuación; las identidades de Auth se emularon y todas las filas de prueba se revirtieron. Email está habilitado y exige confirmación. La web está publicada en <https://proyecto-2-rho.vercel.app>, con estado Ready confirmado en el panel y respuesta HTTP 200 verificada. El usuario confirmó inicio de sesión y creación de sala. La conexión de administración de Vercel sigue devolviendo 403 para el equipo `sebastian-beltran`. Falta completar la validación de una partida con dos navegadores y entrega de eventos Realtime. [Detalle de integración](docs/INTEGRATION.md).
 
 La inspección inicial encontró el repositorio vacío y ninguna base accesible. Al habilitar Supabase se comprobó que no había tablas del juego antes de aplicar las migraciones. La aplicación sigue mostrando «Conexión pendiente» cuando faltan sus variables de entorno.
 
@@ -10,7 +10,7 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 
 - Next.js App Router, TypeScript y Tailwind CSS, versiones exactas y lockfile.
 - Supabase Auth: correo/contraseña, confirmación, cierre de sesión e invitados opcionales.
-- Perfiles con emblemas, salas privadas con código, anfitrión y preparación.
+- Perfiles con emblemas, salas privadas con código, anfitrión y preparación. Al unirse por código, un usuario nuevo puede escribir su nombre y guardar el perfil desde el mismo formulario.
 - Caso original «La última luz del museo»: cuatro sospechosos, doce evidencias, investigación, chat, votación y solución fija.
 - Pistas privadas por identidad; Supabase Realtime y recuperación por consultas periódicas.
 - Votos inmutables, cierre transaccional, puntos, historial, estadísticas y clasificación.

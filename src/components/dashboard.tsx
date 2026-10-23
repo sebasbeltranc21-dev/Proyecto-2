@@ -14,6 +14,7 @@ import {
 import { browserClient } from "@/lib/supabase/client";
 import { act } from "@/lib/api";
 import type { HomeSnapshot } from "@/lib/types";
+import { actionSchema, roomCode } from "@/lib/validation";
 import { Avatar, ErrorNotice, Skeleton, avatarIcons } from "./ui";
 export function Dashboard({
   anonymous,
@@ -29,6 +30,8 @@ export function Dashboard({
   const [error, setError] = useState(initialError);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [name, setName] = useState(initialData?.profile?.name || "");
+  const [joinError, setJoinError] = useState("");
   const [avatar, setAvatar] = useState(initialData?.profile?.avatar || "lupa");
   async function load() {
     try {
@@ -36,6 +39,7 @@ export function Dashboard({
       if (error) throw error;
       setData(data as HomeSnapshot);
       setAvatar(data.profile?.avatar || "lupa");
+      setName(data.profile?.name || "");
       setError("");
     } catch {
       setError(
@@ -81,16 +85,30 @@ export function Dashboard({
   }
   async function join(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    setJoinError("");
     setBusy(true);
-    const f = new FormData(e.currentTarget);
     try {
-      const result = await act({
-        action: "join",
-        code: String(f.get("code")).trim().toUpperCase(),
-      });
+      const parsedCode = roomCode.safeParse(String(form.get("code")));
+      if (!parsedCode.success)
+        throw new Error("Escribe el código de invitación de 8 caracteres.");
+      if (!data?.profile) {
+        const parsedProfile = actionSchema.safeParse({
+          action: "profile",
+          name,
+          avatar,
+        });
+        if (!parsedProfile.success)
+          throw new Error(
+            "Escribe un nombre de entre 2 y 24 caracteres para entrar.",
+          );
+        await act(parsedProfile.data);
+        await load();
+      }
+      const result = await act({ action: "join", code: parsedCode.data });
       router.push(`/sala/${result.code}`);
     } catch (e) {
-      setError((e as Error).message);
+      setJoinError((e as Error).message);
       setBusy(false);
     }
   }
@@ -143,12 +161,12 @@ export function Dashboard({
                 <label>
                   Nombre visible
                   <input
-                    key={data.profile?.name || "new"}
                     name="name"
                     required
                     minLength={2}
                     maxLength={24}
-                    defaultValue={data.profile?.name || ""}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="¿Cómo te llama tu equipo?"
                   />
                 </label>
@@ -224,7 +242,7 @@ export function Dashboard({
                 </button>
                 {!data.profile && (
                   <small className="muted">
-                    Guarda tu perfil para crear o unirte a una sala.
+                    Guarda tu perfil para crear una sala.
                   </small>
                 )}
               </form>
@@ -232,28 +250,56 @@ export function Dashboard({
             <section className="panel join-panel" id="unirse">
               <p className="eyebrow">03 / EQUIPO REUNIDO</p>
               <h2>¿Te han enviado un código?</h2>
-              <form onSubmit={join} className="join-form">
-                <label>
-                  Código de invitación
-                  <input
-                    name="code"
-                    className="code-input"
-                    required
-                    pattern="[A-Fa-f0-9]{8}"
-                    minLength={8}
-                    maxLength={8}
-                    placeholder="A1B2C3D4"
-                    autoComplete="off"
-                    spellCheck={false}
-                  />
-                </label>
-                <button
-                  className="button secondary"
-                  disabled={busy || !data.profile}
+              <form
+                onSubmit={join}
+                className="join-form"
+                aria-label="Unirse a una sala"
+              >
+                <div
+                  className={`join-fields ${!data.profile ? "needs-profile" : ""}`}
                 >
+                  {!data.profile && (
+                    <label key="name">
+                      Nombre para entrar
+                      <input
+                        name="join-name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        minLength={2}
+                        maxLength={24}
+                        placeholder="Tu nombre de investigador"
+                        autoComplete="nickname"
+                        aria-describedby="join-profile-help"
+                      />
+                    </label>
+                  )}
+                  <label key="code">
+                    Código de invitación
+                    <input
+                      name="code"
+                      className="code-input"
+                      required
+                      pattern="[A-Fa-f0-9]{8}"
+                      minLength={8}
+                      maxLength={8}
+                      placeholder="A1B2C3D4"
+                      autoComplete="off"
+                      spellCheck={false}
+                    />
+                  </label>
+                </div>
+                <button className="button secondary" disabled={busy}>
                   Entrar a la sala
                   <ArrowRight size={17} />
                 </button>
+                {!data.profile && (
+                  <p className="join-help muted" id="join-profile-help">
+                    Escribe tu nombre y el código. Guardaremos tu perfil antes
+                    de entrar a la sala.
+                  </p>
+                )}
+                {joinError && <ErrorNotice message={joinError} />}
               </form>
             </section>
           </div>

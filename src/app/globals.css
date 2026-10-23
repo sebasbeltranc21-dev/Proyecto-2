@@ -1735,3 +1735,35 @@ dialog.modal::backdrop {
     top: 18%;
   }
 }
+
+.join-form {
+  flex-wrap: wrap;
+}
+.join-fields {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.join-fields.needs-profile {
+  grid-template-columns: 1fr 1fr;
+}
+.join-help {
+  flex-basis: 100%;
+  font-size: 11px;
+  margin: 0;
+}
+.join-form > .notice {
+  flex-basis: 100%;
+  margin: 0;
+}
+@media (max-width: 1050px) {
+  .join-fields {
+    width: 100%;
+  }
+}
+@media (max-width: 760px) {
+  .join-fields.needs-profile {
+    grid-template-columns: 1fr;
+  }
+}

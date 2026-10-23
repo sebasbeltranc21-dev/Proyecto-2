@@ -53,4 +53,4 @@ Tras autorizar el equipo:
 4. Desplegar el commit verificado y comprobar estado Ready y URL.
 5. Probar registro/confirmación de correo y dos sesiones reales, incluida entrega de eventos Realtime, recarga, chat, votación y resultados.
 
-No hay una URL de publicación confirmada. No se considera completada la validación multijugador real.
+Actualización posterior: el panel mostró Ready para la rama `main` y se verificó HTTP 200 en <https://proyecto-2-rho.vercel.app>. El usuario confirmó inicio de sesión y creación de una sala. Se corrigió el requisito de perfil guardado en el formulario de invitación y se añadieron cinco pruebas del componente. La autorización administrativa de Vercel y la validación de una partida completa entre dos navegadores siguen pendientes.

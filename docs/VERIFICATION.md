@@ -2,6 +2,12 @@
 
 Supabase ya está conectado y las cuatro migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
 
+## Corrección del formulario de invitación
+
+El botón de entrada exigía un perfil guardado sin explicar el requisito junto al código. Ahora permanece disponible para usuarios autenticados nuevos; el formulario solicita su nombre, valida el código y guarda el perfil antes de solicitar la entrada. Los perfiles existentes no se sobrescriben. Los errores se presentan dentro del formulario y un fallo de entrada conserva el código para reintentar.
+
+Se añadieron cinco pruebas del componente Dashboard con React Testing Library y JSDOM: entrada con perfil nuevo, entrada con perfil existente, nombre vacío, fallo de guardado y reintento tras guardar el perfil. Estas pruebas simulan el transporte API y la navegación; no equivalen a una partida real entre navegadores. Total local: 17 pruebas aprobadas. No se cambiaron permisos ni funciones SQL.
+
 Los siguientes resultados describen la verificación inicial del 22 de octubre, antes de conectar los servicios.
 
 # Verificación — 22 de octubre de 2026
