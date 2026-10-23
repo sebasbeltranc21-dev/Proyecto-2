@@ -88,6 +88,21 @@ export default function Page() {
           </div>
         </div>
       </section>
+      <aside className="landing-dispatch" aria-label="Nota de la central">
+        <Fingerprint size={32} aria-hidden="true" />
+        <div>
+          <span className="eyebrow">NOTA DE LA CENTRAL</span>
+          <p>
+            Las apariencias engañan.{" "}
+            <strong>Las pruebas cuentan otra historia.</strong>
+          </p>
+        </div>
+        <span className="dispatch-stamp" aria-hidden="true">
+          SE REQUIERE
+          <br />
+          INVESTIGADOR
+        </span>
+      </aside>
       <section className="method" id="como-jugar">
         <div className="section-heading">
           <div>

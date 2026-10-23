@@ -216,13 +216,20 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
         <ArrowLeft size={16} />
         Mi expediente
       </Link>
-      <div className="room-top">
+      <div className="room-top operation-header">
         <div>
           <p className="eyebrow">
             EXPEDIENTE {data.case.theme === "train" ? "002" : "001"} /
             COOPERATIVO
           </p>
           <h1>{data.case.title}</h1>
+          <p className="operation-label">
+            {finished
+              ? "ARCHIVO DE LA INVESTIGACIÓN"
+              : lobby
+                ? "EQUIPO EN PREPARACIÓN"
+                : "INVESTIGACIÓN EN CURSO"}
+          </p>
         </div>
         <div className="room-code">
           <span>CÓDIGO DE SALA</span>
@@ -351,6 +358,18 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
           ) : finished ? (
             <CaseEnding data={data} uid={uid}>
               <section className="panel results-panel">
+                <div className="report-masthead">
+                  <span>
+                    INFORME FINAL /{" "}
+                    {data.case.theme === "train" ? "002" : "001"}
+                  </span>
+                  <span
+                    className={`report-stamp ${game.success ? "solved" : "unsolved"}`}
+                    aria-hidden="true"
+                  >
+                    {game.success ? "RESUELTO" : "SIN RESOLVER"}
+                  </span>
+                </div>
                 <Trophy className="gold" size={40} />
                 <p className="eyebrow">LA VERDAD SALE A LA LUZ</p>
                 <h2>
@@ -404,7 +423,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
             </CaseEnding>
           ) : (
             <>
-              <section className="panel story-panel">
+              <section className="panel story-panel field-report">
                 <div className="story-scene">
                   <CaseScene theme={data.case.theme} />
                 </div>

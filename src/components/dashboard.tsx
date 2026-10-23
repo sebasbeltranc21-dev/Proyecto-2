@@ -11,12 +11,18 @@ import {
   FolderOpen,
   Check,
   Save,
+  Fingerprint,
+  Paperclip,
+  Files,
+  KeyRound,
+  BadgeCheck,
 } from "lucide-react";
 import { browserClient } from "@/lib/supabase/client";
 import { act } from "@/lib/api";
 import type { HomeSnapshot } from "@/lib/types";
 import { actionSchema, roomCode } from "@/lib/validation";
 import { Avatar, ErrorNotice, Skeleton, avatarIcons } from "./ui";
+import { DeskIllustration } from "./office-art";
 export function Dashboard({
   anonymous,
   initialData,
@@ -139,16 +145,50 @@ export function Dashboard({
   }
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading desk-heading">
         <div>
-          <p className="eyebrow">CENTRAL DE INVESTIGACIÓN</p>
-          <h1>Tu siguiente caso te espera.</h1>
+          <p className="eyebrow">
+            <Fingerprint size={15} aria-hidden="true" /> ARCHIVO CENTRAL / MODO
+            MISTERIO
+          </p>
+          <h1>Tu mesa de investigación.</h1>
         </div>
         <button className="button quiet" onClick={logout} disabled={busy}>
           <LogOut size={16} />
           Cerrar sesión
         </button>
       </div>
+      <section className="office-welcome" aria-label="Central de investigación">
+        <div className="office-welcome-copy">
+          <span className="office-label">
+            DEPARTAMENTO DE CASOS SIN RESOLVER
+          </span>
+          <h2>
+            El siguiente misterio
+            <br />
+            empieza <em>en tu escritorio.</em>
+          </h2>
+          <p>
+            Abre un expediente, reúne a tu equipo y sigue el rastro. La verdad
+            está en los detalles.
+          </p>
+          {data && (
+            <nav
+              className="office-shortcuts"
+              aria-label="Accesos del escritorio"
+            >
+              <a href="#abrir-expediente">
+                <FolderOpen size={16} aria-hidden="true" /> Elegir caso{" "}
+                <ArrowRight size={14} aria-hidden="true" />
+              </a>
+              <a href="#unirse">
+                <KeyRound size={16} aria-hidden="true" /> Tengo un código
+              </a>
+            </nav>
+          )}
+        </div>
+        <DeskIllustration />
+      </section>
       {anonymous && (
         <p className="notice">
           Has entrado como invitado. Conserva esta sesión para regresar a tus
@@ -166,55 +206,19 @@ export function Dashboard({
       {!data && !error && <Skeleton />}
       {data && (
         <>
-          <div className="dashboard-grid">
-            <section className="panel">
-              <p className="eyebrow">01 / IDENTIFICACIÓN</p>
-              <h2>Tu perfil de investigador</h2>
-              <form onSubmit={profile}>
-                <label>
-                  Nombre visible
-                  <input
-                    name="name"
-                    required
-                    minLength={2}
-                    maxLength={24}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="¿Cómo te llama tu equipo?"
-                  />
-                </label>
-                <fieldset>
-                  <legend>Elige tu emblema</legend>
-                  <div className="avatars">
-                    {Object.keys(avatarIcons).map((kind) => (
-                      <button
-                        type="button"
-                        aria-label={`Emblema ${kind}`}
-                        aria-pressed={avatar === kind}
-                        onClick={() => setAvatar(kind)}
-                        key={kind}
-                      >
-                        <Avatar kind={kind} />
-                      </button>
-                    ))}
-                  </div>
-                </fieldset>
-                <button className="button secondary" disabled={busy}>
-                  <Save size={16} />
-                  Guardar perfil
-                </button>
-                {saved && (
-                  <span className="saved" role="status">
-                    <Check size={14} />
-                    Guardado
-                  </span>
-                )}
-              </form>
-            </section>
-            <section className="panel create-panel">
-              <p className="eyebrow">02 / ABRIR EXPEDIENTE</p>
-              <h2>Crea una sala privada</h2>
-              <p className="muted">Elige el escenario · 2–8 personas</p>
+          <div className="dashboard-grid office-grid">
+            <section
+              className="panel create-panel folder-catalog"
+              id="abrir-expediente"
+            >
+              <p className="eyebrow">MESA DE ENTRADA / CASOS</p>
+              <div className="catalog-heading">
+                <h2>Crea una sala privada</h2>
+                <Files size={23} aria-hidden="true" />
+              </div>
+              <p className="muted">
+                {data.cases?.length ?? 0} expedientes disponibles · 2–8 personas
+              </p>
               <form onSubmit={create}>
                 <fieldset className="case-picker">
                   <legend>Elige el caso</legend>
@@ -232,20 +236,39 @@ export function Dashboard({
                           onChange={() => setCaseSlug(c.slug)}
                           required
                         />
-                        <Image
-                          unoptimized
-                          src={
-                            c.theme === "train" ? "/train.svg" : "/museum.svg"
-                          }
-                          alt=""
-                          width={420}
-                          height={240}
-                        />
-                        <span>
+                        <span className="folder-tab" aria-hidden="true">
+                          CASO {c.theme === "train" ? "002" : "001"}
+                        </span>
+                        <span className="folder-photo">
+                          <Image
+                            unoptimized
+                            src={
+                              c.theme === "train" ? "/train.svg" : "/museum.svg"
+                            }
+                            alt=""
+                            width={420}
+                            height={240}
+                          />
+                          <Paperclip
+                            size={22}
+                            className="folder-clip"
+                            aria-hidden="true"
+                          />
+                        </span>
+                        <span className="folder-copy">
                           <b>{c.title}</b>
                           <small>
                             {c.suspect_count} sospechosos · Cooperativo
                           </small>
+                          <span className="folder-selection">
+                            <span
+                              className="folder-selection-dot"
+                              aria-hidden="true"
+                            />
+                            {caseSlug === c.slug
+                              ? "Seleccionado"
+                              : "Elegir expediente"}
+                          </span>
                         </span>
                         {caseSlug === c.slug && (
                           <Check size={17} aria-hidden="true" />
@@ -304,66 +327,130 @@ export function Dashboard({
                 </button>
                 {!data.profile && (
                   <small className="muted">
-                    Guarda tu perfil para crear una sala.
+                    <a href="#perfil-investigador" className="text-link">
+                      Guarda tu perfil para crear una sala.
+                    </a>
                   </small>
                 )}
               </form>
             </section>
-            <section className="panel join-panel" id="unirse">
-              <p className="eyebrow">03 / EQUIPO REUNIDO</p>
-              <h2>¿Te han enviado un código?</h2>
-              <form
-                onSubmit={join}
-                className="join-form"
-                aria-label="Unirse a una sala"
+            <div className="office-sidebar">
+              <section
+                className="panel credential-panel"
+                id="perfil-investigador"
               >
-                <div
-                  className={`join-fields ${!data.profile ? "needs-profile" : ""}`}
-                >
-                  {!data.profile && (
-                    <label key="name">
-                      Nombre para entrar
-                      <input
-                        name="join-name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        minLength={2}
-                        maxLength={24}
-                        placeholder="Tu nombre de investigador"
-                        autoComplete="nickname"
-                        aria-describedby="join-profile-help"
-                      />
-                    </label>
-                  )}
-                  <label key="code">
-                    Código de invitación
+                <p className="eyebrow">ARCHIVO PERSONAL / IDENTIFICACIÓN</p>
+                <h2>Tu perfil de investigador</h2>
+                <div className="investigator-credential">
+                  <Avatar kind={data.profile?.avatar || avatar} />
+                  <div>
+                    <span>CREDENCIAL DE INVESTIGACIÓN</span>
+                    <b>{data.profile?.name || "Pendiente de identificación"}</b>
+                    <small>
+                      {data.profile
+                        ? "Perfil guardado"
+                        : "Completa tu nombre y emblema"}
+                    </small>
+                  </div>
+                  <BadgeCheck size={25} aria-hidden="true" />
+                </div>
+                <form onSubmit={profile}>
+                  <label>
+                    Nombre visible
                     <input
-                      name="code"
-                      className="code-input"
+                      name="name"
                       required
-                      pattern="[A-Fa-f0-9]{8}"
-                      minLength={8}
-                      maxLength={8}
-                      placeholder="A1B2C3D4"
-                      autoComplete="off"
-                      spellCheck={false}
+                      minLength={2}
+                      maxLength={24}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="¿Cómo te llama tu equipo?"
                     />
                   </label>
-                </div>
-                <button className="button secondary" disabled={busy}>
-                  Entrar a la sala
-                  <ArrowRight size={17} />
-                </button>
-                {!data.profile && (
-                  <p className="join-help muted" id="join-profile-help">
-                    Escribe tu nombre y el código. Guardaremos tu perfil antes
-                    de entrar a la sala.
-                  </p>
-                )}
-                {joinError && <ErrorNotice message={joinError} />}
-              </form>
-            </section>
+                  <fieldset>
+                    <legend>Elige tu emblema</legend>
+                    <div className="avatars">
+                      {Object.keys(avatarIcons).map((kind) => (
+                        <button
+                          type="button"
+                          aria-label={`Emblema ${kind}`}
+                          aria-pressed={avatar === kind}
+                          onClick={() => setAvatar(kind)}
+                          key={kind}
+                        >
+                          <Avatar kind={kind} />
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+                  <button className="button secondary" disabled={busy}>
+                    <Save size={16} />
+                    Guardar perfil
+                  </button>
+                  {saved && (
+                    <span className="saved" role="status">
+                      <Check size={14} />
+                      Guardado
+                    </span>
+                  )}
+                </form>
+              </section>
+              <section className="panel join-panel" id="unirse">
+                <p className="eyebrow">ACCESO POR INVITACIÓN</p>
+                <h2>¿Te han enviado un código?</h2>
+                <form
+                  onSubmit={join}
+                  className="join-form"
+                  aria-label="Unirse a una sala"
+                >
+                  <div
+                    className={`join-fields ${!data.profile ? "needs-profile" : ""}`}
+                  >
+                    {!data.profile && (
+                      <label key="name">
+                        Nombre para entrar
+                        <input
+                          name="join-name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required
+                          minLength={2}
+                          maxLength={24}
+                          placeholder="Tu nombre de investigador"
+                          autoComplete="nickname"
+                          aria-describedby="join-profile-help"
+                        />
+                      </label>
+                    )}
+                    <label key="code">
+                      Código de invitación
+                      <input
+                        name="code"
+                        className="code-input"
+                        required
+                        pattern="[A-Fa-f0-9]{8}"
+                        minLength={8}
+                        maxLength={8}
+                        placeholder="A1B2C3D4"
+                        autoComplete="off"
+                        spellCheck={false}
+                      />
+                    </label>
+                  </div>
+                  <button className="button secondary" disabled={busy}>
+                    Entrar a la sala
+                    <ArrowRight size={17} />
+                  </button>
+                  {!data.profile && (
+                    <p className="join-help muted" id="join-profile-help">
+                      Escribe tu nombre y el código. Guardaremos tu perfil antes
+                      de entrar a la sala.
+                    </p>
+                  )}
+                  {joinError && <ErrorNotice message={joinError} />}
+                </form>
+              </section>
+            </div>
           </div>
           <div className="stats-strip">
             <div>
@@ -379,8 +466,15 @@ export function Dashboard({
               <span>Puntos acumulados</span>
             </div>
           </div>
+          <div className="archive-heading">
+            <div>
+              <p className="eyebrow">REGISTRO DE ACTIVIDAD</p>
+              <h2>El archivo del investigador.</h2>
+            </div>
+            <Fingerprint size={36} aria-hidden="true" />
+          </div>
           <div className="two-col">
-            <section className="panel">
+            <section className="panel archive-panel" id="mis-expedientes">
               <h2>
                 <FolderOpen size={20} />
                 Tus expedientes
@@ -398,7 +492,9 @@ export function Dashboard({
                         {r.title && (
                           <small className="recent-case-title">{r.title}</small>
                         )}
-                        <span className="muted">
+                        <span
+                          className={`archive-status ${r.status === "active" ? "active" : r.status === "finished" ? "finished" : "waiting"}`}
+                        >
                           {r.status === "lobby"
                             ? "En espera"
                             : r.status === "active"
@@ -436,7 +532,7 @@ export function Dashboard({
                 </ul>
               )}
             </section>
-            <section className="panel">
+            <section className="panel leaderboard-panel">
               <h2>
                 <Trophy size={20} />
                 Clasificación

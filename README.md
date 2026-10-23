@@ -18,6 +18,7 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 - Cinemáticas finales originales de museo y tren: cuatro escenas (14 segundos), detención del responsable cuando el equipo resuelve el caso y desenlace distinto ante fallo o empate. Controles de pausa, avance, omisión y repetición; con movimiento reducido se leen como una historieta estática.
 - Migraciones con RLS y funciones para acciones críticas. No se necesita `service_role`.
 - Diseño adaptable con dos escenarios originales y nueve personajes SVG de estilo cómic: facciones, peinados, ropa y accesorios por profesión. Los mismos personajes aparecen de cuerpo completo en las cinemáticas, con manos, poses y expresiones; investigador y agentes tienen diseños propios. Dibujos de las evidencias y animaciones breves, con soporte para movimiento reducido; confirmaciones, errores y estados vacíos.
+- Interfaz de oficina de detectives: escritorio ilustrado, carpetas seleccionables con fotografías de los escenarios, credencial, archivo personal, pestañas de expediente e informe final sellado según el resultado oficial. Los accesos del escritorio llevan a los formularios reales y los estados del archivo proceden de la base de datos.
 
 Los modos competitivo y traidor son futuros. Hoy solo se ofrece investigación cooperativa. [Arquitectura y límites](docs/ARCHITECTURE.md).
 
