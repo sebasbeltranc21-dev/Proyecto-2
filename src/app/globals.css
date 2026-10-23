@@ -1171,6 +1171,7 @@ dd {
 }
 .suspect {
   padding: 24px;
+  overflow: hidden;
 }
 .suspect-heading {
   display: flex;
@@ -1226,6 +1227,7 @@ dd {
   border-radius: 5px;
   padding: 24px;
   margin: 28px 0;
+  display: flow-root;
 }
 .solution h3 {
   color: var(--gold);
@@ -1765,5 +1767,236 @@ dialog.modal::backdrop {
 @media (max-width: 760px) {
   .join-fields.needs-profile {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Original vector sketches: brief entrance motion, never a looping distraction. */
+.suspect-art {
+  position: relative;
+  color: var(--portrait-accent, #b7b4a0);
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 65%, #36443b 0%, #1c2926 68%);
+  border: 1px solid #435148;
+  border-radius: 5px;
+  isolation: isolate;
+}
+.portrait-drawing {
+  animation: portrait-settle 2.4s ease-out both;
+  transform-origin: 50% 100%;
+}
+.suspect-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.portrait-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: portrait-blink 3.2s ease-in-out;
+}
+.portrait-annotation {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  font: 7px monospace;
+  letter-spacing: 1.2px;
+  color: #c1c8b7;
+}
+.suspect > .suspect-art {
+  margin: -24px -24px 23px;
+  border-width: 0 0 1px;
+  border-radius: 5px 5px 0 0;
+}
+.suspect > .suspect-art svg {
+  height: 210px;
+}
+.case-lineup {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 24px 0;
+}
+.case-lineup figure {
+  margin: 0;
+  min-width: 0;
+}
+.case-lineup figcaption {
+  margin-top: 9px;
+  font-size: 10px;
+  line-height: 1.5;
+  text-align: center;
+  color: #c6ccbf;
+}
+.case-lineup .portrait-annotation {
+  display: none;
+}
+.solution > .suspect-art {
+  width: 120px;
+  float: right;
+  margin: 0 0 12px 20px;
+}
+.solution .portrait-annotation {
+  display: none;
+}
+.evidence-art {
+  position: relative;
+  margin: 0 0 20px;
+  padding-top: 12px;
+  border-block: 1px solid #9a98764d;
+  color: #455749;
+  background-image:
+    linear-gradient(#7d87600c 1px, transparent 1px),
+    linear-gradient(90deg, #7d87600c 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.evidence-drawing {
+  animation: evidence-develop 1.6s ease-out both;
+  transition: transform 0.25s ease;
+}
+.evidence-drawing svg {
+  width: 100%;
+  height: 150px;
+  display: block;
+}
+.evidence-card:hover .evidence-drawing {
+  transform: translateY(-3px) rotate(-1deg);
+}
+.art-note {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  font: 7px monospace;
+  letter-spacing: 1.2px;
+  opacity: 0.75;
+}
+.art-cross {
+  position: absolute;
+  font: 12px monospace;
+  opacity: 0.45;
+}
+.art-cross-left {
+  left: 0;
+  bottom: 7px;
+}
+.art-cross-right {
+  right: 0;
+  top: 7px;
+}
+.art-signal {
+  animation: sketch-signal 3s ease-in-out;
+}
+.art-wave {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sketch-wave 2.8s ease-in-out;
+}
+.final-evidence article {
+  display: flow-root;
+}
+.final-evidence .evidence-art {
+  float: left;
+  width: 110px;
+  margin: 0 18px 10px 0;
+  color: #acbca2;
+  border-color: #435148;
+}
+.final-evidence .evidence-drawing svg {
+  height: 85px;
+}
+.final-evidence .art-note {
+  display: none;
+}
+@keyframes portrait-settle {
+  0% {
+    transform: translateY(8px) rotate(-2deg);
+    opacity: 0.3;
+  }
+  45% {
+    transform: translateY(-2px) rotate(1deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+@keyframes portrait-blink {
+  0%,
+  40%,
+  48%,
+  74%,
+  82%,
+  100% {
+    transform: scaleY(1);
+  }
+  44%,
+  78% {
+    transform: scaleY(0.15);
+  }
+}
+@keyframes evidence-develop {
+  from {
+    opacity: 0.2;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes sketch-signal {
+  0%,
+  35%,
+  65%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50%,
+  80% {
+    opacity: 0.3;
+  }
+}
+@keyframes sketch-wave {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  20%,
+  60% {
+    transform: scaleY(0.35);
+  }
+  40%,
+  80% {
+    transform: scaleY(1.25);
+  }
+}
+@media (max-width: 760px) {
+  .case-lineup {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .case-lineup .suspect-art svg {
+    height: 130px;
+  }
+  .case-lineup figcaption {
+    font-size: 11px;
+  }
+  .solution > .suspect-art {
+    width: 85px;
+    margin-left: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-drawing,
+  .portrait-eyes,
+  .evidence-drawing,
+  .art-signal,
+  .art-wave {
+    animation: none !important;
+    transition: none !important;
+  }
+  .evidence-card:hover .evidence-drawing {
+    transform: none;
   }
 }

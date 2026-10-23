@@ -2,6 +2,14 @@
 
 Supabase ya está conectado y las cuatro migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
 
+## Personajes y evidencias ilustradas
+
+El usuario confirmó haber jugado una partida y solicitó ilustraciones. Se añadieron cuatro retratos originales y dibujos para las doce evidencias del caso, además de un dibujo neutro para títulos desconocidos. Se muestran en el briefing, las fichas de sospechosos, las tarjetas de pistas y el expediente final. El retrato del responsable solo se selecciona a partir de la solución que entrega el servidor al terminar.
+
+Los dibujos usan SVG y CSS, sin dependencias nuevas ni peticiones de imágenes externas. Las animaciones duran entre 1,6 y 3,2 segundos, se ejecutan una vez al aparecer y se desactivan con `prefers-reduced-motion`. Los dibujos son decorativos: los nombres, textos y avisos de privacidad siguen siendo la información accesible. Solo se ilustran las evidencias presentes en el snapshot autorizado; no se incorporaron textos de pistas ni soluciones al módulo visual.
+
+Verificación local: ESLint, compilación de producción con TypeScript y las 17 pruebas existentes aprobadas. Se revisaron los componentes reales renderizados estáticamente con los estilos del proyecto en el navegador de revisión: escritorio de 1363 px y un iframe de 390 px, sin desbordamiento horizontal. Esta galería temporal solo contiene títulos y texto de revisión, no se incluye en la aplicación ni sustituye una nueva prueba autenticada del juego. El supervisor de preview no acepta los argumentos de Next.js; se usó su servidor estático admitido para revisar las ilustraciones sin modificar el arranque de la aplicación.
+
 ## Corrección del formulario de invitación
 
 El botón de entrada exigía un perfil guardado sin explicar el requisito junto al código. Ahora permanece disponible para usuarios autenticados nuevos; el formulario solicita su nombre, valida el código y guarda el perfil antes de solicitar la entrada. Los perfiles existentes no se sobrescriben. Los errores se presentan dentro del formulario y un fallo de entrada conserva el código para reintentar.

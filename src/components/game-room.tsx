@@ -29,6 +29,7 @@ import { act } from "@/lib/api";
 import type { Action } from "@/lib/validation";
 import type { RoomSnapshot } from "@/lib/types";
 import { Avatar, ErrorNotice, Skeleton } from "./ui";
+import { EvidenceIllustration, SuspectPortrait } from "./case-art";
 export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const [data, setData] = useState<RoomSnapshot | null>(null);
   const [error, setError] = useState("");
@@ -274,6 +275,14 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                   La joya ya no estaba.
                 </h2>
                 <p>{data.case.intro}</p>
+                <div className="case-lineup" aria-label="Personas de interés">
+                  {data.suspects.map((s) => (
+                    <figure key={s.id}>
+                      <SuspectPortrait id={s.id} />
+                      <figcaption>{s.name}</figcaption>
+                    </figure>
+                  ))}
+                </div>
                 <div className="rule-grid">
                   <div>
                     <Clock3 size={18} />
@@ -341,6 +350,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                   : "No hubo una acusación única del equipo: empate o ausencia de votos."}
               </p>
               <div className="solution">
+                {solved && <SuspectPortrait id={solved.id} />}
                 <span className="eyebrow">RESPONSABLE DEL ROBO</span>
                 <h3>{solved?.name}</h3>
                 <p>{data.solution?.explanation}</p>
@@ -448,6 +458,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                             </>
                           )}
                         </span>
+                        <EvidenceIllustration title={e.title} />
                         <h3>{e.title}</h3>
                         <p>{e.body}</p>
                         {e.user_id && (
@@ -471,6 +482,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                       className={`panel suspect ${data.my_vote === s.id ? "voted" : ""}`}
                       key={s.id}
                     >
+                      <SuspectPortrait id={s.id} />
                       <div className="suspect-heading">
                         <span className="suspect-number">0{i + 1}</span>
                         <div>
@@ -525,6 +537,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
               <summary>Consultar las evidencias de tu expediente</summary>
               {data.evidence.map((e) => (
                 <article key={e.id}>
+                  <EvidenceIllustration title={e.title} />
                   <h3>
                     {e.title}
                     {e.user_id ? " · Privada" : ""}

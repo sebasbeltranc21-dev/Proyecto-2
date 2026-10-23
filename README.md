@@ -15,7 +15,7 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 - Pistas privadas por identidad; Supabase Realtime y recuperación por consultas periódicas.
 - Votos inmutables, cierre transaccional, puntos, historial, estadísticas y clasificación.
 - Migraciones con RLS y funciones para acciones críticas. No se necesita `service_role`.
-- Diseño adaptable, ilustración SVG original, confirmaciones, errores y estados vacíos.
+- Diseño adaptable con escenario original, cuatro retratos SVG y dibujos de las evidencias. Animaciones breves de entrada, parpadeo y grabación, con soporte para movimiento reducido; confirmaciones, errores y estados vacíos.
 
 Los modos competitivo y traidor son futuros. Hoy solo se ofrece investigación cooperativa. [Arquitectura y límites](docs/ARCHITECTURE.md).
 
