@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
-test("practice access explains fictional accounts without offering email registration", async ({
+test("practice access offers fictional registration and explains persistent accounts without email", async ({
   page,
 }) => {
   const outgoing: string[] = [];
@@ -15,13 +15,20 @@ test("practice access explains fictional accounts without offering email registr
   ).toHaveAttribute("placeholder", "ana@example.com");
   await expect(
     page.getByRole("button", {
-      name: /Crear cuenta|Crear mi cuenta|Continuar como invitado/,
+      name: /^(Crear cuenta|Continuar como invitado)$/,
     }),
   ).toHaveCount(0);
+  await page.getByRole("button", { name: "Crear cuenta ficticia" }).click();
+  await expect(
+    page.getByRole("button", { name: "Crear mi cuenta y entrar" }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Repite la contraseña")).toBeVisible();
   await page
-    .getByText("¿Cómo consigo una cuenta de práctica?", { exact: true })
+    .getByText("¿Cómo recupero mis datos de juego?", { exact: true })
     .click();
-  await expect(page.getByText(/son ejemplos y deben crearse/)).toBeVisible();
+  await expect(
+    page.getByText(/perfil, historial y puntuación se guardan en Supabase/),
+  ).toBeVisible();
   await expect(page.getByText(/No necesitas recibir correos/)).toBeVisible();
   expect(outgoing).toEqual([]);
 });

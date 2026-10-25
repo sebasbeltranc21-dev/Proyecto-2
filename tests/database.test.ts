@@ -53,7 +53,7 @@ async function room(caseSlug = "ultima-luz") {
 beforeAll(async () => {
   db = new PGlite();
   await db.exec(
-    `create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb $$;grant usage on schema auth to authenticated,anon;grant execute on all functions in schema auth to authenticated,anon;insert into auth.users values('${a}'),('${b}'),('${c}');`,
+    `create role anon;create role authenticated;create role service_role bypassrls;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb $$;grant usage on schema auth to authenticated,anon;grant execute on all functions in schema auth to authenticated,anon;insert into auth.users values('${a}'),('${b}'),('${c}');`,
   );
   for (const f of readdirSync("supabase/migrations").sort())
     await db.exec(readFileSync("supabase/migrations/" + f, "utf8"));
@@ -71,6 +71,32 @@ beforeEach(async () => {
     "reset role;truncate public.mm_rooms cascade;truncate mm_private.join_limits;",
   );
   await as(a);
+});
+test("only the server role can claim registration slots, with limits and expiry stored in PostgreSQL", async () => {
+  await expect(
+    db.query("select public.mm_claim_registration('test', 2)"),
+  ).rejects.toThrow(/permission denied/);
+  await db.exec("reset role;set role service_role");
+  const claim = async () =>
+    (
+      await db.query<{ allowed: boolean }>(
+        "select public.mm_claim_registration('test', 2) as allowed",
+      )
+    ).rows[0].allowed;
+  expect(await claim()).toBe(true);
+  expect(await claim()).toBe(true);
+  expect(await claim()).toBe(false);
+  await db.exec(
+    "update mm_private.registration_limits set window_start = now() - interval '2 hours' where bucket = 'test'",
+  );
+  expect(await claim()).toBe(true);
+  await db.exec("reset role;set role anon");
+  await expect(
+    db.query("select public.mm_claim_registration('test', 2)"),
+  ).rejects.toThrow(/permission denied/);
+  await expect(
+    db.query("select * from mm_private.registration_limits"),
+  ).rejects.toThrow(/permission denied/);
 });
 test("catalog selects the train without changing the museum or exposing either solution", async () => {
   const home = (

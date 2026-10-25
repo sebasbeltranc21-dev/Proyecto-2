@@ -1,59 +1,67 @@
-# Cuentas y datos ficticios para el Laboratorio 4
+# Cuentas ficticias desde la aplicación
 
-El PDF del laboratorio pide usar solo datos inventados, guardar los datos en
-Supabase y demostrar persistencia e interacción entre dos usuarios. Su guía propone
-crear las cuentas ficticias desde el panel de Supabase. El dominio `example.com`
-se usa aquí para los ejemplos; no hace falta disponer de un buzón.
+## Crear tu cuenta y recuperar tus datos
 
-## Preparar dos cuentas
+1. En la web, entra en **Mi expediente → Crear cuenta ficticia**.
+2. Inventa un correo terminado en `@example.com`, como `detective123@example.com`.
+   La parte anterior a `@` debe tener entre 2 y 48 caracteres: letras sin tildes,
+   números, punto, guion o guion bajo, empezando por letra o número.
+3. Elige una contraseña exclusiva de práctica de entre 8 y 128 caracteres y
+   repítela. Pulsa **Crear mi cuenta y entrar**. No necesitas recibir correos ni
+   crear la cuenta manualmente en un panel.
+4. Guarda un alias inventado en el perfil. Las partidas, historial y puntuación
+   se asocian a tu identidad de Supabase Auth.
+5. Para volver, usa **Iniciar sesión** con el mismo correo y contraseña desde
+   cualquier navegador o dispositivo. No crees una segunda cuenta para recuperar
+   el progreso. Al no existir un buzón real, no se recuperan contraseñas por correo.
 
-1. En el proyecto **Proyecto 2**, abre **Authentication → Users**.
-2. Pulsa **Add user → Create new user**, no **Invite user**.
-3. Crea `ana@example.com` y una contraseña exclusiva de práctica. Activa
-   **Auto Confirm User** si aparece. Repite con `luis@example.com`.
-4. Entrega las credenciales correspondientes a cada participante por separado.
-   Los correos de este documento son ejemplos: no implica que esas cuentas ya existan.
-5. En la web, entra con una cuenta y guarda un alias inventado, como
-   **Detective Lince** o **Agente Búho**. Usa únicamente teorías del caso en el chat.
+Cada jugador crea una cuenta distinta. Los correos anteriores son ejemplos, no
+credenciales compartidas. Los perfiles y mensajes deben contener solo datos
+inventados. Las cuentas guardadas anteriormente permanecen sin modificaciones.
 
-No hace falta cambiar SMTP ni desactivar la confirmación global para usar usuarios
-creados y confirmados por el responsable. Conserva Email y el acceso con contraseña
-activados. Para cerrar también el registro directo por API, desactiva
-**Allow new users to sign up** y **Anonymous Sign-Ins** desde el panel. La interfaz
-no ofrece registro ni nuevos accesos anónimos. Esta edición no cambia esos ajustes
-remotos ni puede verificar automáticamente si un texto libre es ficticio.
+## Implementación y límites
 
-## Verificar y tomar las cuatro capturas
+`register-fictional` es una Edge Function de Supabase. Valida el correo ficticio y
+la longitud de contraseña, reclama un cupo persistente y crea un usuario nuevo con
+`email_confirm: true` mediante la API administrativa de Auth. No envía invitaciones,
+no modifica cuentas existentes y no recibe roles ni metadatos del cliente. Si el
+correo ya existe, el usuario debe iniciar sesión o elegir otro.
 
-1. Entra como Ana, guarda su alias y completa una partida: captura el resultado.
-2. En otro navegador, entra con las mismas credenciales de Ana y muestra que su
-   perfil y resultado siguen en el expediente. No basta la misma sesión de navegador.
-3. En dos navegadores o contextos separados, entra como Ana y Luis. Crea una sala
-   con Ana y une a Luis usando su código. Ana envía una teoría inventada: captura A.
-4. Comprueba que Luis recibe ese mensaje en vivo y responde: captura B. Recarga y
-   comprueba que los mensajes guardados siguen visibles. El chat conserva su envío,
-   guardado en Supabase, sincronización Realtime y recuperación por consultas.
+El navegador solo envía la clave publicable. La función verifica esa clave; por eso
+su configuración usa `verify_jwt = false`, ya que aún no existe una sesión al
+registrarse. Los secretos administrativos se leen únicamente del entorno alojado
+por Supabase y nunca se devuelven en la respuesta. Se permiten el origen de
+producción y localhost para desarrollo. Para otro dominio se debe revisar y
+actualizar la lista de orígenes de la función antes de desplegar allí.
 
-Para las pruebas automáticas existentes, proporciona `E2E_HOST_EMAIL`,
-`E2E_PLAYER_EMAIL`, `E2E_PASSWORD` (una contraseña solo de prueba compartida por
-ambas cuentas si ejecutas ese harness) y `E2E_BASE_URL` al proceso. No guardes
-contraseñas, sesiones ni claves secretas en el repositorio.
+La función `mm_claim_registration` usa `SECURITY INVOKER` y está concedida solo a
+`service_role`. Su tabla está en `mm_private`, protegida con RLS y sin acceso desde
+`anon` ni `authenticated`. Los límites son 100 intentos globales por hora y 3 por
+correo ficticio por hora; los registros caducados se limpian al registrar. Solo se
+guarda un hash del correo inventado y contadores, nunca contraseñas en esa tabla.
+No se cambian las tablas de partidas, casos, puntos ni el chat en vivo.
 
-## Datos anteriores y alcance del cambio
+## Configurar un proyecto nuevo
 
-La revisión inicial del proyecto alojado encontró tres usuarios de Auth, ninguno
-con `@example.com`; eso por sí solo no permite afirmar si sus datos son reales o
-inventados. No se modificaron ni borraron esas cuentas, perfiles, mensajes o
-partidas. Antes de entregar, el responsable debe revisar los registros anteriores
-y anonimizar o retirar cualquier dato personal real. Usar cuentas nuevas no borra
-lo que ya estaba guardado. No publiques capturas que muestren datos personales.
+Aplica las ocho migraciones y despliega `supabase/functions/register-fictional/index.ts`.
+Consulta primero `npx supabase functions deploy --help`; luego:
 
-La conexión de Supabase disponible permite consultar PostgreSQL, pero no ofrece
-administración de usuarios de Auth ni configuración de proveedores. Por eso no se
-afirma que las dos cuentas estén creadas, que el registro remoto esté desactivado
-o que se haya probado aún una partida autenticada con ellas. No se insertaron
-usuarios manualmente en las tablas internas de Auth.
+```bash
+npx supabase functions deploy register-fictional
+```
 
-El cambio solo modifica el acceso y las indicaciones para esta práctica. Las
-tablas, RLS, puntuación, casos y lógica de chat permanecen sin cambios. La rama
-`backup-antes-datos-ficticios` conserva el código anterior.
+El archivo `supabase/config.toml` contiene la configuración de la función. El
+proyecto debe tener habilitado el acceso Email con contraseña. La confirmación
+global de correos puede permanecer activa. No copies claves administrativas a
+variables públicas del frontend ni a GitHub.
+
+## Verificación alojada opcional
+
+El script `scripts/verify-fictional-registration.mjs` necesita las variables públicas
+habituales y autorización explícita mediante `VERIFY_FICTIONAL_ACCOUNTS=true`.
+Crea dos identidades temporales ficticias, prueba registro, duplicados, reconexión,
+chat Realtime y una partida de dos minutos; finalmente comprueba que una sesión
+nueva recupera perfil, historial y 150 puntos. Cierra sus sesiones y deja en
+`/tmp/mm-fictional-verification.json` los IDs exactos de sus fixtures para su
+limpieza acotada. No imprime contraseñas ni tokens. No lo ejecutes en CI sin
+configurar expresamente un proyecto de prueba.

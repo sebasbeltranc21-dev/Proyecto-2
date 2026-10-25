@@ -1,15 +1,14 @@
 # Actualización de integración — 23 de octubre de 2026
 
-## Acceso académico con datos ficticios — 24 de octubre de 2026
+## Registro ficticio desde la app — 24 de octubre de 2026
 
-- Se retiraron de la interfaz el registro con confirmación de correo y la creación de sesiones anónimas. El acceso usa cuentas ficticias precreadas y confirmadas en Supabase; los errores permiten reintentar sin inventar una sesión.
-- Portada, perfil, acceso por invitación y chat recuerdan usar datos inventados. El cambio en el chat solo añade texto de ayuda y `aria-describedby`; no modifica el transporte, persistencia, consultas ni permisos.
-- `npm test`: **40 pruebas aprobadas**, incluidas cinco nuevas de acceso; `npm run lint` y `npm run build` aprobados, con comprobación TypeScript en la compilación.
-- Consulta alojada de solo lectura: `mm_messages` sigue publicada en `supabase_realtime` y con RLS habilitado.
-- Playwright local no pudo iniciar: Chromium no estaba instalado y la descarga devolvió un ZIP inválido. Ninguna prueba de navegador local se atribuye como aprobada en esta revisión. La comprobación en CI se debe consultar por separado.
-- Pendiente: crear las cuentas ficticias desde Authentication → Users y comprobar el acceso y una partida entre ellas. No se borraron datos anteriores ni se cambió la configuración remota de Auth. [Pasos y límites](ACADEMIC-ACCOUNTS.md).
+- El usuario crea su propia cuenta desde **Crear cuenta ficticia**, con correo `@example.com`, contraseña y confirmación de contraseña. La Edge Function `register-fictional` confirma solo estas cuentas sin enviar correos; después la app inicia una sesión Auth normal.
+- Función desplegada en Proyecto 2 y octava migración aplicada. Verificación alojada de permisos: `anon` y `authenticated` no pueden ejecutar `mm_claim_registration`; `service_role` sí. La tabla de límites está en `mm_private`, con RLS y acceso exclusivo del servidor. Los asesores solo añaden la información esperada de RLS sin políticas en esa tabla privada; permanece el aviso previo de protección de contraseñas comprometidas documentado en Integración.
+- **52 pruebas locales aprobadas**, ESLint y compilación de producción aprobados. Cubren registro y login, rechazo de dominios personales, contraseñas distintas, duplicados, ausencia de sesión, límites persistentes, CORS y no divulgación de claves/metadatos. La revisión local de navegador sigue limitada por la descarga de Chromium; el workflow de GitHub comprueba las páginas públicas por separado.
+- **Prueba alojada con dos cuentas ficticias reales de Auth:** creación desde el mismo endpoint que usa la app, duplicado rechazado, contraseña original conservada y perfil recuperado después de cerrar sesión. El mensaje del primer usuario llegó al segundo por Realtime y siguió guardado en su snapshot. Se recorrieron las fases reales de un minuto del museo, ambos votaron y obtuvieron 150 puntos. Una sesión nueva recuperó el mismo ID, perfil, partida terminada, historial y 150 puntos. Es una prueba de integración API/Auth/Realtime, no una partida operada por dos personas en navegador.
+- Las sesiones de prueba se cierran al terminar. La limpieza se limita a los IDs y sala que creó el script; no modifica cuentas o partidas anteriores del usuario. [Uso del registro y prueba reproducible](ACADEMIC-ACCOUNTS.md).
 
-Supabase ya está conectado y las siete migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
+Las pruebas transaccionales anteriores se ejecutaron con las siete migraciones iniciales; ahora hay ocho migraciones aplicadas en Supabase. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
 
 ## Oficina de detectives y presentación final
 

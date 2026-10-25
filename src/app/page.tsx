@@ -54,8 +54,8 @@ export default function Page() {
             </span>
           </div>
           <p className="muted">
-            Proyecto académico: usa cuentas, alias y mensajes inventados. Entra
-            con una cuenta de práctica facilitada por el responsable.
+            Proyecto académico: usa cuentas, alias y mensajes inventados. Crea
+            tu cuenta ficticia y conserva tus credenciales para volver.
           </p>
         </div>
         <div className="case-visual">

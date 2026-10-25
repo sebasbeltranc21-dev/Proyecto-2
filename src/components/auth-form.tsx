@@ -3,35 +3,74 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, LockKeyhole } from "lucide-react";
 import { browserClient } from "@/lib/supabase/client";
-import { isConfigured } from "@/lib/config";
+import { isConfigured, supabaseConfig } from "@/lib/config";
 import { ErrorNotice } from "./ui";
 export function AuthForm() {
   const router = useRouter();
+  const [mode, setMode] = useState<"login" | "signup">("login");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
     setError("");
+    setNotice("");
     const form = new FormData(e.currentTarget);
     try {
       const client = browserClient();
-      const email = String(form.get("email")).trim();
+      const email = String(form.get("email")).trim().toLowerCase();
       const password = String(form.get("password"));
+      if (mode === "signup") {
+        if (!/^[a-z0-9][a-z0-9._-]{1,47}@example\.com$/.test(email))
+          throw new Error(
+            "Usa un correo inventado terminado en @example.com, como detective123@example.com.",
+          );
+        if (password.length < 8 || password.length > 128)
+          throw new Error("La contraseña debe tener entre 8 y 128 caracteres.");
+        if (password !== String(form.get("confirmation")))
+          throw new Error("Las contraseñas no coinciden.");
+        const { url, key } = supabaseConfig();
+        const response = await fetch(`${url}/functions/v1/register-fictional`, {
+          method: "POST",
+          headers: { apikey: key, "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const result = await response.json();
+        if (!response.ok || result.created !== true)
+          throw new Error(
+            result.error || "No se pudo crear la cuenta. Inténtalo de nuevo.",
+          );
+        // A successful registration is retained even if the following login fails.
+        setMode("login");
+        setNotice(
+          "Cuenta ficticia creada. Conserva tu correo y contraseña para recuperar tus datos de juego.",
+        );
+      }
       const { data, error } = await client.auth.signInWithPassword({
         email,
         password,
       });
-      if (error || !data.session) throw error ?? new Error("Sin sesión");
+      if (error || !data.session)
+        throw new Error(
+          "No se pudo entrar. Revisa tu correo y contraseña de práctica y la conexión. Si acabas de crear la cuenta, pulsa Entrar al expediente para reintentar.",
+        );
       router.replace("/panel");
       router.refresh();
-    } catch {
+    } catch (cause) {
       setError(
-        "No se pudo acceder. Revisa las credenciales de práctica y la conexión. La cuenta ficticia debe estar creada y confirmada por el responsable en Supabase.",
+        cause instanceof Error
+          ? cause.message
+          : "No se pudo acceder. Comprueba tu conexión y vuelve a intentarlo.",
       );
     } finally {
       setBusy(false);
     }
+  }
+  function choose(next: "login" | "signup") {
+    setMode(next);
+    setError("");
+    setNotice("");
   }
   return (
     <section className="panel auth-card">
@@ -41,11 +80,32 @@ export function AuthForm() {
       <p className="eyebrow">ACCESO ACADÉMICO / DATOS FICTICIOS</p>
       <h1>Abre tu expediente.</h1>
       <p className="notice" id="practice-account-help">
-        Usa el correo inventado y la contraseña de práctica que te facilite el
-        responsable. No introduzcas tu correo personal ni reutilices una
-        contraseña personal.
+        Crea tu cuenta con un correo inventado terminado en @example.com y una
+        contraseña de práctica. No necesitas recibir correos. No uses datos ni
+        contraseñas personales.
       </p>
+      <div className="segmented" aria-label="Opciones de acceso">
+        <button
+          disabled={busy}
+          aria-pressed={mode === "login"}
+          onClick={() => choose("login")}
+        >
+          Iniciar sesión
+        </button>
+        <button
+          disabled={busy}
+          aria-pressed={mode === "signup"}
+          onClick={() => choose("signup")}
+        >
+          Crear cuenta ficticia
+        </button>
+      </div>
       {error && <ErrorNotice message={error} />}
+      {notice && (
+        <p className="notice" role="status">
+          {notice}
+        </p>
+      )}
       <form onSubmit={submit} aria-describedby="practice-account-help">
         <label>
           Correo electrónico de práctica
@@ -63,31 +123,51 @@ export function AuthForm() {
           <input
             name="password"
             type="password"
-            autoComplete="current-password"
+            autoComplete={
+              mode === "signup" ? "new-password" : "current-password"
+            }
             required
+            minLength={mode === "signup" ? 8 : undefined}
             maxLength={128}
             placeholder="Contraseña de práctica"
           />
         </label>
+        {mode === "signup" && (
+          <label>
+            Repite la contraseña
+            <input
+              name="confirmation"
+              type="password"
+              autoComplete="new-password"
+              required
+              minLength={8}
+              maxLength={128}
+              placeholder="Repite tu contraseña de práctica"
+            />
+          </label>
+        )}
         <button
           className="button primary full"
           disabled={busy || !isConfigured()}
         >
-          {busy ? "Conectando…" : "Entrar al expediente"}
+          {busy
+            ? "Conectando…"
+            : mode === "signup"
+              ? "Crear mi cuenta y entrar"
+              : "Entrar al expediente"}
           <ArrowRight size={18} />
         </button>
       </form>
       <details className="guest">
-        <summary>¿Cómo consigo una cuenta de práctica?</summary>
+        <summary>¿Cómo recupero mis datos de juego?</summary>
         <p>
-          El responsable crea cada cuenta en Supabase y la confirma
-          automáticamente. No necesitas recibir correos. Por ejemplo:
-          ana@example.com y luis@example.com; son ejemplos y deben crearse antes
-          de usarlos.
+          Guarda el correo inventado y la contraseña que elegiste. Usa Iniciar
+          sesión con esos mismos datos en otro navegador o dispositivo: tu
+          perfil, historial y puntuación se guardan en Supabase.
         </p>
         <p>
-          Cada jugador usa su propia cuenta. En otro navegador, entra con las
-          mismas credenciales para recuperar tu expediente guardado en Supabase.
+          Cada jugador crea su propia cuenta. Como el correo es inventado, no se
+          pueden recuperar contraseñas mediante un mensaje de correo.
         </p>
       </details>
     </section>

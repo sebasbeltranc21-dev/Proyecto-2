@@ -11,8 +11,8 @@ export default async function Page({
       <ConfigNotice />
       {error && (
         <p role="alert" className="notice error">
-          El enlace de acceso no es válido. Entra con tu cuenta de práctica; el
-          responsable debe crearla y confirmarla en Supabase.
+          El enlace de acceso no es válido. Entra con tu cuenta de práctica;
+          puedes crear una cuenta ficticia directamente en esta página.
         </p>
       )}
       <AuthForm />
