@@ -1,5 +1,14 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Acceso académico con datos ficticios — 24 de octubre de 2026
+
+- Se retiraron de la interfaz el registro con confirmación de correo y la creación de sesiones anónimas. El acceso usa cuentas ficticias precreadas y confirmadas en Supabase; los errores permiten reintentar sin inventar una sesión.
+- Portada, perfil, acceso por invitación y chat recuerdan usar datos inventados. El cambio en el chat solo añade texto de ayuda y `aria-describedby`; no modifica el transporte, persistencia, consultas ni permisos.
+- `npm test`: **40 pruebas aprobadas**, incluidas cinco nuevas de acceso; `npm run lint` y `npm run build` aprobados, con comprobación TypeScript en la compilación.
+- Consulta alojada de solo lectura: `mm_messages` sigue publicada en `supabase_realtime` y con RLS habilitado.
+- Playwright local no pudo iniciar: Chromium no estaba instalado y la descarga devolvió un ZIP inválido. Ninguna prueba de navegador local se atribuye como aprobada en esta revisión. La comprobación en CI se debe consultar por separado.
+- Pendiente: crear las cuentas ficticias desde Authentication → Users y comprobar el acceso y una partida entre ellas. No se borraron datos anteriores ni se cambió la configuración remota de Auth. [Pasos y límites](ACADEMIC-ACCOUNTS.md).
+
 Supabase ya está conectado y las siete migraciones están aplicadas. El recorrido de salas, RLS, pistas privadas, chat, reconexión, votos y puntuación pasó contra PostgreSQL alojado, usando identidades temporales dentro de una transacción revertida. No equivale a probar el registro por correo ni el transporte Realtime entre navegadores. [Detalle y estado de Vercel](INTEGRATION.md).
 
 ## Oficina de detectives y presentación final

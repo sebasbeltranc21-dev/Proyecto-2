@@ -195,6 +195,10 @@ export function Dashboard({
           partidas.
         </p>
       )}
+      <p className="notice">
+        Práctica académica: usa un alias de detective y mensajes inventados. No
+        guardes nombres reales, teléfonos ni otros datos personales.
+      </p>
       {error && (
         <>
           <ErrorNotice message={error} />
@@ -364,9 +368,14 @@ export function Dashboard({
                       maxLength={24}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="¿Cómo te llama tu equipo?"
+                      placeholder="Detective Lince"
+                      autoComplete="off"
+                      aria-describedby="profile-fiction-help"
                     />
                   </label>
+                  <small className="muted" id="profile-fiction-help">
+                    Elige un nombre inventado para esta práctica.
+                  </small>
                   <fieldset>
                     <legend>Elige tu emblema</legend>
                     <div className="avatars">
@@ -416,8 +425,8 @@ export function Dashboard({
                           required
                           minLength={2}
                           maxLength={24}
-                          placeholder="Tu nombre de investigador"
-                          autoComplete="nickname"
+                          placeholder="Detective Lince"
+                          autoComplete="off"
                           aria-describedby="join-profile-help"
                         />
                       </label>
@@ -443,8 +452,8 @@ export function Dashboard({
                   </button>
                   {!data.profile && (
                     <p className="join-help muted" id="join-profile-help">
-                      Escribe tu nombre y el código. Guardaremos tu perfil antes
-                      de entrar a la sala.
+                      Escribe un nombre inventado y el código. Guardaremos tu
+                      perfil antes de entrar a la sala.
                     </p>
                   )}
                   {joinError && <ErrorNotice message={joinError} />}

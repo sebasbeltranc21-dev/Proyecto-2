@@ -53,6 +53,10 @@ export default function Page() {
               Sala privada
             </span>
           </div>
+          <p className="muted">
+            Proyecto académico: usa cuentas, alias y mensajes inventados. Entra
+            con una cuenta de práctica facilitada por el responsable.
+          </p>
         </div>
         <div className="case-visual">
           <Image

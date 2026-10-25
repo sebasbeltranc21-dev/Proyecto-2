@@ -11,8 +11,8 @@ export default async function Page({
       <ConfigNotice />
       {error && (
         <p role="alert" className="notice error">
-          No se pudo confirmar el correo. Solicita un enlace nuevo registrándote
-          otra vez.
+          El enlace de acceso no es válido. Entra con tu cuenta de práctica; el
+          responsable debe crearla y confirmarla en Supabase.
         </p>
       )}
       <AuthForm />

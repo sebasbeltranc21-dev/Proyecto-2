@@ -678,6 +678,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                 maxLength={500}
                 required
                 rows={2}
+                aria-describedby="chat-fiction-help"
                 disabled={finished}
                 placeholder={
                   finished
@@ -686,7 +687,10 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                 }
               />
               <div className="chat-send">
-                <small>Hasta 500 caracteres</small>
+                <small id="chat-fiction-help">
+                  Hasta 500 caracteres. Solo teorías del caso y datos
+                  inventados.
+                </small>
                 <button
                   className="button primary"
                   disabled={busy || finished}

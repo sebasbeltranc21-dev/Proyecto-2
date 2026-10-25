@@ -9,7 +9,7 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 ## Implementación
 
 - Next.js App Router, TypeScript y Tailwind CSS, versiones exactas y lockfile.
-- Supabase Auth: correo/contraseña, confirmación, cierre de sesión e invitados opcionales.
+- Supabase Auth: acceso académico con correo inventado y contraseña de práctica, usando cuentas creadas y confirmadas desde el panel de Supabase; cierre de sesión. La web no ofrece registro por correo ni nuevos accesos anónimos.
 - Perfiles con emblemas, salas privadas con código, anfitrión y preparación. Al unirse por código, un usuario nuevo puede escribir su nombre y guardar el perfil desde el mismo formulario.
 - Selector de dos casos originales con solución fija: «La última luz del museo» (4 sospechosos, 12 pistas) y «El Expreso Medianoche» (5 sospechosos, 14 pistas).
 - Mapas por zonas y vagones, aperturas por fase y evidencias ampliables. Pistas privadas por identidad; Supabase Realtime y recuperación por consultas periódicas.
@@ -78,8 +78,8 @@ Abre <http://localhost:3000>. Tras cambiar variables públicas, reinicia el serv
 
    Las siete migraciones crean esquema, caso, restricciones e índices; no eliminan datos. No ejecutes `db reset` sobre una base remota. Alternativa: ejecutar los siete SQL en orden desde SQL Editor y registrar su aplicación. No mezcles ambos métodos sin reconciliar el historial.
 
-4. En Auth habilita Email y confirmación de correo. Configura **Site URL** y autoriza `http://localhost:3000/auth/callback` y tu URL exacta de producción con `/auth/callback`. Para producción y pruebas fiables configura SMTP.
-5. Invitados opcionales: habilita **Anonymous Sign-Ins** en Supabase y establece `NEXT_PUBLIC_ALLOW_GUESTS=true`. Configura límites de Auth adecuados. El MVP no incluye widget CAPTCHA: si lo haces obligatorio en Auth, deja invitados desactivados hasta incorporar el widget y enviar su token.
+4. En Auth habilita Email para iniciar sesión. Crea cuentas con **correos inventados** en **Authentication → Users → Add user → Create new user** y activa **Auto Confirm User**. Usa, por ejemplo, `ana@example.com` y `luis@example.com`, cada una con contraseña de práctica. No uses Invite user: no necesitamos enviar correos. [Guía del laboratorio](docs/ACADEMIC-ACCOUNTS.md).
+5. Mantén `NEXT_PUBLIC_ALLOW_GUESTS=false` para la entrega. Cada jugador debe usar su cuenta de práctica y poder recuperarla en otro navegador. La interfaz ya no ofrece registro ni acceso anónimo; esta edición no modifica la configuración remota de Auth. Puedes desactivar **Allow new users to sign up** y **Anonymous Sign-Ins** en el panel para cerrar también esas APIs. Conserva Email y el inicio con contraseña habilitados.
 6. En Data API expón `public`; **nunca `mm_private`**. Las migraciones conceden lectura y ejecución explícitas, bloqueando escrituras directas. No agregues políticas permisivas globales.
 7. En Database / Replication comprueba que `supabase_realtime` incluye `mm_rooms`, `mm_participants`, `mm_games`, `mm_messages`, `mm_evidence`, `mm_results` y `mm_timeline`. La migración los agrega si existe la publicación. Si no existía, habilítala para esas tablas desde el panel.
 8. Ejecuta los asesores de seguridad y rendimiento de Supabase. Ya se ejecutaron sobre Proyecto 2; el detalle está en `docs/INTEGRATION.md`. Las pruebas locales no reemplazan esta revisión ni la comprobación de Auth/Realtime alojados.
@@ -111,7 +111,7 @@ npm run test:e2e
 
 Playwright carga `.env.local` si existe y comprueba rutas públicas, navegación, configuración ausente, accesibilidad automatizada y desbordamiento en 1440 y 390 px. Sin Supabase, verifica el acceso desactivado y la respuesta 503 explícita. Next.js puede responder HTTP 200 al mostrar `notFound()` en una ruta dinámica que ya comenzó a transmitir: se comprueba su pantalla de recuperación y el 404 de una ruta inexistente.
 
-Las pruebas multijugador cubren ambos casos, la confirmación al compartir pistas privadas y la cronología. Necesitan dos cuentas **verificadas y de pruebas**, con contraseña de pruebas compartida. Inyecta `E2E_HOST_EMAIL`, `E2E_PLAYER_EMAIL`, `E2E_PASSWORD` y opcionalmente `E2E_BASE_URL` en el proceso; nunca guardes estas credenciales en GitHub. No uses cuentas personales. Espera dos minutos mientras avanzan las fases y utiliza servidor y Supabase reales. La prueba de registro requiere `E2E_ALLOW_REGISTRATION=true` en un proyecto aislado con email y confirmación habilitados; comprueba el aviso de confirmación, no la entrega del correo. Se omiten explícitamente sin las cuentas o la configuración requerida.
+Las pruebas multijugador cubren ambos casos, la confirmación al compartir pistas privadas y la cronología. Necesitan dos cuentas **ficticias y confirmadas por el responsable**, con contraseña de pruebas compartida. Inyecta `E2E_HOST_EMAIL`, `E2E_PLAYER_EMAIL`, `E2E_PASSWORD` y opcionalmente `E2E_BASE_URL` en el proceso; nunca guardes estas credenciales en GitHub. No uses cuentas personales. Espera dos minutos mientras avanzan las fases y utiliza servidor y Supabase reales. Las pruebas públicas comprueban que el acceso explica las cuentas ficticias y no ofrece registro ni dispara envíos de correo. Las pruebas multijugador se omiten explícitamente sin las dos cuentas ficticias creadas y sus variables; no se sustituyen por sesiones inventadas en el navegador.
 
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` permite usar un Chromium compatible ya instalado. No compartas trazas ni estados de navegador con sesiones privadas. [Informe de verificación](docs/VERIFICATION.md).
 

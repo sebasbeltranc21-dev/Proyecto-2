@@ -4,7 +4,7 @@ const email1 = process.env.E2E_HOST_EMAIL,
   password = process.env.E2E_PASSWORD;
 async function login(page: Page, email: string, name: string) {
   await page.goto("/acceso");
-  await page.getByLabel("Correo electrónico").fill(email);
+  await page.getByLabel("Correo electrónico de práctica").fill(email);
   await page.getByLabel("Contraseña").fill(password!);
   await page.getByRole("button", { name: "Entrar al expediente" }).click();
   await expect(page).toHaveURL(/\/panel$/);
@@ -26,7 +26,7 @@ for (const scenario of [
     time: "23:37",
   },
 ]) {
-  test(`two real users: ${scenario.title}, private sharing, chat, reconnect, vote and results`, async ({
+  test(`two fictional Auth accounts: ${scenario.title}, private sharing, chat, reconnect, vote and results`, async ({
     browser,
   }) => {
     test.skip(
@@ -143,21 +143,3 @@ for (const scenario of [
     }
   });
 }
-test("new account registration requests real email confirmation", async ({
-  page,
-}) => {
-  test.skip(
-    process.env.E2E_ALLOW_REGISTRATION !== "true",
-    "Opt-in only on an isolated test project.",
-  );
-  await page.goto("/acceso");
-  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
-  await page
-    .getByLabel("Correo electrónico")
-    .fill(`modo.test.${Date.now()}@example.com`);
-  await page.getByLabel("Contraseña").fill("Test-only-password-492!");
-  await page.getByRole("button", { name: "Crear mi cuenta" }).click();
-  await expect(
-    page.getByRole("status").filter({ hasText: "Revisa tu correo" }),
-  ).toBeVisible();
-});

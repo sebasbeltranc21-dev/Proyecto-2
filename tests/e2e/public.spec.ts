@@ -1,6 +1,30 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+test("practice access explains fictional accounts without offering email registration", async ({
+  page,
+}) => {
+  const outgoing: string[] = [];
+  page.on("request", (request) => {
+    if (/\/auth\/v1\/(signup|otp|recover|resend)/.test(request.url()))
+      outgoing.push(request.url());
+  });
+  await page.goto("/acceso");
+  await expect(
+    page.getByLabel("Correo electrónico de práctica"),
+  ).toHaveAttribute("placeholder", "ana@example.com");
+  await expect(
+    page.getByRole("button", {
+      name: /Crear cuenta|Crear mi cuenta|Continuar como invitado/,
+    }),
+  ).toHaveCount(0);
+  await page
+    .getByText("¿Cómo consigo una cuenta de práctica?", { exact: true })
+    .click();
+  await expect(page.getByText(/son ejemplos y deben crearse/)).toBeVisible();
+  await expect(page.getByText(/No necesitas recibir correos/)).toBeVisible();
+  expect(outgoing).toEqual([]);
+});
 for (const viewport of [
   { width: 1440, height: 1000 },
   { width: 390, height: 844 },
