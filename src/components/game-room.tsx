@@ -31,6 +31,7 @@ import { Avatar, ErrorNotice, Skeleton } from "./ui";
 import { SuspectPortrait } from "./case-art";
 import { CaseScene } from "./case-scene";
 import { EvidenceWorkspace, TimelineBoard } from "./evidence-workspace";
+import { FloatingChat } from "./floating-chat";
 import { InvestigatorCompanion } from "./investigator-companion";
 import { CaseEnding } from "./ending-cinematic";
 export function GameRoom({ code, uid }: { code: string; uid: string }) {
@@ -47,7 +48,6 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const [confirm, setConfirm] = useState(false);
   const offset = useRef(0);
   const fetching = useRef(false);
-  const chatEnd = useRef<HTMLDivElement>(null);
   const load = useCallback(async () => {
     if (fetching.current) return;
     fetching.current = true;
@@ -139,9 +139,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
       void client.removeChannel(channel);
     };
   }, [rid, load]);
-  useEffect(() => {
-    chatEnd.current?.scrollIntoView({ block: "nearest" });
-  }, [data?.messages.length]);
+
   async function send(action: Action) {
     setBusy(true);
     setError("");
@@ -215,7 +213,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
   return (
     <>
       {!lobby && !finished && me?.in_game && (
-        <InvestigatorCompanion kind={me.avatar} stage={stage} />
+        <InvestigatorCompanion kind={me.avatar} />
       )}
       <Link href="/panel" className="back">
         <ArrowLeft size={16} />
@@ -671,86 +669,87 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
               sesión.
             </p>
           </section>
-          <section className="panel chat-panel">
-            <div className="radio-masthead" aria-hidden="true">
-              <span className="radio-wave">
-                <i />
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>{" "}
-              CANAL DEL EQUIPO
-            </div>
-            <h2>
-              <MessagesSquare size={18} />
-              Teorías del equipo
-            </h2>
-            <div
-              className="chat-messages"
-              role="log"
-              aria-label="Mensajes de la sala"
-              aria-live="polite"
-            >
-              {data.messages.length === 0 ? (
-                <p className="empty">
-                  Las mejores teorías empiezan con una pregunta. Comparte la
-                  tuya.
-                </p>
-              ) : (
-                data.messages.map((m) => (
-                  <article
-                    key={m.id}
-                    className={m.user_id === uid ? "mine" : ""}
-                  >
-                    <div>
-                      <b>{m.name}</b>
-                      <time dateTime={m.sent_at}>
-                        {new Date(m.sent_at).toLocaleTimeString("es-EC", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </time>
-                    </div>
-                    <p>{m.body}</p>
-                  </article>
-                ))
-              )}
-              <div ref={chatEnd} />
-            </div>
-            <form onSubmit={chat}>
-              <label className="sr-only" htmlFor="chat-text">
-                Tu teoría
-              </label>
-              <textarea
-                id="chat-text"
-                name="text"
-                maxLength={500}
-                required
-                rows={2}
-                aria-describedby="chat-fiction-help"
-                disabled={finished}
-                placeholder={
-                  finished
-                    ? "El chat está cerrado."
-                    : "Comparte una pista o teoría…"
-                }
-              />
-              <div className="chat-send">
-                <small id="chat-fiction-help">
-                  Hasta 500 caracteres. Solo teorías del caso y datos
-                  inventados.
-                </small>
-                <button
-                  className="button primary"
-                  disabled={busy || finished}
-                  aria-label="Enviar teoría"
-                >
-                  <Send size={16} />
-                </button>
+          <FloatingChat messageCount={data.messages.length}>
+            <section className="panel chat-panel">
+              <div className="radio-masthead" aria-hidden="true">
+                <span className="radio-wave">
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                </span>{" "}
+                CANAL DEL EQUIPO
               </div>
-            </form>
-          </section>
+              <h2>
+                <MessagesSquare size={18} />
+                Teorías del equipo
+              </h2>
+              <div
+                className="chat-messages"
+                role="log"
+                aria-label="Mensajes de la sala"
+                aria-live="polite"
+              >
+                {data.messages.length === 0 ? (
+                  <p className="empty">
+                    Las mejores teorías empiezan con una pregunta. Comparte la
+                    tuya.
+                  </p>
+                ) : (
+                  data.messages.map((m) => (
+                    <article
+                      key={m.id}
+                      className={m.user_id === uid ? "mine" : ""}
+                    >
+                      <div>
+                        <b>{m.name}</b>
+                        <time dateTime={m.sent_at}>
+                          {new Date(m.sent_at).toLocaleTimeString("es-EC", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </time>
+                      </div>
+                      <p>{m.body}</p>
+                    </article>
+                  ))
+                )}
+              </div>
+              <form onSubmit={chat}>
+                <label className="sr-only" htmlFor="chat-text">
+                  Tu teoría
+                </label>
+                <textarea
+                  id="chat-text"
+                  name="text"
+                  maxLength={500}
+                  required
+                  rows={2}
+                  aria-describedby="chat-fiction-help"
+                  disabled={finished}
+                  placeholder={
+                    finished
+                      ? "El chat está cerrado."
+                      : "Comparte una pista o teoría…"
+                  }
+                />
+                <div className="chat-send">
+                  <small id="chat-fiction-help">
+                    Hasta 500 caracteres. Solo teorías del caso y datos
+                    inventados.
+                  </small>
+                  <button
+                    className="button primary"
+                    disabled={busy || finished}
+                    aria-label="Enviar teoría"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
+              </form>
+            </section>
+          </FloatingChat>
         </aside>
       </div>
       {confirm && (

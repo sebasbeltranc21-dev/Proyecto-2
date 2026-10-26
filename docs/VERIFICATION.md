@@ -1,5 +1,13 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Personaje arrastrable y chat flotante — 26 de octubre de 2026
+
+- Se retira el rótulo sobre el personaje. Se arrastra desde la ilustración con ratón o pantalla táctil y también se mueve con flechas al enfocar el control. Captura de puntero, cancelación y límites de ventana; tecla Inicio y control de restablecimiento recuperan la posición inicial.
+- Chat convertido en ventana flotante, inicialmente minimizada a un icono. Se arrastra desde la barra; el icono minimizado también se puede arrastrar. Arrastrar no provoca una apertura accidental. Al cambiar dimensiones o abrir el teclado móvil, se recalculan los límites mediante eventos de ventana/visualViewport y ResizeObserver.
+- Se conserva montado el formulario al minimizar, por lo que el borrador se mantiene. La suscripción Realtime sigue en GameRoom. El historial desplaza su contenedor interno, sin desplazar toda la página; se respeta la lectura de mensajes anteriores. Contador de mensajes nuevos mientras está minimizado.
+- 58 pruebas locales aprobadas. Cobertura de borrador, minimización, mensajes nuevos, captura de puntero, límites y teclado. Se añade fixture de revisión aislada en Playwright a 1440 y 390 px con arrastre real, borrador y reducción a 320 px. La fixture se construye en memoria para pruebas, sin ruta de aplicación ni transporte simulado publicado; la ejecución de navegador se valida en CI.
+- Posición y minimización duran durante la vista actual; no cambian el perfil ni los datos de juego. Sin dependencias añadidas ni cambios de base de datos.
+
 ## Personajes investigadores — 26 de octubre de 2026
 
 - Cinco recortes con transparencia preparados a partir de las referencias adjuntas mediante la herramienta integrada de imágenes. Prompt de preparación: extraer únicamente el detective de cuerpo entero, conservar su identidad, ropa y herramientas; retirar fondo, interfaz de captura, textos, paletas y adornos separados. Assets optimizados en WebP para la web, finales en `public/characters/{alex,bruno,leo,nora,vera}.webp`.

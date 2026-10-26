@@ -6,19 +6,21 @@ import { InvestigatorCompanion } from "../src/components/investigator-companion"
 afterEach(cleanup);
 test("chosen investigator can pause, move aside, minimize and return", () => {
   const { container } = render(
-    createElement(InvestigatorCompanion, { kind: "camara", stage: 1 }),
+    createElement(InvestigatorCompanion, { kind: "camara" }),
   );
   expect(screen.getByLabelText("Tu personaje: Vera")).toBeTruthy();
   fireEvent.click(screen.getByLabelText("Pausar personaje"));
   expect(container.querySelector("aside")?.getAttribute("data-paused")).toBe(
     "true",
   );
-  fireEvent.click(screen.getByLabelText("Cambiar personaje de lado"));
-  expect(
-    container.querySelector("aside")?.classList.contains("companion-right"),
-  ).toBe(true);
+  expect(container.querySelector(".companion-caption")).toBeNull();
+  const mover = screen.getByLabelText("Mover mi personaje");
+  fireEvent.keyDown(mover, { key: "ArrowRight" });
+  expect(container.querySelector("aside")?.style.left).toBe("12px");
+  fireEvent.click(screen.getByLabelText("Restablecer posición del personaje"));
+  expect(container.querySelector("aside")?.style.left).toBe("");
   fireEvent.click(screen.getByLabelText("Minimizar personaje"));
-  expect(screen.queryByLabelText("Tu personaje: Vera")).toBeNull();
+  expect(screen.queryByLabelText("Mover mi personaje")).toBeNull();
   fireEvent.click(screen.getByLabelText("Mostrar mi personaje"));
   expect(screen.getByLabelText("Tu personaje: Vera")).toBeTruthy();
 });
