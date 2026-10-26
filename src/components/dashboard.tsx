@@ -16,6 +16,9 @@ import {
   Files,
   KeyRound,
   BadgeCheck,
+  FileSearch,
+  Users,
+  Crosshair,
 } from "lucide-react";
 import { browserClient } from "@/lib/supabase/client";
 import { act } from "@/lib/api";
@@ -93,7 +96,7 @@ export function Dashboard({
         action: "create",
         minutes: Number(f.get("minutes")),
         voteMinutes: Number(f.get("voteMinutes")),
-        allowGuests: f.get("guests") === "on",
+        allowGuests: false,
         caseSlug: String(f.get("caseSlug")),
       });
       router.push(`/sala/${result.code}`);
@@ -189,6 +192,42 @@ export function Dashboard({
         </div>
         <DeskIllustration />
       </section>
+      {data && (
+        <nav
+          className="investigation-route"
+          aria-label="Preparar una investigación"
+        >
+          <a href="#perfil-investigador">
+            <span className="route-number">01</span>
+            <Fingerprint size={21} aria-hidden="true" />
+            <span>
+              <b>Tu credencial</b>
+              <small>
+                {data.profile
+                  ? data.profile.name
+                  : "Guarda tu alias de investigador"}
+              </small>
+            </span>
+            {data.profile && <Check size={16} aria-label="Perfil guardado" />}
+          </a>
+          <a href="#abrir-expediente">
+            <span className="route-number">02</span>
+            <FolderOpen size={21} aria-hidden="true" />
+            <span>
+              <b>El expediente</b>
+              <small>Elige el misterio que vas a investigar</small>
+            </span>
+          </a>
+          <a href="#unirse">
+            <span className="route-number">03</span>
+            <Users size={21} aria-hidden="true" />
+            <span>
+              <b>Tu equipo</b>
+              <small>Entra con un código de invitación</small>
+            </span>
+          </a>
+        </nav>
+      )}
       {anonymous && (
         <p className="notice">
           Has entrado como invitado. Conserva esta sesión para regresar a tus
@@ -310,18 +349,6 @@ export function Dashboard({
                     </select>
                   </label>
                 </div>
-                <label className="checkbox">
-                  <input
-                    type="checkbox"
-                    name="guests"
-                    defaultChecked={anonymous}
-                    disabled={
-                      process.env.NEXT_PUBLIC_ALLOW_GUESTS !== "true" &&
-                      !anonymous
-                    }
-                  />
-                  Permitir invitados
-                </label>
                 <button
                   className="button primary"
                   disabled={busy || !data.profile || !caseSlug}
@@ -463,14 +490,17 @@ export function Dashboard({
           </div>
           <div className="stats-strip">
             <div>
+              <FileSearch size={21} aria-hidden="true" />
               <b>{data.stats.games}</b>
               <span>Casos completados</span>
             </div>
             <div>
+              <Crosshair size={21} aria-hidden="true" />
               <b>{data.stats.correct}</b>
               <span>Acusaciones correctas</span>
             </div>
             <div>
+              <Trophy size={21} aria-hidden="true" />
               <b>{data.stats.points}</b>
               <span>Puntos acumulados</span>
             </div>

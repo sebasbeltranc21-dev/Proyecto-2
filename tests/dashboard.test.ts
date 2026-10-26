@@ -125,6 +125,7 @@ test("the selected case is submitted when creating a room", async () => {
       },
     ],
   });
+  expect(screen.queryByLabelText("Permitir invitados")).toBeNull();
   fireEvent.click(screen.getByRole("radio", { name: /El Expreso Medianoche/ }));
   fireEvent.click(screen.getByRole("button", { name: "Crear sala" }));
   await waitFor(() =>

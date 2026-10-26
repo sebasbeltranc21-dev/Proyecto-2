@@ -44,6 +44,10 @@ export function Header() {
   return (
     <header className="site-header shell">
       <Brand />
+      <span className="agency-wordmark" aria-hidden="true">
+        AGENCIA DE INVESTIGACIÓN
+        <span>UNIDAD DE CASOS SIN RESOLVER</span>
+      </span>
       <nav aria-label="Navegación principal">
         <Link href="/#como-jugar" className="hide-mobile">
           Cómo jugar
@@ -74,7 +78,14 @@ export function Footer() {
         MODO MISTERIO{" "}
         <span className="muted">/ Una verdad. Muchas teorías.</span>
       </span>
-      <span className="muted">Un juego de ficción · MVP cooperativo</span>
+      <span className="footer-signature">
+        <Fingerprint size={23} aria-hidden="true" />
+        <span>
+          ARCHIVO DE CASOS
+          <br />
+          <span className="muted">Un juego de ficción · Cooperativo</span>
+        </span>
+      </span>
     </footer>
   );
 }

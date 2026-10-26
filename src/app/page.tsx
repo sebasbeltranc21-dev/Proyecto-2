@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 import { ConfigNotice } from "@/components/ui";
 import { CaseScene } from "@/components/case-scene";
+import {
+  AgencySeal,
+  InvestigationBoard,
+} from "@/components/investigation-decor";
 export default function Page() {
   return (
     <main id="contenido" className="shell landing">
@@ -92,21 +96,25 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <aside className="landing-dispatch" aria-label="Nota de la central">
-        <Fingerprint size={32} aria-hidden="true" />
-        <div>
-          <span className="eyebrow">NOTA DE LA CENTRAL</span>
+      <section className="analysis-desk" aria-labelledby="analysis-heading">
+        <div className="analysis-copy">
+          <AgencySeal small />
+          <p className="eyebrow">NOTA DE LA CENTRAL / EL OFICIO</p>
+          <h2 id="analysis-heading">
+            Lo que parece una coincidencia
+            <br />
+            <em>puede ser la conexión.</em>
+          </h2>
           <p>
-            Las apariencias engañan.{" "}
-            <strong>Las pruebas cuentan otra historia.</strong>
+            Una declaración, una hora, un detalle fuera de lugar. Pon las piezas
+            en común y sigue el hilo con tu equipo.
           </p>
+          <Link href="/panel" className="text-link">
+            Abrir un expediente <ArrowRight size={17} />
+          </Link>
         </div>
-        <span className="dispatch-stamp" aria-hidden="true">
-          SE REQUIERE
-          <br />
-          INVESTIGADOR
-        </span>
-      </aside>
+        <InvestigationBoard />
+      </section>
       <section className="method" id="como-jugar">
         <div className="section-heading">
           <div>

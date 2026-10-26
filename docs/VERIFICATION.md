@@ -1,5 +1,14 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Interfaz de investigación y creación de salas — 26 de octubre de 2026
+
+- Se retiró el control «Permitir invitados» del formulario. La creación envía `allowGuests: false`; se conserva el contrato de la API y no se modifican salas existentes ni migraciones.
+- Portada con tablero ilustrado, fotografías, hilos, notas y sello de agencia; acceso con cubierta de credencial; panel con accesos a perfil, casos e invitación; sala con progreso visual de preparación a informe y cabecera de canal del equipo. Las fases y cifras usan los datos existentes, sin generar estadísticas ni pistas ficticias de partida.
+- Componentes decorativos ligeros en SVG/CSS, excluidos del árbol accesible. Enlaces del panel operables con teclado, estado actual de la fase con `aria-current`, diseños para móvil y respeto de movimiento reducido. Sin nuevas dependencias.
+- **52 pruebas locales, ESLint y compilación de producción aprobados.** La prueba existente de crear sala comprueba además la ausencia del control retirado y el envío del caso correcto con invitados desactivados.
+- El navegador local automatizado sigue limitado por la descarga inválida de Chromium. El workflow habitual revisa accesibilidad y desbordamiento en 1440 y 390 px; el resultado debe consultarse para el commit publicado. La revisión de la interfaz alojada es separada de las pruebas de lógica y base de datos.
+- No se cambian registro ficticio, chat/Reatime, persistencia, votos, resultados, personajes ni cinemáticas.
+
 ## Registro ficticio desde la app — 24 de octubre de 2026
 
 - El usuario crea su propia cuenta desde **Crear cuenta ficticia**, con correo `@example.com`, contraseña y confirmación de contraseña. La Edge Function `register-fictional` confirma solo estas cuentas sin enviar correos; después la app inicia una sesión Auth normal.

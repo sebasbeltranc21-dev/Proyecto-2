@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./investigation.css";
 import { Header, Footer } from "@/components/ui";
 export const metadata: Metadata = {
   title: {

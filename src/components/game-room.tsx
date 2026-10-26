@@ -21,6 +21,7 @@ import {
   Trophy,
   FileSearch,
   ShieldCheck,
+  Fingerprint,
 } from "lucide-react";
 import { browserClient } from "@/lib/supabase/client";
 import { act } from "@/lib/api";
@@ -217,6 +218,12 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
         Mi expediente
       </Link>
       <div className="room-top operation-header">
+        <Fingerprint
+          className="operation-watermark"
+          size={120}
+          strokeWidth={0.8}
+          aria-hidden="true"
+        />
         <div>
           <p className="eyebrow">
             EXPEDIENTE {data.case.theme === "train" ? "002" : "001"} /
@@ -239,6 +246,39 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
           </button>
         </div>
       </div>
+      <ol className="case-progress" aria-label="Fases de la investigación">
+        {[
+          "Preparación",
+          "Escena",
+          "Interrogatorios",
+          "Acusación",
+          "Informe",
+        ].map((label, index) => {
+          const current = lobby ? 0 : stage + 1;
+          return (
+            <li
+              key={label}
+              className={
+                index < current
+                  ? "complete"
+                  : index === current
+                    ? "current"
+                    : ""
+              }
+              aria-current={index === current ? "step" : undefined}
+            >
+              <span className="phase-marker" aria-hidden="true">
+                {index < current ? (
+                  <Check size={12} />
+                ) : (
+                  String(index + 1).padStart(2, "0")
+                )}
+              </span>
+              <span>{label}</span>
+            </li>
+          );
+        })}
+      </ol>
       <div className="status-bar">
         <span className={`connection ${connection === "live" ? "live" : ""}`}>
           {connection === "live" ? <Wifi size={15} /> : <WifiOff size={15} />}{" "}
@@ -427,18 +467,14 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                 <div className="story-scene">
                   <CaseScene theme={data.case.theme} />
                 </div>
-                <div className="phase-track" aria-label="Fases de la partida">
-                  {data.case.stages.slice(0, 3).map((s, i) => (
-                    <span
-                      key={s.title}
-                      className={
-                        i === stage ? "current" : i < stage ? "done" : ""
-                      }
-                    >
-                      {i < stage ? <Check size={13} /> : <b>0{i + 1}</b>}
-                      {s.title}
-                    </span>
-                  ))}
+                <div className="field-report-folio">
+                  <span>
+                    <Fingerprint size={15} aria-hidden="true" />
+                    {stage === 2 ? "ACTA DE ACUSACIÓN" : "CUADERNO DE CAMPO"}
+                  </span>
+                  <span>
+                    CASO {data.case.theme === "train" ? "002" : "001"}
+                  </span>
                 </div>
                 <p className="eyebrow">FASE 0{stage + 1}</p>
                 <h2>{data.case.stages[stage].title}</h2>
@@ -632,6 +668,16 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
             </p>
           </section>
           <section className="panel chat-panel">
+            <div className="radio-masthead" aria-hidden="true">
+              <span className="radio-wave">
+                <i />
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>{" "}
+              CANAL DEL EQUIPO
+            </div>
             <h2>
               <MessagesSquare size={18} />
               Teorías del equipo
