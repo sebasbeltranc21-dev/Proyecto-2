@@ -34,7 +34,7 @@ test.beforeAll(async () => {
     .filter((o) => o.type === "asset" && o.fileName.endsWith(".css"))
     .map((o) => (o.type === "asset" ? o.source : ""))
     .join("\n");
-  html = `<!doctype html><html lang="es"><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{--gold:#c8a76b;--line:#3c4f60}body{margin:0;background:#101923;color:#eee8dc;font:15px Arial}main{min-height:1800px}button{font:inherit}*{box-sizing:border-box}${css}</style><div id="root"></div><script>${js.replaceAll("</script>", "<\\/script>")}</script></html>`;
+  html = `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{--gold:#c8a76b;--line:#3c4f60}body{margin:0;background:#101923;color:#eee8dc;font:15px Arial}main{min-height:1800px}button{font:inherit}*{box-sizing:border-box}${css}</style><div id="root"></div><script>${js.replaceAll("</script>", "<\\/script>")}</script></html>`;
 });
 for (const width of [1440, 390])
   test(`floating overlays move and preserve chat drafts at ${width}px`, async ({
@@ -61,11 +61,10 @@ for (const width of [1440, 390])
       exact: true,
     });
     await icon.click();
-    console.log(
-      "FLOATING STATE",
-      await page.locator(".floating-chat").evaluate((el) => el.outerHTML),
+    await expect(page.locator(".chat-toggle")).toHaveAttribute(
+      "aria-expanded",
+      "true",
     );
-    await expect(icon).toHaveAttribute("aria-expanded", "true");
     await page
       .getByRole("textbox", { name: "Tu teoría" })
       .fill("Teoría pendiente");

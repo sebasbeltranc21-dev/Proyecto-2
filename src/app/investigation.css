@@ -1341,3 +1341,7 @@ body {
     bottom: 12px;
   }
 }
+
+.room-sidebar > .team-panel {
+  grid-column: 1 / -1;
+}
