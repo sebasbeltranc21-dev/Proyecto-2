@@ -61,6 +61,11 @@ for (const width of [1440, 390])
       exact: true,
     });
     await icon.click();
+    console.log(
+      "FLOATING STATE",
+      await page.locator(".floating-chat").evaluate((el) => el.outerHTML),
+    );
+    await expect(icon).toHaveAttribute("aria-expanded", "true");
     await page
       .getByRole("textbox", { name: "Tu teoría" })
       .fill("Teoría pendiente");
