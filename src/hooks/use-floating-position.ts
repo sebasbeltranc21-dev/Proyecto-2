@@ -34,17 +34,25 @@ export function useFloatingPosition() {
   function bounded(point: Point) {
     const rect = ref.current?.getBoundingClientRect();
     const viewport = window.visualViewport;
-    return clampPosition(
-      point,
+    const originX = viewport?.offsetLeft ?? 0;
+    const originY = viewport?.offsetTop ?? 0;
+    const next = clampPosition(
+      { x: point.x - originX, y: point.y - originY },
       rect?.width ?? 0,
       rect?.height ?? 0,
       viewport?.width ?? window.innerWidth,
       viewport?.height ?? window.innerHeight,
     );
+    return { x: next.x + originX, y: next.y + originY };
   }
   useEffect(() => {
     function fit() {
-      setPosition((current) => (current ? bounded(current) : current));
+      const rect = ref.current?.getBoundingClientRect();
+      if (!rect) return;
+      setPosition((current) => {
+        const next = bounded(current ?? { x: rect.left, y: rect.top });
+        return current?.x === next.x && current?.y === next.y ? current : next;
+      });
     }
     const observer =
       typeof ResizeObserver !== "undefined" ? new ResizeObserver(fit) : null;
