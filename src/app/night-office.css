@@ -15,7 +15,7 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 93% 10%, #466b6a24, transparent 56%),
+    radial-gradient(ellipse at 93% 10%, #46586b24, transparent 56%),
     radial-gradient(ellipse at 0% 82%, #ab7f391a, transparent 48%);
 }
 .office-window {
@@ -24,14 +24,14 @@ body {
   height: min(75vh, 720px);
   top: 105px;
   right: -55px;
-  border: 9px solid #25332d;
-  outline: 1px solid #758c7136;
+  border: 9px solid #232c35;
+  outline: 1px solid #6a7e9336;
   transform: skewY(-4deg);
   overflow: hidden;
-  background: linear-gradient(145deg, #1c3030b3, #0d1918d9);
+  background: linear-gradient(145deg, #1c2630b3, #0d1319d9);
   box-shadow:
-    0 0 75px #72908810,
-    inset 0 0 70px #081210;
+    0 0 75px #6d809510,
+    inset 0 0 70px #080d12;
   opacity: 0.66;
 }
 .office-window::before {
@@ -41,10 +41,10 @@ body {
   z-index: 2;
   background: linear-gradient(
     110deg,
-    #a3b2a416,
+    #9daab816,
     transparent 35%,
-    #162b2633 60%,
-    #07100c55
+    #16202b33 60%,
+    #070b1055
   );
   pointer-events: none;
 }
@@ -56,15 +56,15 @@ body {
     linear-gradient(
       90deg,
       transparent calc(50% - 5px),
-      #293b31 calc(50% - 5px) calc(50% + 5px),
+      #28323c calc(50% - 5px) calc(50% + 5px),
       transparent calc(50% + 5px)
     ),
     linear-gradient(
       transparent calc(43% - 4px),
-      #293b31 calc(43% - 4px) calc(43% + 4px),
+      #28323c calc(43% - 4px) calc(43% + 4px),
       transparent calc(43% + 4px)
     );
-  box-shadow: inset 0 0 0 2px #8b997c28;
+  box-shadow: inset 0 0 0 2px #788a9d28;
 }
 .office-city-lights {
   position: absolute;
@@ -76,8 +76,8 @@ body {
   bottom: 0;
   width: 16%;
   height: 60%;
-  background: #142321;
-  border-top: 1px solid #49625266;
+  background: #141b23;
+  border-top: 1px solid #44556766;
 }
 .office-city-lights i::after {
   content: "";
@@ -122,7 +122,7 @@ body {
   width: 1px;
   height: var(--rain-length);
   opacity: 0.5;
-  background: linear-gradient(transparent, #9fbdb1b3);
+  background: linear-gradient(transparent, #a1aebbb3);
   animation: office-rain-fall var(--rain-duration) linear var(--rain-delay)
     infinite;
 }
@@ -169,11 +169,11 @@ body {
   top: 55px;
   width: 71px;
   height: 145px;
-  border: 7px solid #324338;
+  border: 7px solid #2f3a46;
   border-bottom: 0;
   border-right: 0;
   transform: skewY(-27deg);
-  box-shadow: -1px 0 #77846677;
+  box-shadow: -1px 0 #62748877;
 }
 .lamp-base {
   position: absolute;
@@ -182,8 +182,8 @@ body {
   bottom: 10px;
   left: 4px;
   border-radius: 50% 50% 15% 15%;
-  background: #3e4e3d;
-  border-top: 1px solid #8a92745c;
+  background: #384553;
+  border-top: 1px solid #6f82975c;
 }
 .lamp-shade {
   position: absolute;
@@ -193,7 +193,7 @@ body {
   right: 0;
   transform: rotate(14deg);
   border-radius: 60% 60% 8% 8%;
-  background: linear-gradient(110deg, #52624b, #273b30);
+  background: linear-gradient(110deg, #455668, #27313b);
   border-bottom: 5px solid #bca16b;
   box-shadow: 0 12px 32px #d0aa6540;
 }
@@ -224,10 +224,10 @@ body {
   gap: 8px;
   min-height: 38px;
   padding: 7px 11px;
-  border: 1px solid #61705680;
+  border: 1px solid #4f627780;
   border-radius: 4px;
   color: #c6c4a8;
-  background: #1a251e;
+  background: #191f26;
   font:
     11px/1.5 Arial,
     sans-serif;
@@ -235,12 +235,12 @@ body {
   white-space: nowrap;
 }
 .atmosphere-control:hover:not(:disabled) {
-  background: #29372a;
+  background: #26303a;
   border-color: #a3976d;
   color: #ede1bf;
 }
 .atmosphere-control.static {
-  background: #172019;
+  background: #161b21;
   font-size: 10px;
 }
 .site-footer {

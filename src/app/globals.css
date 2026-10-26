@@ -1,19 +1,21 @@
 @import "tailwindcss";
 @theme {
-  --color-ink: #0e1415;
-  --color-gold: #d6b57a;
-  --color-paper: #e8dfce;
+  --color-ink: #101923;
+  --color-gold: #c8a76b;
+  --color-paper: #eee8dc;
 }
+/* Archivo nocturno: ink blue, slate panels, antique gold and ivory. */
 :root {
   color-scheme: dark;
-  --bg: #0e1415;
-  --panel: #151d1e;
-  --line: #2a3333;
-  --text: #edeee7;
-  --muted: #9ba6a3;
-  --gold: #d6b57a;
-  --gold-dark: #29271f;
-  --green: #83ac96;
+  --bg: #101923;
+  --panel: #1d2a36;
+  --line: #3c4f60;
+  --text: #eee8dc;
+  --muted: #acb9c6;
+  --gold: #c8a76b;
+  --gold-dark: #302b23;
+  --green: #87aa99;
+  --red: #c56f66;
 }
 * {
   box-sizing: border-box;
@@ -31,7 +33,7 @@ body {
   line-height: 1.65;
   background-image: radial-gradient(
     ellipse at 70% 10%,
-    #23302b35,
+    #21293235,
     transparent 50%
   );
 }
@@ -96,7 +98,7 @@ h3 {
   font-size: 20px;
 }
 p {
-  color: #bbc3be;
+  color: #b5bfc9;
 }
 em {
   font-family: Georgia, "Times New Roman", serif;
@@ -117,7 +119,7 @@ fieldset {
 legend {
   margin-bottom: 10px;
   font-size: 13px;
-  color: #bcc5c0;
+  color: #b6c0cb;
 }
 label {
   display: flex;
@@ -125,14 +127,14 @@ label {
   gap: 7px;
   margin-bottom: 18px;
   font-size: 13px;
-  color: #c2cac5;
+  color: #bdc6cf;
 }
 input,
 select,
 textarea {
-  border: 1px solid #394442;
+  border: 1px solid #323e4b;
   border-radius: 6px;
-  background: #0e1617;
+  background: #0e1217;
   color: var(--text);
   padding: 12px 13px;
   width: 100%;
@@ -140,7 +142,7 @@ textarea {
 }
 input::placeholder,
 textarea::placeholder {
-  color: #75827d;
+  color: #99aaba;
 }
 textarea {
   resize: vertical;
@@ -159,7 +161,7 @@ dt {
 }
 dd {
   margin: 6px 0 0;
-  color: #b9c4bd;
+  color: #b4bec9;
   font-size: 14px;
 }
 .shell {
@@ -196,7 +198,7 @@ dd {
 .site-header nav {
   @apply flex items-center gap-9;
   font-size: 13px;
-  color: #c1cac4;
+  color: #bcc5cf;
 }
 .site-header nav a {
   @apply flex items-center gap-2;
@@ -261,19 +263,19 @@ dd {
 }
 .primary {
   background: var(--gold);
-  color: #192021;
+  color: #171d23;
   border-color: var(--gold);
 }
 .primary:hover:not(:disabled) {
-  background: #e8c88d;
+  background: #ddbd84;
 }
 .secondary {
   background: transparent;
-  border-color: #46514c;
-  color: #e2e8df;
+  border-color: #3c4b5b;
+  color: #dfe3e8;
 }
 .secondary:hover:not(:disabled) {
-  background: #28332c;
+  background: #242d37;
 }
 .quiet {
   color: var(--muted);
@@ -315,9 +317,9 @@ dd {
   font-weight: 600;
 }
 .error {
-  border-color: #794b49;
-  background: #382323;
-  color: #efbdb6;
+  border-color: var(--red);
+  background: #35262c;
+  color: #edb4ad;
 }
 .hero {
   display: grid;
@@ -338,13 +340,13 @@ dd {
 .hero-description {
   font-size: 15px;
   line-height: 1.9;
-  color: #aebbb4;
+  color: #a9b4c0;
   margin-bottom: 32px;
 }
 .hero-meta {
   @apply flex flex-wrap items-center gap-x-5 gap-y-2;
   margin-top: 30px;
-  color: #8f9d95;
+  color: #8595a7;
   font-size: 10px;
 }
 .hero-meta span {
@@ -357,9 +359,9 @@ dd {
   position: relative;
   aspect-ratio: 0.91;
   min-height: 490px;
-  border: 1px solid #414a40;
+  border: 1px solid #374553;
   overflow: visible;
-  background: #1b2727;
+  background: #1a2128;
   border-radius: 6px;
 }
 .case-visual:after {
@@ -409,13 +411,13 @@ dd {
 }
 .visual-caption p {
   font-size: 12px;
-  color: #a5b4ac;
+  color: #9facba;
   margin-bottom: 16px;
 }
 .case-stamp {
   font-size: 8px;
   letter-spacing: 2px;
-  color: #85958c;
+  color: #7b8c9f;
 }
 .evidence-tag {
   @apply flex items-center gap-3;
@@ -427,7 +429,7 @@ dd {
   transform: rotate(-5deg);
   border: 1px solid #d3c8ad;
   background: #e3dac5;
-  color: #343a31;
+  color: #2b3540;
   box-shadow: 0 12px 35px #0005;
 }
 .evidence-tag b {
@@ -448,7 +450,7 @@ dd {
 }
 .section-heading p:last-child {
   font-size: 12px;
-  color: #8f9e95;
+  color: #8696a7;
   line-height: 1.8;
   margin-bottom: 0;
 }
@@ -469,7 +471,7 @@ dd {
 .method-grid article {
   padding: 31px 29px;
   border-right: 1px solid var(--line);
-  background: #141c1d;
+  background: #14181d;
 }
 .method-grid article:last-child {
   border-right: 0;
@@ -481,7 +483,7 @@ dd {
 }
 .method-top span {
   font-size: 11px;
-  color: #87978e;
+  color: #7d8ea1;
   font-family: monospace;
 }
 .method-grid h3 {
@@ -490,7 +492,7 @@ dd {
 }
 .method-grid p {
   font-size: 12px;
-  color: #98a69e;
+  color: #909eae;
   line-height: 1.9;
   margin: 0;
 }
@@ -509,7 +511,7 @@ dd {
 }
 .closing p {
   font-size: 13px;
-  color: #8f9e95;
+  color: #8696a7;
 }
 .closing .text-link {
   margin-top: 12px;
@@ -531,7 +533,7 @@ dd {
 .icon-badge {
   display: inline-flex;
   padding: 12px;
-  border: 1px solid #4d513d;
+  border: 1px solid #394755;
   color: var(--gold);
   border-radius: 50%;
   margin-bottom: 28px;
@@ -550,8 +552,8 @@ dd {
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 4px;
-  background: #0c1415;
-  border: 1px solid #2a3531;
+  background: #0c1015;
+  border: 1px solid #262f39;
   border-radius: 6px;
   margin: 27px 0;
 }
@@ -564,7 +566,7 @@ dd {
   border-radius: 3px;
 }
 .segmented button[aria-pressed="true"] {
-  background: #29332d;
+  background: #252e37;
   color: #ecdfc2;
 }
 .guest {
@@ -576,7 +578,7 @@ dd {
 .guest p {
   font-size: 10px;
   margin-top: 12px;
-  color: #8d9b92;
+  color: #8393a5;
 }
 .dashboard {
   padding-block: 50px 80px;
@@ -642,9 +644,9 @@ dd {
   border-radius: 50%;
   width: 48px;
   height: 48px;
-  background: #2a332c;
+  background: #252e38;
   color: var(--gold);
-  border: 1px solid #3e4d3e;
+  border: 1px solid #384553;
 }
 .avatar.small {
   width: 34px;
@@ -772,7 +774,7 @@ dd {
 }
 .empty {
   font-size: 12px;
-  color: #8e9d94;
+  color: #8595a6;
   line-height: 1.9;
   margin: 20px 0;
 }
@@ -837,7 +839,7 @@ dd {
   border-block: 1px solid var(--line);
   margin-bottom: 30px;
   font-size: 10px;
-  color: #a2b0a6;
+  color: #9ba9b7;
 }
 .status-bar > span {
   @apply inline-flex items-center gap-2;
@@ -884,7 +886,7 @@ dd {
   content: "";
   inset: 0;
   position: absolute;
-  background: linear-gradient(transparent, #151d1e);
+  background: linear-gradient(transparent, #1d2a36);
 }
 .scene-small > span {
   position: absolute;
@@ -964,7 +966,7 @@ dd {
 .team-list small {
   display: block;
   font-size: 9px;
-  color: #92a195;
+  color: #8999aa;
 }
 .player-state {
   margin-left: auto;
@@ -979,7 +981,7 @@ dd {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #647068;
+  background: #55697f;
 }
 .player-state.online:empty {
   background: var(--green);
@@ -1002,18 +1004,18 @@ dd {
   padding-right: 5px;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #415147 transparent;
+  scrollbar-color: #3a4958 transparent;
 }
 .chat-messages article {
   margin-bottom: 16px;
   padding: 11px 12px;
   border-radius: 5px;
-  background: #1b2726;
-  border-left: 2px solid #3d5146;
+  background: #1a2128;
+  border-left: 2px solid #394755;
 }
 .chat-messages article.mine {
   border-left-color: var(--gold);
-  background: #272a21;
+  background: #1e252d;
 }
 .chat-messages article > div {
   display: flex;
@@ -1023,15 +1025,15 @@ dd {
 .chat-messages b {
   font-size: 10px;
   font-weight: 600;
-  color: #d1ddcf;
+  color: #cfd6dd;
 }
 .chat-messages time {
   font-size: 8px;
-  color: #86958a;
+  color: #7b8da0;
 }
 .chat-messages p {
   font-size: 12px;
-  color: #bbc8bc;
+  color: #b8c1cb;
   line-height: 1.7;
   margin: 5px 0 0;
   overflow-wrap: anywhere;
@@ -1051,7 +1053,7 @@ dd {
 }
 .chat-send small {
   font-size: 8px;
-  color: #8e9e92;
+  color: #8595a7;
 }
 .chat-send .button {
   padding: 8px 10px;
@@ -1068,7 +1070,7 @@ dd {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #697a70;
+  color: #5f7184;
   font-size: 10px;
 }
 .phase-track span b {
@@ -1115,7 +1117,7 @@ dd {
   font-size: 9px;
   padding: 2px 5px;
   border-radius: 3px;
-  background: #29332c;
+  background: #252e37;
   margin-left: 5px;
 }
 .evidence-grid,
@@ -1127,9 +1129,9 @@ dd {
 .evidence-card {
   padding: 24px;
   background: #ded9c9;
-  color: #222e29;
+  color: #202830;
   border-radius: 5px;
-  border-top: 3px solid #818b77;
+  border-top: 3px solid #6d8095;
   box-shadow: 0 4px 10px #0002;
 }
 .evidence-type {
@@ -1138,7 +1140,7 @@ dd {
   gap: 6px;
   font-size: 8px;
   letter-spacing: 0.8px;
-  color: #4d5e4d;
+  color: #445567;
   margin-bottom: 20px;
   font-weight: 600;
 }
@@ -1149,7 +1151,7 @@ dd {
   margin-bottom: 13px;
 }
 .evidence-card p {
-  color: #3c4d41;
+  color: #374452;
   font-size: 12px;
   line-height: 1.85;
   margin: 0;
@@ -1222,8 +1224,8 @@ dd {
   font-size: 13px;
 }
 .solution {
-  background: #252b22;
-  border: 1px solid #4d513b;
+  background: #1f262e;
+  border: 1px solid #384654;
   border-radius: 5px;
   padding: 24px;
   margin: 28px 0;
@@ -1309,7 +1311,7 @@ dd {
 .spinner {
   width: 21px;
   height: 21px;
-  border: 2px solid #4d5240;
+  border: 2px solid #3a4958;
   border-top-color: var(--gold);
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
@@ -1776,9 +1778,9 @@ dialog.modal::backdrop {
   color: var(--portrait-accent, #b7b4a0);
   overflow: hidden;
   background:
-    repeating-linear-gradient(0deg, transparent 0 29px, #a8b3a10a 30px 31px),
-    radial-gradient(ellipse at 50% 36%, #43524b 0%, #1b2b29 74%);
-  border: 1px solid #435148;
+    repeating-linear-gradient(0deg, transparent 0 29px, #9caab80a 30px 31px),
+    radial-gradient(ellipse at 50% 36%, #3c4a59 0%, #1b232b 74%);
+  border: 1px solid #3b4a59;
   border-radius: 5px;
   isolation: isolate;
 }
@@ -1801,11 +1803,11 @@ dialog.modal::backdrop {
   left: 12px;
   bottom: 10px;
   padding: 4px 6px;
-  background: #10201ee8;
+  background: #101820e8;
   border: 1px solid #bcb18b40;
   font: 7px monospace;
   letter-spacing: 1.2px;
-  color: #c1c8b7;
+  color: #b5bfca;
 }
 .suspect > .suspect-art {
   margin: -24px -24px 23px;
@@ -1830,7 +1832,7 @@ dialog.modal::backdrop {
   font-size: 10px;
   line-height: 1.5;
   text-align: center;
-  color: #c6ccbf;
+  color: #bcc5cf;
 }
 .case-lineup .portrait-annotation {
   display: none;
@@ -1848,10 +1850,10 @@ dialog.modal::backdrop {
   margin: 0 0 20px;
   padding-top: 12px;
   border-block: 1px solid #9a98764d;
-  color: #455749;
+  color: #3e4d5e;
   background-image:
-    linear-gradient(#7d87600c 1px, transparent 1px),
-    linear-gradient(90deg, #7d87600c 1px, transparent 1px);
+    linear-gradient(#6173860c 1px, transparent 1px),
+    linear-gradient(90deg, #6173860c 1px, transparent 1px);
   background-size: 18px 18px;
 }
 .evidence-drawing {
@@ -1902,8 +1904,8 @@ dialog.modal::backdrop {
   float: left;
   width: 110px;
   margin: 0 18px 10px 0;
-  color: #acbca2;
-  border-color: #435148;
+  color: #a2afbc;
+  border-color: #3b4a59;
 }
 .final-evidence .evidence-drawing svg {
   height: 85px;
@@ -2016,11 +2018,11 @@ dialog.modal::backdrop {
   position: relative;
   overflow: hidden;
   margin: 0;
-  border: 1px solid #394944;
+  border: 1px solid #34414e;
   border-radius: 7px;
   cursor: pointer;
   gap: 0;
-  background: #101b1d;
+  background: #10161d;
 }
 .case-option.selected {
   border-color: var(--gold);
@@ -2059,14 +2061,14 @@ dialog.modal::backdrop {
 }
 .case-option small {
   font-size: 9px;
-  color: #adbaac;
+  color: #a7b3bf;
 }
 .case-option > svg {
   position: absolute;
   right: 10px;
   top: 12px;
   color: var(--gold);
-  background: #18251e;
+  background: #181e25;
   border-radius: 50%;
 }
 .case-brief {
@@ -2114,7 +2116,7 @@ dialog.modal::backdrop {
   width: 1px;
   height: 35px;
   top: -40px;
-  background: linear-gradient(transparent, #b0c9c175);
+  background: linear-gradient(transparent, #b2bcc775);
   transform: rotate(17deg);
   animation: scene-rain 3.2s linear var(--rain-delay) 1;
 }
@@ -2158,7 +2160,7 @@ dialog.modal::backdrop {
 }
 .exploration-map {
   margin-bottom: 20px;
-  background: linear-gradient(145deg, #1b2c2b, #151d1e);
+  background: linear-gradient(145deg, #1b232c, #1d2a36);
 }
 .map-locations {
   display: grid;
@@ -2172,10 +2174,10 @@ dialog.modal::backdrop {
   text-align: center;
   min-width: 0;
   padding: 10px 5px;
-  border: 1px solid #3a5148;
+  border: 1px solid #384553;
   border-radius: 5px;
-  background: #122320;
-  color: #c4cebc;
+  background: #121a23;
+  color: #bcc5ce;
   transition:
     border-color 0.2s ease,
     background 0.2s ease;
@@ -2198,7 +2200,7 @@ dialog.modal::backdrop {
 .map-location small {
   font-size: 8px;
   line-height: 1.6;
-  color: #a5b8aa;
+  color: #a2aebb;
   margin-top: 6px;
 }
 .map-room-drawing {
@@ -2210,16 +2212,16 @@ dialog.modal::backdrop {
   height: 44px;
   border: 2px solid currentColor;
   opacity: 0.85;
-  background: #98b3a110;
+  background: #97a5b410;
 }
 .map-room-drawing > b {
   position: absolute;
   top: -7px;
   right: -7px;
-  background: #25392d;
+  background: #252f39;
   padding: 0 4px;
   font: 9px monospace;
-  color: #d6b57a;
+  color: #c8a76b;
 }
 .map-room-drawing i {
   width: 15px;
@@ -2230,7 +2232,7 @@ dialog.modal::backdrop {
 }
 .map-room-drawing > svg {
   position: absolute;
-  background: #15211a;
+  background: #151b21;
   padding: 2px;
   width: 22px;
   height: 22px;
@@ -2246,7 +2248,7 @@ dialog.modal::backdrop {
   height: 10px;
   border: 2px solid currentColor;
   border-radius: 50%;
-  background: #13201d;
+  background: #131920;
   bottom: -8px;
 }
 .train-map .map-room-drawing:before {
@@ -2256,7 +2258,7 @@ dialog.modal::backdrop {
   right: 8px;
 }
 .map-selection {
-  border-top: 1px solid #365045;
+  border-top: 1px solid #364350;
   margin-top: 20px;
   padding-top: 15px;
   display: flex;
@@ -2266,7 +2268,7 @@ dialog.modal::backdrop {
 }
 .map-selection > span {
   font-size: 10px;
-  color: #b4c4b1;
+  color: #b0bac5;
   line-height: 1.8;
 }
 .map-selection .text-link {
@@ -2276,9 +2278,9 @@ dialog.modal::backdrop {
 }
 .examine-button {
   background: transparent;
-  border: 1px solid #617451;
+  border: 1px solid #4f6276;
   border-radius: 4px;
-  color: #344a34;
+  color: #323f4c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2289,7 +2291,7 @@ dialog.modal::backdrop {
   font-size: 11px;
 }
 .examine-button:hover {
-  background: #70856115;
+  background: #61728515;
 }
 .evidence-card small svg {
   vertical-align: middle;
@@ -2323,7 +2325,7 @@ dialog.modal::backdrop {
   margin: 0 0 20px;
   background-color: #e2dcc9;
   padding: 22px;
-  color: #455749;
+  color: #3e4d5e;
   border-radius: 5px;
 }
 .evidence-dialog .art-note {
@@ -2342,10 +2344,10 @@ dialog.modal::backdrop {
 .evidence-dialog .expanded-evidence-body {
   font-size: 14px;
   line-height: 1.9;
-  color: #d3d9ca;
+  color: #cad1d9;
 }
 .pin-evidence-form {
-  border-top: 1px solid #3e4c3b;
+  border-top: 1px solid #364351;
   margin-top: 23px;
   padding-top: 22px;
 }
@@ -2375,14 +2377,14 @@ dialog.modal::backdrop {
   flex-shrink: 0;
 }
 .timeline-board {
-  border: 1px solid #354b41;
+  border: 1px solid #33404d;
   border-radius: 7px;
-  background: #14211f;
+  background: #141a21;
   padding: 26px;
 }
 .timeline-empty {
   padding: 40px 15px;
-  border: 1px dashed #4b6050;
+  border: 1px dashed #445567;
   border-radius: 5px;
   text-align: center;
 }
@@ -2396,7 +2398,7 @@ dialog.modal::backdrop {
 }
 .timeline-empty small {
   font-size: 11px;
-  color: #a8b9a4;
+  color: #a2aebb;
 }
 .timeline-list {
   list-style: none;
@@ -2416,17 +2418,17 @@ dialog.modal::backdrop {
   left: 25px;
   top: 38px;
   bottom: 0;
-  border-left: 1px dashed #708065;
+  border-left: 1px dashed #607285;
 }
 .timeline-time {
   font-size: 11px;
   color: var(--gold);
   align-self: start;
-  border: 1px solid #586242;
+  border: 1px solid #425162;
   border-radius: 4px;
   padding: 6px 4px;
   text-align: center;
-  background: #283025;
+  background: #222a33;
 }
 .timeline-card {
   margin: 0;
@@ -2440,7 +2442,7 @@ dialog.modal::backdrop {
   font-weight: 400;
 }
 .timeline-author {
-  color: #b2c2a6;
+  color: #a8b4c0;
   font-size: 9px;
   line-height: 1.7;
   margin: 0;
@@ -2461,7 +2463,7 @@ dialog.modal::backdrop {
   display: flex;
   flex-wrap: wrap;
   column-gap: 18px;
-  border-top: 1px solid #354438;
+  border-top: 1px solid #303c49;
   margin-top: 15px;
   padding-top: 9px;
 }
@@ -2474,7 +2476,7 @@ dialog.modal::backdrop {
 }
 .final-evidence .evidence-card {
   display: block;
-  border-top: 3px solid #818b77;
+  border-top: 3px solid #6d8095;
   padding: 22px;
   margin-top: 0;
 }
@@ -2482,13 +2484,13 @@ dialog.modal::backdrop {
   float: none;
   width: auto;
   margin: 0 0 20px;
-  color: #455749;
+  color: #3e4d5e;
 }
 .final-evidence .evidence-card .evidence-drawing svg {
   height: 150px;
 }
 .final-evidence .evidence-card p {
-  color: #3c4d41;
+  color: #374452;
 }
 .final-timeline {
   margin-top: 20px;
@@ -2643,9 +2645,9 @@ dialog.modal::backdrop {
   max-width: 1000px;
   margin: 0 auto 75px;
   padding: 25px;
-  border: 1px solid #3a4b42;
+  border: 1px solid #354250;
   border-radius: 8px;
-  background: #14201f;
+  background: #141a20;
 }
 .new-case-scene {
   height: 240px;
@@ -2692,8 +2694,8 @@ dialog.modal::backdrop {
 .ending-player {
   padding: 0;
   overflow: hidden;
-  border-color: #56604a;
-  background: #111e1d;
+  border-color: #445466;
+  background: #11171e;
 }
 .ending-player-top {
   display: flex;
@@ -2716,7 +2718,7 @@ dialog.modal::backdrop {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #bdc5ae;
+  color: #aeb9c5;
   font-size: 10px;
   flex-shrink: 0;
 }
@@ -2725,7 +2727,7 @@ dialog.modal::backdrop {
   position: relative;
   height: clamp(275px, 30vw, 410px);
   overflow: hidden;
-  background: #162a26;
+  background: #16202a;
   isolation: isolate;
 }
 .ending-screen:before,
@@ -2735,7 +2737,7 @@ dialog.modal::backdrop {
   left: 0;
   right: 0;
   height: 24px;
-  background: #09120f;
+  background: #090d12;
   z-index: 3;
   pointer-events: none;
 }
@@ -2864,7 +2866,7 @@ dialog.modal::backdrop {
 .ending-caption p {
   font-size: 13px;
   line-height: 1.85;
-  color: #c3cdbd;
+  color: #bcc5ce;
   margin: 0;
 }
 .ending-progress {
@@ -2877,12 +2879,12 @@ dialog.modal::backdrop {
 }
 .ending-progress li {
   height: 3px;
-  background: #394b3a;
+  background: #35424f;
   border-radius: 3px;
   overflow: hidden;
 }
 .ending-progress li.done {
-  background: #9caa88;
+  background: #8998a9;
 }
 .ending-progress [aria-current="step"] {
   background: var(--gold);
@@ -2907,7 +2909,7 @@ dialog.modal::backdrop {
 }
 .ending-help {
   font-size: 10px;
-  color: #a9baa5;
+  color: #a3afbc;
   margin: 15px 27px 24px;
   line-height: 1.8;
 }
@@ -2917,17 +2919,17 @@ dialog.modal::backdrop {
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
-  border: 1px solid #3e5142;
+  border: 1px solid #394756;
   padding: 16px 19px;
   border-radius: 6px;
   margin-bottom: 18px;
-  background: #17251f;
+  background: #171e25;
 }
 .ending-replay > span {
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #c2cbb2;
+  color: #b4bec9;
   font-size: 11px;
 }
 .ending-replay .button {
@@ -3087,7 +3089,7 @@ dialog.modal::backdrop {
   left: 15%;
   border-radius: 50%;
   border: 1px solid #c4b38640;
-  background: radial-gradient(circle at 40% 32%, #d4c89c1f, #7b948d08 72%);
+  background: radial-gradient(circle at 40% 32%, #d4c89c1f, #74879b08 72%);
 }
 .portrait-drawing {
   position: relative;
@@ -3131,7 +3133,7 @@ dialog.modal::backdrop {
   background:
     repeating-linear-gradient(1deg, #b7aa7e03 0 2px, transparent 3px 8px),
     radial-gradient(ellipse at 81% 35%, #85733b26, transparent 57%),
-    linear-gradient(110deg, #1e302b, #162321 65%, #1e2821);
+    linear-gradient(110deg, #1e2730, #161c23 65%, #1c232a);
 }
 .office-welcome:after {
   content: "";
@@ -3160,7 +3162,7 @@ dialog.modal::backdrop {
 .office-welcome p {
   font-size: 12px;
   max-width: 350px;
-  color: #b5bfb2;
+  color: #adb8c4;
   line-height: 1.9;
   margin-bottom: 22px;
 }
@@ -3210,7 +3212,7 @@ dialog.modal::backdrop {
 }
 .folder-catalog {
   border-top: 3px solid #a48e60;
-  background: linear-gradient(135deg, #202d27, #151f1d);
+  background: linear-gradient(135deg, #1f262e, #151a1f);
 }
 .catalog-heading {
   display: flex;
@@ -3229,7 +3231,7 @@ dialog.modal::backdrop {
   margin-top: 8px;
   overflow: visible;
   background: #b8a77d;
-  color: #26392f;
+  color: #262f39;
   border: 1px solid #b8a77d;
   border-radius: 0 6px 5px 5px;
   box-shadow: 0 9px 18px #0002;
@@ -3261,7 +3263,7 @@ dialog.modal::backdrop {
   border-bottom: 0;
   border-radius: 5px 8px 0 0;
   background: #b8a77d;
-  color: #2d3c31;
+  color: #2a343f;
   font: 9px/1.4 monospace;
   letter-spacing: 1px;
 }
@@ -3275,7 +3277,7 @@ dialog.modal::backdrop {
   margin: 18px 15px 0;
   padding: 6px 6px 15px;
   background: #e8dec6;
-  box-shadow: 0 4px 7px #29312633;
+  box-shadow: 0 4px 7px #232b3433;
   transform: rotate(-2deg);
 }
 .folder-catalog .case-option:nth-child(even) > .folder-photo {
@@ -3302,7 +3304,7 @@ dialog.modal::backdrop {
   position: absolute;
   right: 3px;
   top: -10px;
-  color: #596a61;
+  color: #4e6175;
   transform: rotate(12deg);
 }
 .folder-catalog .case-option > .folder-copy {
@@ -3310,7 +3312,7 @@ dialog.modal::backdrop {
   gap: 9px;
 }
 .folder-catalog .case-option b {
-  color: #21372e;
+  color: #212c37;
   font:
     20px/1.18 Georgia,
     serif;
@@ -3319,28 +3321,28 @@ dialog.modal::backdrop {
   margin: 0;
   font-size: 10px;
   line-height: 1.6;
-  color: #2d3f32;
+  color: #2b3641;
 }
 .folder-selection {
   display: flex;
   align-items: center;
   gap: 7px;
-  border-top: 1px dashed #36493855;
+  border-top: 1px dashed #333f4c55;
   padding-top: 10px;
   margin-top: 3px;
   font: 9px/1.5 monospace;
-  color: #2d3f32;
+  color: #2b3641;
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
 .folder-selection-dot {
   width: 6px;
   height: 6px;
-  border: 1px solid #536448;
+  border: 1px solid #455567;
   border-radius: 50%;
 }
 .selected .folder-selection-dot {
-  background: #345d43;
+  background: #34485d;
 }
 .folder-catalog .case-option > svg {
   top: 26px;
@@ -3348,7 +3350,7 @@ dialog.modal::backdrop {
   width: 23px;
   height: 23px;
   padding: 3px;
-  background: #273e32;
+  background: #27323e;
   color: #ead5a0;
   z-index: 1;
 }
@@ -3357,15 +3359,15 @@ dialog.modal::backdrop {
     repeating-linear-gradient(transparent 0 24px, #857c5c12 25px 26px), #d6ccaf;
   border-left: 3px solid #b09660;
   border-radius: 2px;
-  color: #344538;
+  color: #303c49;
   padding: 16px 18px;
   margin: 22px 0;
   font-size: 12px;
   line-height: 1.9;
 }
 .office-grid .credential-panel {
-  background: #192724;
-  border-color: #3c4b40;
+  background: #192027;
+  border-color: #364351;
   position: relative;
 }
 .office-grid .avatars {
@@ -3383,7 +3385,7 @@ dialog.modal::backdrop {
   right: 25px;
   width: 18px;
   height: 33px;
-  border: 2px solid #788a7a;
+  border: 2px solid #6d8095;
   border-radius: 8px 8px 6px 6px;
   transform: rotate(9deg);
   pointer-events: none;
@@ -3394,10 +3396,10 @@ dialog.modal::backdrop {
   gap: 12px;
   padding: 17px 14px;
   margin: 22px 0;
-  border: 1px solid #7c80614d;
+  border: 1px solid #5e70824d;
   background:
     repeating-linear-gradient(35deg, #b9b79303 0 1px, transparent 2px 6px),
-    #26372d;
+    #252e38;
   border-radius: 4px;
 }
 .investigator-credential > div {
@@ -3430,12 +3432,12 @@ dialog.modal::backdrop {
 .office-grid .investigator-credential small {
   margin: 0;
   font-size: 9px;
-  color: #b4bdad;
+  color: #a9b5c1;
 }
 .office-grid .join-panel {
   display: block;
-  border-top: 3px solid #6f8974;
-  background: #1c2925;
+  border-top: 3px solid #687b90;
+  background: #1c2229;
 }
 .office-grid .join-panel h2 {
   font:
@@ -3457,11 +3459,11 @@ dialog.modal::backdrop {
   margin-bottom: 0;
 }
 .dashboard .stats-strip {
-  border: 1px solid #45513c;
+  border: 1px solid #384655;
   border-radius: 5px;
   background:
     repeating-linear-gradient(0deg, transparent 0 26px, #9c9e6710 27px 28px),
-    #1c2a23;
+    #1c232a;
   padding: 25px 0;
 }
 .dashboard .stats-strip b {
@@ -3469,7 +3471,7 @@ dialog.modal::backdrop {
   color: #d5c593;
 }
 .dashboard .stats-strip div {
-  border-right-color: #68715370;
+  border-right-color: #4e617670;
 }
 .archive-heading {
   display: flex;
@@ -3493,18 +3495,18 @@ dialog.modal::backdrop {
 }
 .archive-panel,
 .leaderboard-panel {
-  border-top: 3px solid #64715a;
-  background: #17231f;
+  border-top: 3px solid #51657a;
+  background: #171d23;
 }
 .archive-panel {
   background:
     repeating-linear-gradient(0deg, transparent 0 31px, #b8b58105 32px 33px),
-    #17231f;
+    #171d23;
 }
 .archive-status {
   margin-left: auto;
   padding: 3px 7px;
-  border: 1px solid #60725a;
+  border: 1px solid #52657a;
   border-radius: 2px;
   color: #b7c5a7;
   white-space: nowrap;
@@ -3515,18 +3517,18 @@ dialog.modal::backdrop {
   border-color: #9a8652;
 }
 .archive-status.finished {
-  color: #a0aaa1;
-  border-color: #516057;
+  color: #97a5b3;
+  border-color: #47586a;
 }
 .operation-header {
   position: relative;
   padding: 26px 28px;
-  border: 1px solid #66704d66;
+  border: 1px solid #4c5e7166;
   border-top: 3px solid #9a8d60;
   border-radius: 6px;
   background:
-    repeating-linear-gradient(0deg, transparent 0 27px, #a9b49705 28px 29px),
-    linear-gradient(110deg, #23322b, #17231f);
+    repeating-linear-gradient(0deg, transparent 0 27px, #97a5b405 28px 29px),
+    linear-gradient(110deg, #222a33, #171d23);
 }
 .operation-header:before {
   content: "";
@@ -3547,35 +3549,35 @@ dialog.modal::backdrop {
   margin: 12px 0 0;
   font: 8px/1.8 monospace;
   letter-spacing: 1.3px;
-  color: #aeb89c;
+  color: #9caab8;
 }
 .room-page .tabs {
   gap: 6px;
-  border-bottom-color: #6a735080;
+  border-bottom-color: #4e617580;
   padding-top: 7px;
 }
 .room-page .tabs button {
   padding: 12px 15px;
-  background: #1c2b24;
-  border: 1px solid #3c4e3f;
+  background: #1c232b;
+  border: 1px solid #374553;
   border-radius: 7px 10px 0 0;
   border-bottom: 0;
   position: relative;
   top: 1px;
 }
 .room-page .tabs button[aria-selected="true"] {
-  background: #364534;
+  background: #303c49;
   color: #e5d5a9;
-  border-color: #6a7350;
+  border-color: #4e6175;
   box-shadow: inset 0 3px 0 #a89562;
 }
 .field-report {
-  border-bottom: 2px solid #5b6b4e;
-  background: #1b2a24;
+  border-bottom: 2px solid #4a5c6f;
+  background: #1b222a;
 }
 .room-page .team-panel,
 .room-page .chat-panel {
-  border-top: 2px solid #697554;
+  border-top: 2px solid #506479;
 }
 .report-masthead {
   display: flex;
@@ -3584,8 +3586,8 @@ dialog.modal::backdrop {
   gap: 18px;
   padding-bottom: 23px;
   margin-bottom: 25px;
-  border-bottom: 1px solid #72805b70;
-  color: #b9bd9f;
+  border-bottom: 1px solid #586d8370;
+  color: #a1aebb;
   font: 9px/1.6 monospace;
   letter-spacing: 1px;
 }
@@ -3605,8 +3607,8 @@ dialog.modal::backdrop {
 .results-panel {
   background:
     repeating-linear-gradient(0deg, transparent 0 29px, #bcc69d06 30px 31px),
-    #1a2b23;
-  border-color: #536448;
+    #1a222b;
+  border-color: #455567;
 }
 .landing .case-visual:before {
   content: "";
@@ -3627,8 +3629,8 @@ dialog.modal::backdrop {
   gap: 22px;
   padding: 23px 28px;
   margin: 0 0 60px;
-  border-block: 1px solid #59604470;
-  background: linear-gradient(90deg, #28352b, #18231f);
+  border-block: 1px solid #42516270;
+  background: linear-gradient(90deg, #252e38, #181d23);
 }
 .landing-dispatch > svg {
   color: #bbaa79;
@@ -3642,7 +3644,7 @@ dialog.modal::backdrop {
   font:
     18px/1.5 Georgia,
     serif;
-  color: #bfccba;
+  color: #b9c3cd;
 }
 .landing-dispatch strong {
   color: #e3d6b2;

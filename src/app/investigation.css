@@ -1,7 +1,7 @@
 /* The agency's visual language: field paper, archive marks and evidence pins. */
 body {
   background-image:
-    radial-gradient(ellipse at 75% 0%, #41433132, transparent 52%),
+    radial-gradient(ellipse at 75% 0%, #2e3a4632, transparent 52%),
     linear-gradient(90deg, #b7b38a04 1px, transparent 1px),
     linear-gradient(#b7b38a04 1px, transparent 1px);
   background-size:
@@ -38,7 +38,7 @@ body {
   display: block;
   font-size: 8px;
   letter-spacing: 1.5px;
-  color: #9ba6a3;
+  color: #acb9c6;
 }
 .footer-signature {
   display: flex;
@@ -60,7 +60,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #d6b57a;
+  color: #c8a76b;
   flex-shrink: 0;
   background: radial-gradient(circle, #b2944f15, transparent 70%);
 }
@@ -73,7 +73,7 @@ body {
 .seal-star {
   position: absolute;
   bottom: -11px;
-  background: #1d2823;
+  background: #1c2229;
   padding: 0 7px;
   font-size: 19px;
 }
@@ -89,8 +89,8 @@ body {
   bottom: -9px;
 }
 .landing .case-visual {
-  border: 7px solid #343a2f;
-  outline: 1px solid #626748;
+  border: 7px solid #2a343f;
+  outline: 1px solid #465769;
   box-shadow:
     13px 16px 0 -7px #b3a87a14,
     0 20px 50px #0005;
@@ -111,8 +111,8 @@ body {
   gap: 36px;
   padding: 32px;
   margin-bottom: 60px;
-  background: linear-gradient(115deg, #202c25, #151e1b);
-  border: 1px solid #42503e;
+  background: linear-gradient(115deg, #1e262e, #14191f);
+  border: 1px solid #394755;
   border-radius: 5px;
   position: relative;
 }
@@ -157,10 +157,10 @@ body {
   min-width: 0;
   background:
     repeating-linear-gradient(25deg, #665c3f0a 0 2px, transparent 2px 5px),
-    #2c3328;
-  border: 7px solid #394032;
+    #242d37;
+  border: 7px solid #2e3944;
   box-shadow:
-    inset 0 0 35px #0a140c88,
+    inset 0 0 35px #0a0f1488,
     0 8px 25px #0003;
   overflow: hidden;
 }
@@ -206,9 +206,9 @@ body {
   display: grid;
   place-items: center;
   height: 100px;
-  background: linear-gradient(130deg, #384b42, #101f1c);
+  background: linear-gradient(130deg, #34414f, #10171f);
   overflow: hidden;
-  color: #a4ae91;
+  color: #909faf;
 }
 .scene-beam {
   position: absolute;
@@ -222,7 +222,7 @@ body {
 .photo-crosshair {
   position: absolute;
   inset: 10px;
-  border: 1px solid #9eaf9344;
+  border: 1px solid #92a0b044;
 }
 .board-testimony {
   top: 22%;
@@ -232,7 +232,7 @@ body {
   transform: rotate(7deg);
   background:
     repeating-linear-gradient(transparent 0 22px, #73705022 22px 23px), #c9bd90;
-  color: #3e4739;
+  color: #33404d;
 }
 .note-type {
   display: block;
@@ -267,8 +267,8 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #b8c0a6;
-  color: #3c4b3d;
+  background: #a7b3bf;
+  color: #364351;
   transform: rotate(-4deg);
 }
 .board-evidence > span:last-child {
@@ -296,7 +296,7 @@ body {
   left: 5%;
   font: 7px/1.4 monospace;
   letter-spacing: 0.6px;
-  color: #c1c4a8;
+  color: #aab6c2;
 }
 .board-corner {
   position: absolute;
@@ -317,9 +317,9 @@ body {
   border-width: 0 1px 1px 0;
 }
 .method-grid {
-  border: 1px solid #48523b;
+  border: 1px solid #384655;
   border-radius: 5px;
-  background: #19221d;
+  background: #181d23;
   overflow: hidden;
 }
 .method-grid article {
@@ -363,10 +363,10 @@ body {
   padding: 40px 35px;
   background:
     repeating-linear-gradient(0deg, transparent 0 31px, #c4c09305 31px 32px),
-    linear-gradient(125deg, #28352a, #17241f);
-  border: 1px solid #5c6548;
-  border-left: 10px solid #4d5940;
-  box-shadow: 10px 12px 0 -5px #626b3e30;
+    linear-gradient(125deg, #252e38, #171d24);
+  border: 1px solid #455668;
+  border-left: 10px solid #3d4c5c;
+  box-shadow: 10px 12px 0 -5px #3e546b30;
 }
 .cover-tab {
   display: inline-block;
@@ -397,7 +397,7 @@ body {
 .cover-signature {
   display: block;
   margin-top: 32px;
-  border-top: 1px solid #75845a66;
+  border-top: 1px solid #5d6e8166;
   padding-top: 15px;
   color: #beb78f;
   font: 8px/1.6 monospace;
@@ -407,13 +407,13 @@ body {
   font-size: 11px;
   max-width: 340px;
   margin: 24px 0 0 18px;
-  color: #a9b1a2;
+  color: #9ca9b7;
 }
 .access-form-column .auth-card {
   position: relative;
-  border-color: #4e5947;
+  border-color: #404f60;
   border-top: 3px solid #b19a65;
-  background: linear-gradient(135deg, #1b2723, #151d1e);
+  background: linear-gradient(135deg, #1a2128, #1d2a36);
 }
 .access-form-column .auth-card::before {
   content: "";
@@ -444,19 +444,19 @@ body {
   gap: 13px;
   padding: 18px 15px;
   min-width: 0;
-  border: 1px solid #3f4c3c;
-  border-bottom: 3px solid #596047;
-  background: #1c2921;
+  border: 1px solid #364452;
+  border-bottom: 3px solid #435364;
+  background: #1c2229;
   border-radius: 3px;
   transition: background 0.2s;
 }
 .investigation-route a:hover {
-  background: #28372b;
+  background: #262f39;
 }
 .route-number {
   font: 10px/1.5 monospace;
   color: #bdad81;
-  border-right: 1px solid #65715266;
+  border-right: 1px solid #4e617566;
   padding-right: 11px;
 }
 .investigation-route a > svg {
@@ -477,7 +477,7 @@ body {
   display: block;
   margin-top: 3px;
   font-size: 10px;
-  color: #aab5a6;
+  color: #a0adbb;
   overflow-wrap: anywhere;
 }
 .dashboard .stats-strip > div {
@@ -517,7 +517,7 @@ body {
   pointer-events: none;
 }
 .operation-header .room-code {
-  background: #18251fd9;
+  background: #181e25d9;
   padding-block: 10px;
   padding-right: 12px;
 }
@@ -538,14 +538,14 @@ body {
   padding-top: 5px;
   font: 10px/1.5 monospace;
   text-align: center;
-  color: #a0ac9e;
+  color: #97a5b3;
 }
 .case-progress li:not(:last-child)::after {
   content: "";
   position: absolute;
   width: calc(100% - 30px);
   height: 1px;
-  background: #43533e;
+  background: #3a4857;
   top: 20px;
   left: calc(50% + 15px);
 }
@@ -554,10 +554,10 @@ body {
   height: 30px;
   display: grid;
   place-items: center;
-  border: 1px solid #506049;
+  border: 1px solid #445465;
   border-radius: 50%;
-  background: #18211c;
-  color: #aeb99f;
+  background: #171c22;
+  color: #9facb9;
 }
 .case-progress .current {
   color: #ead2a3;
@@ -568,8 +568,8 @@ body {
   box-shadow: 0 0 0 4px #bc9f5320;
 }
 .case-progress .complete .phase-marker {
-  background: #344631;
-  border-color: #7c9367;
+  background: #303b47;
+  border-color: #697c91;
   color: #d0d9bc;
 }
 .radio-masthead {
@@ -578,7 +578,7 @@ body {
   gap: 9px;
   padding-bottom: 11px;
   margin-bottom: 17px;
-  border-bottom: 1px dashed #62715380;
+  border-bottom: 1px dashed #4e617680;
   font: 8px/1.6 monospace;
   letter-spacing: 1.3px;
   color: #c1bc95;
@@ -602,11 +602,11 @@ body {
   height: 17px;
 }
 .room-page .evidence-type {
-  border-bottom: 1px dashed #70856366;
+  border-bottom: 1px dashed #61738766;
   padding-bottom: 9px;
 }
 .room-page .team-panel {
-  background: linear-gradient(130deg, #213023, #17201c);
+  background: linear-gradient(130deg, #202831, #161b21);
 }
 @media (max-width: 1100px) {
   .agency-wordmark {
@@ -803,7 +803,7 @@ body {
   gap: 12px;
   padding-bottom: 14px;
   margin-bottom: 22px;
-  border-bottom: 1px dashed #78846466;
+  border-bottom: 1px dashed #61738766;
   color: #c5bd96;
   font: 9px/1.6 monospace;
   letter-spacing: 1px;

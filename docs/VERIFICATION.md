@@ -1,5 +1,11 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Paleta Archivo nocturno — 26 de octubre de 2026
+
+- Fondo azul tinta `#101923`, paneles azul grisáceo `#1D2A36`, dorado antiguo `#C8A76B`, texto marfil `#EEE8DC`, verde salvia `#87AA99` y borde de alertas rojo ladrillo `#C56F66`.
+- Se armonizan fondos, bordes, textos secundarios, formularios y decoración de oficina en las tres hojas globales. Se conservan los papeles cálidos y las ilustraciones de personajes y evidencias. El contraste de texto y botones principales se comprueba con los pares de color efectivos; la revisión pública del navegador se realiza tras el despliegue.
+- Cambio exclusivamente CSS; no modifica autenticación, datos de juego, chat ni reglas de las salas.
+
 ## Ambiente nocturno animado — 26 de octubre de 2026
 
 - Capa decorativa global de oficina: ventana con lluvia, luces de ciudad, sombras de persianas, lámpara y motas en la luz. Animaciones CSS de transformación y opacidad; menos gotas y sin motas en móvil. Sin nuevas dependencias, peticiones de red ni temporizadores JavaScript para animar.
