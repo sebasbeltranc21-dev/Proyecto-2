@@ -137,6 +137,9 @@ export function EvidenceWorkspace({
   );
   const evidence = data.evidence.filter((e) => !zone || e.location_id === zone);
   const selected = data.evidence.find((e) => e.id === inspected);
+  const referenceNumbers = new Map(
+    data.evidence.map((e, i) => [e.id, String(i + 1).padStart(2, "0")]),
+  );
   const entries = data.timeline ?? [];
   const locations = data.case.locations ?? [];
   const location = locations.find((l) => l.id === zone);
@@ -238,7 +241,8 @@ export function EvidenceWorkspace({
               evidence.map((e) => (
                 <article
                   key={e.id}
-                  className={`evidence-card ${e.user_id ? "private" : ""}`}
+                  className={`evidence-card field-record ${e.user_id ? "private" : ""}`}
+                  data-inspected={inspected === e.id}
                 >
                   <span className="evidence-type">
                     {e.user_id ? (
@@ -255,13 +259,26 @@ export function EvidenceWorkspace({
                       </>
                     )}
                   </span>
-                  <EvidenceIllustration title={e.title} />
+                  <div className="field-reference">
+                    <span>INDICIO N.º {referenceNumbers.get(e.id)}</span>
+                    <span>FASE {e.stage + 1}</span>
+                  </div>
+                  <figure className="field-photo">
+                    <EvidenceIllustration title={e.title} />
+                    <figcaption>
+                      Registro ilustrado ·{" "}
+                      {locations.find((l) => l.id === e.location_id)?.name ??
+                        "Expediente"}
+                    </figcaption>
+                  </figure>
                   <h3>{e.title}</h3>
                   <p>{e.body}</p>
                   <button
                     className="examine-button"
                     onClick={() => setInspected(e.id)}
                     aria-label={`Examinar evidencia: ${e.title}`}
+                    aria-haspopup="dialog"
+                    aria-expanded={inspected === e.id}
                   >
                     <Maximize2 size={15} />
                     Examinar evidencia
@@ -282,6 +299,7 @@ export function EvidenceWorkspace({
         <EvidenceDialog
           key={selected.id}
           evidence={selected}
+          reference={referenceNumbers.get(selected.id) ?? "—"}
           entry={entries.find((e) => e.evidence_id === selected.id)}
           uid={uid}
           editable={editable}
@@ -310,6 +328,7 @@ export function EvidenceWorkspace({
 
 function EvidenceDialog({
   evidence,
+  reference,
   entry,
   uid,
   editable,
@@ -319,6 +338,7 @@ function EvidenceDialog({
   onPin,
 }: {
   evidence: Evidence;
+  reference: string;
   entry?: TimelineEntry;
   uid: string;
   editable: boolean;
@@ -366,8 +386,14 @@ function EvidenceDialog({
         {evidence.user_id ? "TU PISTA PRIVADA" : "EVIDENCIA PÚBLICA"} / VISTA
         AMPLIADA
       </p>
+      <p className="field-dialog-reference">
+        INDICIO N.º {reference} · FASE {evidence.stage + 1}
+      </p>
       <h2 id={titleId}>{evidence.title}</h2>
-      <EvidenceIllustration title={evidence.title} />
+      <figure className="field-photo field-photo-expanded">
+        <EvidenceIllustration title={evidence.title} />
+        <figcaption>Registro ilustrado del indicio {reference}</figcaption>
+      </figure>
       <p className="expanded-evidence-body">{evidence.body}</p>
       {localError && <ErrorNotice message={localError} />}
       {attempted && error && <ErrorNotice message={error} />}

@@ -1,5 +1,12 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Evidencias como registros de campo — 26 de octubre de 2026
+
+- Tarjetas de evidencia con marco de papel, cinta decorativa, ilustración original, zona del hallazgo y referencia numerada según el expediente visible. Se indica «Registro ilustrado» para no presentar los dibujos como fotografías reales ni añadir pistas narrativas.
+- Los números se derivan del conjunto visible antes de filtrar por zona; la vista ampliada conserva la misma referencia. Se mantienen la fase real, los textos de privacidad y el estado compartido de la cronología.
+- Botón de examen con `aria-haspopup="dialog"` y estado expandido. Resalte al enfocar con teclado, elevación discreta al usar ratón y respeto de movimiento reducido. No se agregan dependencias ni se cambia la lógica de compartir pistas.
+- 52 pruebas existentes, lint y compilación aprobados. Las pruebas del componente cubren filtros, examen, cierre y consentimiento para compartir pistas privadas. La verificación pública de CI no equivale a una nueva partida autenticada en navegador.
+
 ## Paleta Archivo nocturno — 26 de octubre de 2026
 
 - Fondo azul tinta `#101923`, paneles azul grisáceo `#1D2A36`, dorado antiguo `#C8A76B`, texto marfil `#EEE8DC`, verde salvia `#87AA99` y borde de alertas rojo ladrillo `#C56F66`.

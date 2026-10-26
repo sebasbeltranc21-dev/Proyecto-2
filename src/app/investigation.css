@@ -813,3 +813,148 @@ body {
   align-items: center;
   gap: 8px;
 }
+
+/* Field records: readable paper, original illustrations and clear interaction. */
+.field-record {
+  position: relative;
+  min-width: 0;
+  border: 1px solid #b8ad94;
+  border-top: 4px solid #657c90;
+  border-radius: 3px;
+  background: linear-gradient(120deg, #f0eadc, #e4ddcd);
+  box-shadow: 0 6px 18px #0003;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+.field-record.private {
+  background: linear-gradient(120deg, #f1e4c6, #e4d3ad);
+  border-top-color: #95703a;
+}
+.field-reference {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: -5px 0 18px;
+  color: #435366;
+  font: 10px/1.5 monospace;
+  letter-spacing: 0.7px;
+}
+.field-photo {
+  position: relative;
+  margin: 0 0 22px;
+  padding: 9px 9px 12px;
+  border: 1px solid #c4bcaa;
+  background: #faf5e9;
+  box-shadow: 2px 5px 8px #24334420;
+}
+.field-photo::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: -8px;
+  left: calc(50% - 25px);
+  width: 50px;
+  height: 17px;
+  background: #c8b68199;
+  border: 1px solid #b6a37366;
+  transform: rotate(-5deg);
+  pointer-events: none;
+}
+.field-photo .evidence-art {
+  margin: 0 0 10px;
+  border: 1px solid #b3b6ad;
+  background-color: #d7ddd9;
+}
+.field-photo .art-note {
+  left: 7px;
+  color: #354657;
+  opacity: 1;
+}
+.field-photo figcaption {
+  font:
+    italic 12px/1.6 Georgia,
+    serif;
+  color: #4b514c;
+  overflow-wrap: anywhere;
+}
+.field-record h3 {
+  overflow-wrap: anywhere;
+}
+.field-record > p {
+  padding: 0 0 12px;
+  background: repeating-linear-gradient(
+    transparent 0 21px,
+    #7d795817 21px 22px
+  );
+  line-height: 22px;
+  font-size: 13px;
+  color: #303e4c;
+}
+.field-record .examine-button {
+  background: #1d2a36;
+  color: #eee8dc;
+  border-color: #1d2a36;
+  font-weight: 600;
+}
+.field-record .examine-button:hover {
+  background: #30465a;
+}
+.field-record :focus-visible {
+  outline-color: #254f73;
+}
+.field-record > small {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: #375747;
+  border-color: #a9b5a2;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.field-record > small svg {
+  flex-shrink: 0;
+  margin: 2px 0 0;
+}
+.field-record:focus-within,
+.field-record[data-inspected="true"] {
+  border-color: #8d6935;
+  box-shadow:
+    0 0 0 2px #c8a76b,
+    0 9px 24px #0004;
+}
+.field-dialog-reference {
+  margin: 0 0 14px;
+  color: var(--gold);
+  font: 11px/1.6 monospace;
+  letter-spacing: 1px;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .field-record:hover,
+  .field-record:focus-within {
+    transform: translateY(-3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .field-record {
+    transition: none;
+  }
+  .field-record .evidence-drawing {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
+@media (max-width: 480px) {
+  .field-record {
+    padding: 20px 17px;
+  }
+}
+
+.evidence-dialog .field-photo-expanded .evidence-art {
+  margin: 0 0 10px;
+  border-radius: 0;
+  background-color: #d7ddd9;
+}
