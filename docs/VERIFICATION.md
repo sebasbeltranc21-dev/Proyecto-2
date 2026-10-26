@@ -1,5 +1,12 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Ambiente nocturno animado — 26 de octubre de 2026
+
+- Capa decorativa global de oficina: ventana con lluvia, luces de ciudad, sombras de persianas, lámpara y motas en la luz. Animaciones CSS de transformación y opacidad; menos gotas y sin motas en móvil. Sin nuevas dependencias, peticiones de red ni temporizadores JavaScript para animar.
+- La capa está detrás del contenido, tiene `pointer-events: none` y queda fuera del árbol accesible. El control **Pausar ambiente / Activar ambiente** se encuentra en el pie de página y solo afecta a esta decoración. La preferencia se conserva en `localStorage`; los datos de juego siguen en Supabase.
+- `useSyncExternalStore` sincroniza la preferencia del navegador y del sistema, con render inicial estático. Movimiento reducido desactiva las animaciones; la vista muestra **Ambiente estático**. El control sigue funcionando en memoria si el almacenamiento está bloqueado.
+- 52 pruebas existentes aprobadas; lint y compilación aprobados tras ajustar la suscripción a preferencias. La revisión de navegador del commit comprueba además la interfaz pública; la comprobación visual y de pausa se realiza en la web publicada.
+
 ## Interfaz de investigación y creación de salas — 26 de octubre de 2026
 
 - Se retiró el control «Permitir invitados» del formulario. La creación envía `allowGuests: false`; se conserva el contrato de la API y no se modifican salas existentes ni migraciones.

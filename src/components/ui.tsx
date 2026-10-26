@@ -8,6 +8,7 @@ import {
   Radio,
 } from "lucide-react";
 import { isConfigured } from "@/lib/config";
+import { AtmosphereControl } from "@/components/office-atmosphere";
 export const avatarIcons = {
   lupa: Search,
   huella: Fingerprint,
@@ -86,6 +87,7 @@ export function Footer() {
           <span className="muted">Un juego de ficción · Cooperativo</span>
         </span>
       </span>
+      <AtmosphereControl />
     </footer>
   );
 }
