@@ -198,3 +198,21 @@ test("failed join preserves the code and retries with the now-saved profile", as
     "join",
   ]);
 });
+
+test("the fifth character is sent when saving the profile", async () => {
+  show();
+  fireEvent.change(screen.getByLabelText("Nombre visible"), {
+    target: { value: "Agente Vera" },
+  });
+  fireEvent.click(
+    screen.getByRole("button", { name: "Elegir a Vera, Fotógrafa" }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Guardar perfil" }));
+  await waitFor(() =>
+    expect(mocks.act).toHaveBeenCalledWith({
+      action: "profile",
+      name: "Agente Vera",
+      avatar: "camara",
+    }),
+  );
+});

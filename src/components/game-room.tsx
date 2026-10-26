@@ -31,6 +31,7 @@ import { Avatar, ErrorNotice, Skeleton } from "./ui";
 import { SuspectPortrait } from "./case-art";
 import { CaseScene } from "./case-scene";
 import { EvidenceWorkspace, TimelineBoard } from "./evidence-workspace";
+import { InvestigatorCompanion } from "./investigator-companion";
 import { CaseEnding } from "./ending-cinematic";
 export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const [data, setData] = useState<RoomSnapshot | null>(null);
@@ -213,6 +214,9 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const solved = data.suspects.find((s) => s.id === data.solution?.suspect_id);
   return (
     <>
+      {!lobby && !finished && me?.in_game && (
+        <InvestigatorCompanion kind={me.avatar} stage={stage} />
+      )}
       <Link href="/panel" className="back">
         <ArrowLeft size={16} />
         Mi expediente

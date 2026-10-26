@@ -530,3 +530,18 @@ test("room capacity, votes for another case and arbitrary score changes are reje
     "llena",
   );
 });
+
+test("all five character choices persist and unknown choices are rejected", async () => {
+  await as(a);
+  for (const avatar of ["lupa", "huella", "llave", "luna", "camara"]) {
+    await action({ action: "profile", name: "Agente Uno", avatar });
+    const home = await db.query<{ v: { profile: { avatar: string } } }>(
+      "select public.mm_home() v",
+    );
+    expect(home.rows[0].v.profile.avatar).toBe(avatar);
+  }
+  await expect(
+    action({ action: "profile", name: "Agente Uno", avatar: "invalid" }),
+  ).rejects.toThrow();
+  await action({ action: "profile", name: "Agente Uno", avatar: "lupa" });
+});

@@ -1,20 +1,9 @@
 import Link from "next/link";
-import {
-  Fingerprint,
-  KeyRound,
-  Moon,
-  Search,
-  ArrowUpRight,
-  Radio,
-} from "lucide-react";
+import Image from "next/image";
+import { characterFor } from "@/lib/characters";
+import { Fingerprint, ArrowUpRight, Radio } from "lucide-react";
 import { isConfigured } from "@/lib/config";
 import { AtmosphereControl } from "@/components/office-atmosphere";
-export const avatarIcons = {
-  lupa: Search,
-  huella: Fingerprint,
-  llave: KeyRound,
-  luna: Moon,
-};
 export function Avatar({
   kind = "lupa",
   small = false,
@@ -22,10 +11,15 @@ export function Avatar({
   kind?: string;
   small?: boolean;
 }) {
-  const Icon = avatarIcons[kind as keyof typeof avatarIcons] || Search;
+  const character = characterFor(kind);
   return (
-    <span className={`avatar ${small ? "small" : ""}`}>
-      <Icon size={small ? 16 : 22} aria-hidden="true" />
+    <span className={`avatar character-avatar ${small ? "small" : ""}`}>
+      <Image
+        src={character.image}
+        alt={character.name}
+        width={small ? 40 : 64}
+        height={small ? 40 : 64}
+      />
     </span>
   );
 }

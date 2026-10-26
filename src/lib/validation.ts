@@ -8,7 +8,7 @@ export const actionSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("profile"),
     name: z.string().trim().min(2).max(24),
-    avatar: z.enum(["lupa", "huella", "llave", "luna"]),
+    avatar: z.enum(["lupa", "huella", "llave", "luna", "camara"]),
   }),
   z.object({
     action: z.literal("create"),

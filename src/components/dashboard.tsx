@@ -1,4 +1,5 @@
 "use client";
+import { characters, type CharacterId } from "@/lib/characters";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,7 +25,7 @@ import { browserClient } from "@/lib/supabase/client";
 import { act } from "@/lib/api";
 import type { HomeSnapshot } from "@/lib/types";
 import { actionSchema, roomCode } from "@/lib/validation";
-import { Avatar, ErrorNotice, Skeleton, avatarIcons } from "./ui";
+import { Avatar, ErrorNotice, Skeleton } from "./ui";
 import { DeskIllustration } from "./office-art";
 export function Dashboard({
   anonymous,
@@ -76,7 +77,7 @@ export function Dashboard({
       await act({
         action: "profile",
         name: String(f.get("name")),
-        avatar: avatar as "lupa",
+        avatar: avatar as CharacterId,
       });
       await load();
       setSaved(true);
@@ -380,7 +381,7 @@ export function Dashboard({
                     <small>
                       {data.profile
                         ? "Perfil guardado"
-                        : "Completa tu nombre y emblema"}
+                        : "Completa tu nombre y personaje"}
                     </small>
                   </div>
                   <BadgeCheck size={25} aria-hidden="true" />
@@ -404,17 +405,24 @@ export function Dashboard({
                     Elige un nombre inventado para esta práctica.
                   </small>
                   <fieldset>
-                    <legend>Elige tu emblema</legend>
-                    <div className="avatars">
-                      {Object.keys(avatarIcons).map((kind) => (
+                    <legend>Elige tu personaje</legend>
+                    <div className="character-picker">
+                      {characters.map((character) => (
                         <button
                           type="button"
-                          aria-label={`Emblema ${kind}`}
-                          aria-pressed={avatar === kind}
-                          onClick={() => setAvatar(kind)}
-                          key={kind}
+                          aria-label={`Elegir a ${character.name}, ${character.role}`}
+                          aria-pressed={avatar === character.id}
+                          onClick={() => setAvatar(character.id)}
+                          key={character.id}
                         >
-                          <Avatar kind={kind} />
+                          <Image
+                            src={character.image}
+                            alt=""
+                            width={120}
+                            height={150}
+                          />
+                          <b>{character.name}</b>
+                          <small>{character.role}</small>
                         </button>
                       ))}
                     </div>

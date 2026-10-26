@@ -1,5 +1,13 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Personajes investigadores — 26 de octubre de 2026
+
+- Cinco recortes con transparencia preparados a partir de las referencias adjuntas mediante la herramienta integrada de imágenes. Prompt de preparación: extraer únicamente el detective de cuerpo entero, conservar su identidad, ropa y herramientas; retirar fondo, interfaz de captura, textos, paletas y adornos separados. Assets optimizados en WebP para la web, finales en `public/characters/{alex,bruno,leo,nora,vera}.webp`.
+- El selector «Elige tu personaje» guarda las cuatro claves existentes y añade `camara` para Vera. El mismo catálogo se usa en credencial, participantes, clasificación y acompañante. Los nombres y roles son etiquetas visuales; no otorgan habilidades ni pistas adicionales.
+- Durante las fases activas aparece el personaje propio con balanceo, lupa y barrido de búsqueda. Se puede pausar, cambiar de lado y minimizar; en móvil ocupa menos espacio y con movimiento reducido queda estático. La ilustración no captura eventos de puntero; solo sus controles los reciben. Se oculta en espera y al finalizar. Las animaciones son CSS sobre el recorte, no animación articulada de brazos/piernas.
+- Migración aditiva aplicada a Proyecto 2: amplía el CHECK del avatar y su validación dentro de la función existente, conservando controles de sesión, permisos y `search_path`. Verificación alojada mediante una identidad transaccional temporal: `mm_action` guardó `camara` y `mm_home` lo recuperó; toda la transacción fue revertida. Asesores sin cambios respecto de los avisos anteriores del esquema privado y protección de contraseñas documentados en Integración.
+- 55 pruebas locales, lint y compilación aprobados. Pruebas nuevas del quinto personaje en el selector, persistencia de las cinco opciones y rechazo de valores desconocidos en PostgreSQL, y pausa/cambio de lado/minimización del acompañante. No equivale a una nueva partida operada por dos usuarios en navegador.
+
 ## Evidencias como registros de campo — 26 de octubre de 2026
 
 - Tarjetas de evidencia con marco de papel, cinta decorativa, ilustración original, zona del hallazgo y referencia numerada según el expediente visible. Se indica «Registro ilustrado» para no presentar los dibujos como fotografías reales ni añadir pistas narrativas.
