@@ -57,6 +57,24 @@ export default function Page() {
               Sala privada
             </span>
           </div>
+          <div className="agency-crew">
+            <div className="agency-crew-stickers" aria-hidden="true">
+              {["alex", "nora", "vera"].map((name) => (
+                <Image
+                  key={name}
+                  src={`/characters/${name}.webp`}
+                  alt=""
+                  width={70}
+                  height={90}
+                  sizes="70px"
+                />
+              ))}
+            </div>
+            <p>
+              <strong>Elige a tu investigador</strong>
+              <span>Cinco personajes. Un misterio por resolver.</span>
+            </p>
+          </div>
           <p className="muted">
             Proyecto académico: usa cuentas, alias y mensajes inventados. Crea
             tu cuenta ficticia y conserva tus credenciales para volver.

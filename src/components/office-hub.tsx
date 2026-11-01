@@ -15,6 +15,9 @@ import {
   Medal,
   Pause,
   Play,
+  Sparkles,
+  Search,
+  CheckCheck,
 } from "lucide-react";
 import type { HomeSnapshot } from "@/lib/types";
 import { characterFor } from "@/lib/characters";
@@ -127,9 +130,24 @@ export function OfficeHub({
         id="mis-estadisticas"
         aria-label="Mis estadísticas"
       >
-        <div>
-          <p className="eyebrow">TU TRAYECTORIA</p>
-          <h3>{rank?.name ?? "Cargando progreso"}</h3>
+        <div className="office-rank-card">
+          <div className="office-rank-intro">
+            <span className="office-rank-seal" aria-hidden="true">
+              <Medal size={32} />
+            </span>
+            <div>
+              <p className="eyebrow">TU TRAYECTORIA</p>
+              <h3>{rank?.name ?? "Cargando progreso"}</h3>
+            </div>
+            <Image
+              className="office-rank-sticker"
+              src={character.image}
+              alt=""
+              width={110}
+              height={128}
+              sizes="110px"
+            />
+          </div>
           <p>
             {next
               ? `Siguiente rango: ${next.name}. Requiere ${next.games} casos completados y ${next.wins} victorias.`
@@ -161,13 +179,24 @@ export function OfficeHub({
         </div>
         <dl className="office-metrics">
           {[
-            ["Partidas jugadas", p?.played],
-            ["Casos completados", p?.completed],
-            ["Victorias de equipo", p?.wins],
-            ["Pistas compartidas", p?.shared_clues],
-          ].map(([label, value]) => (
+            { label: "Partidas jugadas", value: p?.played, Icon: FolderOpen },
+            {
+              label: "Casos completados",
+              value: p?.completed,
+              Icon: CheckCheck,
+            },
+            { label: "Victorias de equipo", value: p?.wins, Icon: Trophy },
+            {
+              label: "Pistas compartidas",
+              value: p?.shared_clues,
+              Icon: Search,
+            },
+          ].map(({ label, value, Icon }) => (
             <div key={label}>
-              <dt>{label}</dt>
+              <dt>
+                <Icon size={20} aria-hidden="true" />
+                {label}
+              </dt>
               <dd>{value ?? "—"}</dd>
             </div>
           ))}
@@ -224,7 +253,10 @@ export function OfficeHub({
         aria-label="Mis logros"
       >
         <div className="office-section-heading">
-          <p className="eyebrow">VITRINA DE LA AGENCIA</p>
+          <p className="eyebrow">
+            <Sparkles size={16} aria-hidden="true" />
+            VITRINA DE LA AGENCIA
+          </p>
           <h3>Distinciones de tu investigación</h3>
           <p>
             Se desbloquean con partidas reales. Las fechas corresponden al

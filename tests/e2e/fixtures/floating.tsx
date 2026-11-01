@@ -8,6 +8,7 @@ import { FloatingChat } from "../../../src/components/floating-chat";
 import { InvestigatorCompanion } from "../../../src/components/investigator-companion";
 import "../../../src/app/investigation.css";
 import "../../../src/app/office-room.css";
+import "../../../src/app/chibi-ui.css";
 const report = {
   game: { stage: 3 },
   suspects: [{ id: "fictional", name: "Responsable ficticio" }],
@@ -31,18 +32,44 @@ const report = {
 } as RoomSnapshot;
 function OfficeReview() {
   const [selected, setSelected] = useState("ultima-luz");
-  const data = {
-    profile: { name: "Agente de revisión", avatar: "lupa" },
+  const data: HomeSnapshot = {
+    profile: { id: "review", name: "Agente de revisión", avatar: "lupa" },
+    rooms: [],
+    history: [],
+    stats: { games: 3, correct: 1, points: 150 },
+    leaderboard: [],
+    progression: {
+      played: 3,
+      completed: 3,
+      wins: 1,
+      shared_clues: 2,
+      rank_index: 2,
+      achievements: { first_case: "2026-11-01T12:00:00Z" },
+    },
     cases: [
-      { slug: "ultima-luz", theme: "museum", title: "Museo de revisión" },
+      {
+        slug: "ultima-luz",
+        theme: "museum",
+        title: "Museo de revisión",
+        intro: "Caso de prueba",
+        suspect_count: 4,
+      },
       {
         slug: "expreso-medianoche",
         theme: "train",
         title: "Expreso de revisión",
+        intro: "Caso de prueba",
+        suspect_count: 4,
       },
-      { slug: "ultimo-acto", theme: "theater", title: "Teatro de revisión" },
+      {
+        slug: "ultimo-acto",
+        theme: "theater",
+        title: "Teatro de revisión",
+        intro: "Caso de prueba",
+        suspect_count: 4,
+      },
     ],
-  } as HomeSnapshot;
+  };
   return <OfficeHub data={data} selected={selected} onSelect={setSelected} />;
 }
 createRoot(document.getElementById("root")!).render(
