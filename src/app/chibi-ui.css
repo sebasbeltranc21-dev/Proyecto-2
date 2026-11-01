@@ -340,6 +340,59 @@ input[type="radio"] {
   border-color: #bc9dde;
   background: #352944;
 }
+/* Field records now use dark panels, so replace their former paper-text palette.
+   Keep the illustration's own light-paper caption and drawing colors intact. */
+.evidence-card.field-record {
+  background: #2a263f;
+  color: #fff2dc;
+}
+.evidence-card.field-record.private {
+  background: #352944;
+}
+.evidence-card.field-record h3 {
+  color: #fff2dc;
+}
+.evidence-card.field-record > p {
+  color: #eee4f5;
+  background: repeating-linear-gradient(
+    transparent 0 21px,
+    #c7b4fa18 21px 22px
+  );
+}
+.evidence-card.field-record .field-reference {
+  color: #dbd0eb;
+}
+.evidence-card.field-record .evidence-type {
+  color: #bdece5;
+  border-color: #9a86b3;
+}
+.evidence-card.field-record.private .evidence-type {
+  color: #ffe0a2;
+}
+.evidence-card.field-record > small {
+  color: #bdece5;
+  border-color: #9a86b3;
+}
+.evidence-card.field-record .examine-button {
+  color: #30283e;
+  background: #ead9b6;
+  border-color: #f6dda3;
+}
+.evidence-card.field-record .examine-button:hover {
+  background: #fff1d2;
+}
+.evidence-card.field-record :focus-visible {
+  outline-color: #bdece5;
+}
+.evidence-dialog h2 {
+  color: #fff2dc;
+}
+.evidence-dialog .expanded-evidence-body {
+  color: #eee4f5;
+}
+.evidence-dialog .eyebrow {
+  color: #ffe0a2;
+}
 .suspect.voted,
 .map-location.selected {
   border-color: #f0cc83;
