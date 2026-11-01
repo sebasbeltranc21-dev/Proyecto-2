@@ -44,7 +44,10 @@ for (const width of [1440, 390])
     await page.route("**/__floating-review", (route) =>
       route.fulfill({ contentType: "text/html", body: html }),
     );
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
     await page.goto("/__floating-review");
+    await expect.poll(() => errors).toEqual([]);
     const character = page.getByLabel("Mover mi personaje", { exact: true });
     await expect(character).toBeVisible();
     const folder = page.getByRole("button", { name: /Teatro de revisión/ });
