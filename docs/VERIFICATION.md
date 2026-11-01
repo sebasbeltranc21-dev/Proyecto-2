@@ -1,5 +1,13 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Despacho anime y progresión real — 31 de octubre de 2026
+
+- Oficina recompuesta como una ilustración anime con contornos y cel shading, ajustada a las referencias chibi del usuario. Ventana lateral, escritorio y muebles con perspectiva coherente; el personaje está representado en el marco de credencial sobre la mesa. Las carpetas y los controles se ordenan en zonas independientes. Fondo preparado con la herramienta integrada de imágenes y optimizado a `public/office/dispatch.webp`. Prompt: conservar la composición del despacho, reinterpretarlo en anime/cel shading según referencias, sin personajes, textos, marcas ni pistas reales.
+- Cinco rangos calculados por el servidor: Novato (0), Junior (1 caso), Inspector (3 casos y 1 victoria), Experto (8 y 3), Élite (15 y 8). Se muestran condiciones y progreso. Partidas iniciadas, casos completados, victorias del equipo y pistas compartidas se consultan en tablas existentes; no se inventan visitas a pistas ni experiencia.
+- Cinco logros con condición, estado bloqueado y fecha real del cierre que alcanzó el hito: primer caso, primera victoria, tres casos, tres victorias y tres escenarios distintos. Las fechas se derivan del historial completo, no solo de las últimas 20 partidas. Las pistas compartidas cuentan entradas conservadas en la cronología; no condicionan rangos ni logros permanentes.
+- Función privada de progresión de solo lectura, sin permisos de ejecución para clientes, llamada desde `home` con identidad Auth validada. Ninguna nueva tabla ni exposición de soluciones. Migración aplicada y prueba alojada transaccional aprobada: partida de teatro completada, rango Junior y fecha real de primer logro; empate sin victoria; todos los datos temporales revertidos.
+- 64 pruebas locales, lint y compilación aprobados. Pruebas de los cinco rangos, fechas estables y aislamiento entre cuentas; verificación de interfaz adaptada al nuevo despacho en la fixture de navegador. Sin cambiar mecánicas de juego ni claves de acceso.
+
 ## Oficina interactiva y entrada a los casos — 31 de octubre de 2026
 
 - Se sustituye la bienvenida del panel por una oficina con arquitectura CSS, ventana y lluvia, iluminación cálida, escritorio SVG existente y personaje del perfil. Tres carpetas usan el catálogo real, las ilustraciones originales y la selección del formulario; al elegir una se enfoca el caso correspondiente. Teléfono, archivador y credencial enlazan a invitación, historial y perfil con etiquetas visibles.

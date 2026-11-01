@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./investigation.css";
 import "./night-office.css";
+import "./office-room.css";
 import { Header, Footer } from "@/components/ui";
 import { OfficeAtmosphere } from "@/components/office-atmosphere";
 export const metadata: Metadata = {

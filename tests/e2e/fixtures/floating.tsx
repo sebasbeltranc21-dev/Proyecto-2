@@ -7,6 +7,7 @@ import { createRoot } from "react-dom/client";
 import { FloatingChat } from "../../../src/components/floating-chat";
 import { InvestigatorCompanion } from "../../../src/components/investigator-companion";
 import "../../../src/app/investigation.css";
+import "../../../src/app/office-room.css";
 const report = {
   game: { stage: 3 },
   suspects: [{ id: "fictional", name: "Responsable ficticio" }],

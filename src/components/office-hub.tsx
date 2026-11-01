@@ -1,16 +1,22 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Phone,
   Archive,
   Fingerprint,
   ArrowUpRight,
   FolderOpen,
+  Trophy,
+  LockKeyhole,
+  BarChart3,
+  Home,
+  Medal,
 } from "lucide-react";
 import type { HomeSnapshot } from "@/lib/types";
 import { characterFor } from "@/lib/characters";
 import { casePresentation } from "@/lib/case-presentation";
-import { DeskIllustration } from "./office-art";
+import { ranks, achievements } from "@/lib/progression";
 export function OfficeHub({
   data,
   selected,
@@ -21,79 +27,176 @@ export function OfficeHub({
   onSelect: (slug: string) => void;
 }) {
   const character = characterFor(data.profile?.avatar ?? "lupa");
+  const p = data.progression;
+  const rank = p ? ranks[Math.max(0, Math.min(4, p.rank_index))] : null;
+  const next = p ? ranks[p.rank_index + 1] : null;
   return (
-    <section className="office-hub" aria-label="Tu oficina de investigación">
-      <div className="hub-room" aria-hidden="true">
-        <div className="hub-window">
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
+    <section
+      className="detective-office"
+      aria-label="Tu oficina de investigación"
+    >
+      <header className="office-titlebar">
+        <div>
+          <p className="eyebrow">AGENCIA MODO MISTERIO / DESPACHO PERSONAL</p>
+          <h2>La Oficina del Detective</h2>
         </div>
-        <div className="hub-wall-frame">
-          OBSERVAR
-          <br />
-          CONTRASTAR
-          <br />
-          DEDUCIR
-        </div>
-        <div className="hub-lamplight" />
-      </div>
-      <header className="hub-heading">
-        <p className="eyebrow">CENTRAL DE INVESTIGACIÓN / TU OFICINA</p>
-        <h2>
-          La noche guarda
-          <br />
-          <em>otro misterio.</em>
-        </h2>
-        <p>
-          {data.profile
-            ? `Bienvenido, ${data.profile.name}.`
-            : "Tu próxima investigación empieza aquí."}{" "}
-          Elige un expediente de la mesa.
-        </p>
+        <span className="office-rank">
+          <Medal size={20} />
+          {rank?.name ?? "Consultando rango…"}
+        </span>
       </header>
-      <div className="hub-detective" aria-hidden="true">
-        <Image src={character.image} alt="" width={240} height={320} />
-      </div>
-      <div className="hub-desk" aria-hidden="true">
-        <DeskIllustration />
-      </div>
-      <nav className="hub-objects" aria-label="Objetos de la oficina">
-        <a href="#unirse">
-          <Phone size={30} />
-          <span>
-            <b>Teléfono de la central</b>
-            <small>Entrar con un código</small>
-          </span>
-          <ArrowUpRight size={15} />
+      <div className="office-stage">
+        <Image
+          className="office-backdrop"
+          src="/office/dispatch.webp"
+          alt="Despacho de investigación con escritorio, lámpara, tablero de pistas y archivadores"
+          fill
+          sizes="(max-width: 760px) 100vw, 1200px"
+          priority
+        />
+        <div className="office-stage-shade" />
+        <div className="office-welcome-note">
+          <span>BIENVENIDO A TU DESPACHO</span>
+          <p>{data.profile?.name ?? "Investigador"}</p>
+          <small>Un nuevo expediente te espera.</small>
+        </div>
+        <div
+          className="office-portrait"
+          aria-label={`Credencial de ${data.profile?.name ?? "investigador"}`}
+        >
+          <div>
+            <Image
+              src={character.image}
+              alt={character.name}
+              width={100}
+              height={125}
+            />
+          </div>
+          <b>{data.profile?.name ?? "Tu identidad"}</b>
+          <small>{rank?.name ?? "Perfil de investigador"}</small>
+        </div>
+        <a className="office-scene-link office-board-link" href="#mis-logros">
+          <Trophy size={20} />
+          <span>Mis logros</span>
+          <ArrowUpRight size={13} />
         </a>
-        <a href="#mis-expedientes">
-          <Archive size={30} />
-          <span>
-            <b>Archivador</b>
-            <small>Consultar mi historial</small>
-          </span>
-          <ArrowUpRight size={15} />
+        <a
+          className="office-scene-link office-files-link"
+          href="#mis-expedientes"
+        >
+          <Archive size={20} />
+          <span>Mis expedientes</span>
+          <ArrowUpRight size={13} />
+        </a>
+        <a className="office-scene-link office-phone-link" href="#unirse">
+          <Phone size={20} />
+          <span>Teléfono de la central</span>
+          <ArrowUpRight size={13} />
+        </a>
+        <div
+          className="office-award-shelf"
+          aria-label="Insignias de tu oficina"
+        >
+          {achievements.slice(0, 3).map((a) => {
+            const date = p?.achievements[a.id];
+            return (
+              <a
+                href="#mis-logros"
+                className={date ? "earned" : "locked"}
+                key={a.id}
+                title={`${a.name}: ${date ? "desbloqueado" : "bloqueado"}`}
+                aria-label={`${a.name}: ${date ? "desbloqueado" : "bloqueado"}`}
+              >
+                {date ? <Medal size={24} /> : <LockKeyhole size={20} />}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+      <nav className="office-actionbar" aria-label="Acciones de la oficina">
+        <a href="#oficina-casos">
+          <FolderOpen size={18} />
+          Elegir caso
+        </a>
+        <a href="#mis-estadisticas">
+          <BarChart3 size={18} />
+          Mis estadísticas
+        </a>
+        <a href="#mis-logros">
+          <Trophy size={18} />
+          Mis logros
         </a>
         <a href="#perfil-investigador">
-          <Fingerprint size={30} />
-          <span>
-            <b>Mi credencial</b>
-            <small>{data.profile?.name ?? "Elegir alias y personaje"}</small>
-          </span>
-          <ArrowUpRight size={15} />
+          <Fingerprint size={18} />
+          Mi credencial
         </a>
+        <Link href="/">
+          <Home size={18} />
+          Volver al inicio
+        </Link>
       </nav>
-      <div className="hub-case-tray">
-        <p className="eyebrow">EXPEDIENTES SOBRE TU MESA</p>
-        <div className="hub-folders">
+      <section
+        className="office-progression"
+        id="mis-estadisticas"
+        aria-label="Mis estadísticas"
+      >
+        <div>
+          <p className="eyebrow">TU TRAYECTORIA</p>
+          <h3>{rank?.name ?? "Cargando progreso"}</h3>
+          <p>
+            {next
+              ? `Siguiente rango: ${next.name}. Requiere ${next.games} casos completados y ${next.wins} victorias.`
+              : p
+                ? "Has alcanzado el rango más alto de la agencia."
+                : "Las estadísticas aparecerán al consultar tu perfil."}
+          </p>
+          {p && next && (
+            <progress
+              value={Math.min(
+                p.completed / next.games,
+                next.wins ? p.wins / next.wins : 1,
+                1,
+              )}
+              max={1}
+              aria-label={`Progreso hacia ${next.name}`}
+            />
+          )}
+          <details>
+            <summary>Condiciones de los rangos</summary>
+            <ul>
+              {ranks.map((r) => (
+                <li key={r.name}>
+                  {r.name}: {r.games} casos y {r.wins} victorias de equipo.
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
+        <dl className="office-metrics">
+          {[
+            ["Partidas jugadas", p?.played],
+            ["Casos completados", p?.completed],
+            ["Victorias de equipo", p?.wins],
+            ["Pistas compartidas", p?.shared_clues],
+          ].map(([label, value]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{value ?? "—"}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+      <section className="office-case-section" id="oficina-casos">
+        <div className="office-section-heading">
+          <p className="eyebrow">MESA DE ENTRADA</p>
+          <h3>Elige tu próximo expediente</h3>
+        </div>
+        <div className="office-case-grid">
           {data.cases.map((c) => (
             <button
               type="button"
               key={c.slug}
-              className={`hub-folder hub-folder-${c.theme}`}
+              className={`office-case office-case-${c.theme}`}
               aria-pressed={selected === c.slug}
               onClick={() => {
                 onSelect(c.slug);
@@ -107,27 +210,68 @@ export function OfficeHub({
                   ?.focus({ preventScroll: true });
               }}
             >
-              <span className="hub-folder-tab">
-                <FolderOpen size={14} /> CASO {casePresentation[c.theme].number}
-              </span>
               <Image
                 unoptimized
                 src={casePresentation[c.theme].image}
                 alt=""
-                width={280}
-                height={130}
+                width={360}
+                height={160}
               />
-              <span className="hub-folder-title">{c.title}</span>
+              <span className="office-case-number">
+                EXPEDIENTE {casePresentation[c.theme].number}
+              </span>
+              <b>{c.title}</b>
               <small>
                 {selected === c.slug
                   ? "Seleccionado · preparar sala"
-                  : "Abrir expediente"}{" "}
-                <ArrowUpRight size={12} />
+                  : "Abrir expediente"}
+                <ArrowUpRight size={14} />
               </small>
             </button>
           ))}
         </div>
-      </div>
+      </section>
+      <section
+        id="mis-logros"
+        className="office-achievements"
+        aria-label="Mis logros"
+      >
+        <div className="office-section-heading">
+          <p className="eyebrow">VITRINA DE LA AGENCIA</p>
+          <h3>Distinciones de tu investigación</h3>
+          <p>
+            Se desbloquean con partidas reales. Las fechas corresponden al
+            cierre del caso que cumplió la condición.
+          </p>
+        </div>
+        <div className="office-achievement-grid">
+          {achievements.map((a) => {
+            const date = p?.achievements[a.id];
+            return (
+              <article
+                key={a.id}
+                className={`office-achievement ${date ? "earned" : "locked"}`}
+              >
+                {date ? <Trophy size={27} /> : <LockKeyhole size={25} />}
+                <h4>{a.name}</h4>
+                <p>{a.description}</p>
+                <small>{a.condition}</small>
+                {date ? (
+                  <time dateTime={date}>
+                    Desbloqueado:{" "}
+                    {new Intl.DateTimeFormat("es-EC", {
+                      dateStyle: "medium",
+                      timeZone: "America/Guayaquil",
+                    }).format(new Date(date))}
+                  </time>
+                ) : (
+                  <span>{p ? "Bloqueado" : "Consultando…"}</span>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      </section>
     </section>
   );
 }

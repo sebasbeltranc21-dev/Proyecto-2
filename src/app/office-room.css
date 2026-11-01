@@ -1,0 +1,650 @@
+.detective-office {
+  border: 1px solid #536171;
+  border-radius: 12px;
+  background: #14212c;
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: 0 20px 60px #0004;
+}
+.office-titlebar {
+  padding: 25px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid #40515e;
+}
+.office-titlebar h2 {
+  font:
+    30px/1.2 Georgia,
+    serif;
+  margin: 0;
+}
+.office-titlebar .eyebrow {
+  font-size: 9px;
+  margin-bottom: 8px;
+}
+.office-rank {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font:
+    13px Georgia,
+    serif;
+  color: #e4c78b;
+  white-space: nowrap;
+  padding: 10px 14px;
+  border: 1px solid #8a7654;
+  border-radius: 30px;
+  background: #302d25;
+}
+.office-stage {
+  position: relative;
+  aspect-ratio: 16/9;
+  isolation: isolate;
+  overflow: hidden;
+  background: #111d26;
+}
+.office-backdrop {
+  object-fit: cover;
+  z-index: -2;
+}
+.office-stage-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#040c1740, transparent 35%, #040b1420);
+  z-index: -1;
+  pointer-events: none;
+}
+.office-welcome-note {
+  position: absolute;
+  top: 5%;
+  left: 4%;
+  color: #f2e6ca;
+  text-shadow: 0 2px 8px #000;
+  background: #101923c9;
+  border: 1px solid #c8a76b66;
+  padding: 13px 18px;
+  border-radius: 4px;
+}
+.office-welcome-note > span {
+  font: 8px monospace;
+  letter-spacing: 1.2px;
+}
+.office-welcome-note p {
+  font:
+    25px/1.3 Georgia,
+    serif;
+  margin: 5px 0;
+  color: #f5ecd7;
+  overflow-wrap: anywhere;
+  max-width: 240px;
+}
+.office-welcome-note small {
+  font-size: 10px;
+  color: #d5dcdf;
+}
+.office-portrait {
+  position: absolute;
+  bottom: 12%;
+  left: 45%;
+  width: 112px;
+  padding: 6px 6px 9px;
+  background: #e4d5b7;
+  border: 5px solid #947c51;
+  box-shadow: 5px 7px 12px #0008;
+  text-align: center;
+  transform: rotate(-4deg);
+}
+.office-portrait > div {
+  background: linear-gradient(#283c4b, #17212b);
+  height: 112px;
+  overflow: hidden;
+}
+.office-portrait img {
+  width: 100%;
+  height: 145px;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+.office-portrait b {
+  display: block;
+  color: #273746;
+  font:
+    12px/1.3 Georgia,
+    serif;
+  overflow-wrap: anywhere;
+  margin-top: 5px;
+}
+.office-portrait small {
+  display: block;
+  color: #4d513f;
+  font: 8px/1.3 monospace;
+  margin-top: 3px;
+}
+.office-scene-link {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #142332ed;
+  border: 1px solid #c8a76b99;
+  color: #f3e3bc;
+  padding: 10px 13px;
+  border-radius: 5px;
+  font:
+    12px/1.3 Georgia,
+    serif;
+  box-shadow: 0 5px 14px #0006;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.office-scene-link:hover {
+  background: #344553;
+  transform: translateY(-3px);
+}
+.office-board-link {
+  left: 7%;
+  top: 42%;
+}
+.office-files-link {
+  right: 5%;
+  top: 44%;
+}
+.office-phone-link {
+  right: 8%;
+  bottom: 13%;
+}
+.office-award-shelf {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  display: flex;
+  gap: 7px;
+}
+.office-award-shelf a {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 46px;
+  border: 1px solid #baa16d;
+  background: #15232fe6;
+  border-radius: 5px;
+  color: #ddc187;
+}
+.office-award-shelf .locked {
+  color: #aab5bb;
+  border-color: #697779;
+}
+.office-actionbar {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  gap: 8px;
+  border-block: 1px solid #51606b;
+  background: #192936;
+}
+.office-actionbar a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #506577;
+  border-radius: 5px;
+  color: #e6dcc9;
+  font-size: 12px;
+}
+.office-actionbar a:hover {
+  background: #314657;
+  border-color: #c8a76b;
+}
+.office-progression {
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  border-bottom: 1px solid #3c4f60;
+}
+.office-progression h3 {
+  font:
+    25px Georgia,
+    serif;
+  color: #dec188;
+}
+.office-progression p {
+  font-size: 12px;
+}
+.office-progression progress {
+  width: 100%;
+  height: 9px;
+  accent-color: #c8a76b;
+}
+.office-progression details {
+  font-size: 11px;
+  margin-top: 15px;
+  color: #bdcbd4;
+}
+.office-progression summary {
+  cursor: pointer;
+}
+.office-progression li {
+  margin: 6px 0;
+}
+.office-metrics {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.office-metrics > div {
+  border: 1px solid #415666;
+  border-radius: 5px;
+  padding: 14px;
+  background: #192b38;
+}
+.office-metrics dt {
+  font:
+    10px/1.4 Arial,
+    sans-serif;
+  letter-spacing: 0;
+  margin: 0;
+  color: #bbcbd6;
+}
+.office-metrics dd {
+  font:
+    28px/1.4 Georgia,
+    serif;
+  color: #f0e3c7;
+  margin: 5px 0 0;
+}
+.office-case-section,
+.office-achievements {
+  padding: 28px;
+}
+.office-section-heading h3 {
+  font:
+    25px/1.3 Georgia,
+    serif;
+  margin-bottom: 12px;
+}
+.office-section-heading > p:last-child {
+  font-size: 12px;
+  max-width: 660px;
+}
+.office-case-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.office-case {
+  text-align: left;
+  padding: 0 0 15px;
+  border: 1px solid #7c7864;
+  border-radius: 5px;
+  background: #ddd0b5;
+  overflow: hidden;
+  min-width: 0;
+  transition: transform 0.2s;
+}
+.office-case:hover {
+  transform: translateY(-4px);
+}
+.office-case[aria-pressed="true"] {
+  outline: 2px solid #e5c682;
+  outline-offset: 3px;
+}
+.office-case img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+.office-case-number {
+  display: block;
+  font: 9px monospace;
+  color: #4a5b5b;
+  margin: 13px 14px 7px;
+}
+.office-case b {
+  display: block;
+  color: #1b2c3b;
+  font:
+    21px/1.25 Georgia,
+    serif;
+  margin: 0 14px 14px;
+}
+.office-case small {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #3c5056;
+  font-size: 10px;
+  margin: 0 14px;
+}
+.office-case-train {
+  background: #cbd6d3;
+}
+.office-case-theater {
+  background: #e3cfc4;
+}
+.office-achievements {
+  border-top: 1px solid #3c4f60;
+  background: #111e29;
+}
+.office-achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.office-achievement {
+  padding: 20px;
+  min-width: 0;
+  border: 1px solid #6a614e;
+  border-radius: 5px;
+  background: linear-gradient(130deg, #302d26, #17232d);
+  color: #ddc087;
+}
+.office-achievement.locked {
+  border-color: #425563;
+  background: #1b2b38;
+  color: #aebbc2;
+}
+.office-achievement h4 {
+  font:
+    18px/1.3 Georgia,
+    serif;
+  margin: 14px 0 8px;
+}
+.office-achievement p {
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.office-achievement small {
+  display: block;
+  font-size: 10px;
+  color: #cfdae0;
+  margin-bottom: 12px;
+}
+.office-achievement time,
+.office-achievement > span {
+  display: block;
+  font: 10px/1.5 monospace;
+  color: #d9c798;
+}
+.office-achievement.locked > span {
+  color: #acbdc9;
+}
+@media (max-width: 900px) {
+  .office-titlebar {
+    padding: 20px;
+  }
+  .office-titlebar h2 {
+    font-size: 25px;
+  }
+  .office-rank {
+    font-size: 11px;
+  }
+  .office-portrait {
+    width: 86px;
+    bottom: 9%;
+    padding: 4px;
+    border-width: 3px;
+  }
+  .office-portrait > div {
+    height: 80px;
+  }
+  .office-portrait img {
+    height: 110px;
+  }
+  .office-portrait b {
+    font-size: 10px;
+  }
+  .office-scene-link {
+    font-size: 10px;
+    padding: 8px;
+  }
+  .office-award-shelf a {
+    width: 32px;
+    height: 35px;
+  }
+  .office-progression {
+    gap: 18px;
+    padding: 22px;
+  }
+  .office-achievement-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .office-titlebar {
+    display: block;
+    padding: 20px 16px;
+  }
+  .office-rank {
+    display: inline-flex;
+    margin-top: 14px;
+  }
+  .office-titlebar h2 {
+    font-size: 27px;
+  }
+  .office-stage {
+    aspect-ratio: 4/3;
+  }
+  .office-backdrop {
+    object-position: 50% center;
+  }
+  .office-welcome-note {
+    padding: 8px 10px;
+    max-width: 55%;
+  }
+  .office-welcome-note > span {
+    font-size: 6px;
+  }
+  .office-welcome-note p {
+    font-size: 18px;
+    max-width: 130px;
+  }
+  .office-welcome-note small {
+    display: none;
+  }
+  .office-portrait {
+    width: 68px;
+    left: 43%;
+    bottom: 13%;
+  }
+  .office-portrait > div {
+    height: 57px;
+  }
+  .office-portrait img {
+    height: 86px;
+  }
+  .office-portrait b {
+    font-size: 8px;
+  }
+  .office-portrait small {
+    font-size: 6px;
+  }
+  .office-scene-link {
+    min-height: 38px;
+    padding: 7px;
+    font-size: 9px;
+    gap: 4px;
+  }
+  .office-scene-link > svg {
+    width: 13px;
+  }
+  .office-board-link {
+    left: 3%;
+    top: 49%;
+  }
+  .office-files-link {
+    right: 3%;
+    top: 49%;
+  }
+  .office-phone-link {
+    right: 3%;
+    bottom: 5%;
+  }
+  .office-award-shelf {
+    top: 8%;
+    right: 3%;
+    gap: 4px;
+  }
+  .office-award-shelf a {
+    width: 28px;
+    height: 32px;
+  }
+  .office-award-shelf svg {
+    width: 17px;
+  }
+  .office-actionbar {
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .office-actionbar a {
+    padding: 9px;
+    font-size: 11px;
+  }
+  .office-progression {
+    grid-template-columns: 1fr;
+    padding: 22px 16px;
+  }
+  .office-case-section,
+  .office-achievements {
+    padding: 22px 16px;
+  }
+  .office-case-grid {
+    grid-template-columns: 1fr;
+  }
+  .office-case {
+    display: grid;
+    grid-template-columns: 105px 1fr;
+    padding: 0;
+    column-gap: 0;
+  }
+  .office-case img {
+    height: 100%;
+    grid-row: 1/4;
+    grid-column: 1;
+    min-height: 120px;
+  }
+  .office-case-number,
+  .office-case b,
+  .office-case small {
+    grid-column: 2;
+  }
+  .office-case b {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .office-case small {
+    margin-bottom: 14px;
+  }
+  .office-achievement-grid {
+    grid-template-columns: 1fr;
+  }
+  .office-achievement {
+    padding: 18px;
+  }
+  .office-achievement h4 {
+    margin-top: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .detective-office * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .office-case:hover,
+  .office-scene-link:hover {
+    transform: none;
+  }
+}
+/* The player's portrait fits the empty frame painted on the desk. */
+.office-portrait {
+  left: 46.3%;
+  top: 55.8%;
+  bottom: auto;
+  width: 8.5%;
+  height: 19.4%;
+  padding: 0;
+  border: 0;
+  background: #182733;
+  box-shadow: none;
+  transform: none;
+  overflow: hidden;
+}
+.office-portrait > div {
+  height: 76%;
+}
+.office-portrait img {
+  width: 100%;
+  height: 135%;
+  object-fit: cover;
+  object-position: top;
+}
+.office-portrait b {
+  font-size: clamp(6px, 0.8vw, 11px);
+  color: #eee1c6;
+  margin: 3px 2px 0;
+}
+.office-portrait small {
+  font-size: clamp(5px, 0.55vw, 8px);
+  color: #ddc58d;
+  margin: 2px;
+}
+.office-board-link {
+  top: 33%;
+}
+.office-files-link {
+  top: 43%;
+  right: 12%;
+}
+.office-award-shelf {
+  right: 17%;
+  top: 17%;
+}
+@media (max-width: 600px) {
+  .office-portrait {
+    left: 45%;
+    top: 55.8%;
+    width: 11.3%;
+    height: 19.4%;
+  }
+  .office-portrait > div {
+    height: 75%;
+  }
+  .office-portrait img {
+    height: 135%;
+  }
+  .office-portrait b {
+    font-size: 6px;
+    margin-top: 1px;
+  }
+  .office-portrait small {
+    font-size: 5px;
+    margin: 0;
+  }
+  .office-board-link {
+    top: 43%;
+    left: 3%;
+  }
+  .office-files-link {
+    top: 43%;
+    right: 3%;
+  }
+  .office-award-shelf {
+    right: 3%;
+    top: 8%;
+  }
+}
+.office-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

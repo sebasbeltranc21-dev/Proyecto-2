@@ -96,7 +96,17 @@ export type RoomSnapshot = {
   solution: { suspect_id: string; explanation: string } | null;
   server_now: string;
 };
+export type OfficeProgression = {
+  completed: number;
+  wins: number;
+  played: number;
+  shared_clues: number;
+  rank_index: number;
+  achievements: Record<string, string | null>;
+};
 export type HomeSnapshot = {
+  progression?: OfficeProgression;
+
   cases: CaseSummary[];
   profile: Profile | null;
   rooms: { code: string; status: string; created_at: string; title?: string }[];

@@ -605,3 +605,56 @@ test("timeout reveals a missing vote as null without inventing an accusation", a
   await action({ action: "tick", code });
   expect((await snap(code)).results).toEqual(result.results);
 });
+
+test("office progression uses real completed games and preserves milestone dates across accounts", async () => {
+  await as(a);
+  const home = async () =>
+    (
+      await db.query<{ v: import("../src/lib/types").HomeSnapshot }>(
+        "select public.mm_home() v",
+      )
+    ).rows[0].v;
+  expect((await home()).progression).toMatchObject({
+    completed: 0,
+    wins: 0,
+    rank_index: 0,
+  });
+  for (let i = 0; i < 15; i++) {
+    const code = await room();
+    await owner(
+      `update public.mm_games set stage=2,phase_ends_at=now()+interval '1 minute' where room_id=(select id from public.mm_rooms where code='${code}')`,
+    );
+    await action({ action: "vote", code, suspect: culprit });
+    await as(b);
+    await action({ action: "vote", code, suspect: culprit });
+    await as(a);
+    const expected = new Map([
+      [0, 1],
+      [2, 2],
+      [7, 3],
+      [14, 4],
+    ]).get(i);
+    if (expected !== undefined)
+      expect((await home()).progression?.rank_index).toBe(expected);
+  }
+  const p = (await home()).progression!;
+  expect(p).toMatchObject({
+    completed: 15,
+    wins: 15,
+    played: 15,
+    rank_index: 4,
+  });
+  expect(p.achievements.first_case).toBeTruthy();
+  expect(p.achievements.three_wins).toBeTruthy();
+  expect(p.achievements.all_scenes).toBeNull();
+  expect((await home()).progression?.achievements).toEqual(p.achievements);
+  await as(c);
+  expect((await home()).progression).toMatchObject({
+    completed: 0,
+    wins: 0,
+    rank_index: 0,
+  });
+  await expect(db.query("select mm_private.progression()")).rejects.toThrow(
+    "permission denied",
+  );
+});
