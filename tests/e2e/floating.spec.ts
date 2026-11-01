@@ -51,6 +51,21 @@ for (const width of [1440, 390])
     await expect.poll(() => errors).toEqual([]);
     const character = page.getByLabel("Mover mi personaje", { exact: true });
     await expect(character).toBeVisible();
+    await expect(
+      page.locator(".office-stage a, .office-stage button"),
+    ).toHaveCount(0);
+    await expect(page.locator(".office-portrait")).toHaveCount(0);
+    await expect(
+      page.getByAltText("Álex sentado investigando", { exact: true }),
+    ).toBeVisible();
+    await page
+      .getByRole("button", { name: "Pausar personaje", exact: true })
+      .first()
+      .click();
+    await expect(page.locator(".office-seated-detective")).toHaveAttribute(
+      "data-paused",
+      "true",
+    );
     const folder = page.getByRole("button", { name: /Teatro de revisión/ });
     await folder.click();
     await expect(folder).toHaveAttribute("aria-pressed", "true");

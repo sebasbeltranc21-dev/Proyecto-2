@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
 import {
   Phone,
@@ -12,6 +13,8 @@ import {
   BarChart3,
   Home,
   Medal,
+  Pause,
+  Play,
 } from "lucide-react";
 import type { HomeSnapshot } from "@/lib/types";
 import { characterFor } from "@/lib/characters";
@@ -27,6 +30,7 @@ export function OfficeHub({
   onSelect: (slug: string) => void;
 }) {
   const character = characterFor(data.profile?.avatar ?? "lupa");
+  const [characterPaused, setCharacterPaused] = useState(false);
   const p = data.progression;
   const rank = p ? ranks[Math.max(0, Math.min(4, p.rank_index))] : null;
   const next = p ? ranks[p.rank_index + 1] : null;
@@ -55,65 +59,40 @@ export function OfficeHub({
           priority
         />
         <div className="office-stage-shade" />
-        <div className="office-welcome-note">
-          <span>BIENVENIDO A TU DESPACHO</span>
-          <p>{data.profile?.name ?? "Investigador"}</p>
-          <small>Un nuevo expediente te espera.</small>
-        </div>
         <div
-          className="office-portrait"
-          aria-label={`Credencial de ${data.profile?.name ?? "investigador"}`}
+          className="office-seated-detective"
+          data-paused={characterPaused}
+          aria-label={`${character.name}, sentado en su escritorio`}
         >
-          <div>
+          <div className="office-seated-motion">
             <Image
-              src={character.image}
-              alt={character.name}
-              width={100}
-              height={125}
+              src={character.seatedImage}
+              alt={`${character.name} sentado investigando`}
+              width={400}
+              height={460}
+              sizes="(max-width: 600px) 35vw, 400px"
+              priority
             />
           </div>
-          <b>{data.profile?.name ?? "Tu identidad"}</b>
-          <small>{rank?.name ?? "Perfil de investigador"}</small>
         </div>
-        <a className="office-scene-link office-board-link" href="#mis-logros">
-          <Trophy size={20} />
-          <span>Mis logros</span>
-          <ArrowUpRight size={13} />
-        </a>
-        <a
-          className="office-scene-link office-files-link"
-          href="#mis-expedientes"
-        >
-          <Archive size={20} />
-          <span>Mis expedientes</span>
-          <ArrowUpRight size={13} />
-        </a>
-        <a className="office-scene-link office-phone-link" href="#unirse">
-          <Phone size={20} />
-          <span>Teléfono de la central</span>
-          <ArrowUpRight size={13} />
-        </a>
-        <div
-          className="office-award-shelf"
-          aria-label="Insignias de tu oficina"
-        >
-          {achievements.slice(0, 3).map((a) => {
-            const date = p?.achievements[a.id];
-            return (
-              <a
-                href="#mis-logros"
-                className={date ? "earned" : "locked"}
-                key={a.id}
-                title={`${a.name}: ${date ? "desbloqueado" : "bloqueado"}`}
-                aria-label={`${a.name}: ${date ? "desbloqueado" : "bloqueado"}`}
-              >
-                {date ? <Medal size={24} /> : <LockKeyhole size={20} />}
-              </a>
-            );
-          })}
+        <div className="office-desk-foreground" aria-hidden="true">
+          <Image
+            src="/office/dispatch.webp"
+            alt=""
+            fill
+            sizes="(max-width: 760px) 100vw, 1200px"
+          />
         </div>
       </div>
       <nav className="office-actionbar" aria-label="Acciones de la oficina">
+        <a href="#unirse">
+          <Phone size={18} />
+          Teléfono de la central
+        </a>
+        <a href="#mis-expedientes">
+          <Archive size={18} />
+          Mis expedientes
+        </a>
         <a href="#oficina-casos">
           <FolderOpen size={18} />
           Elegir caso
@@ -134,6 +113,14 @@ export function OfficeHub({
           <Home size={18} />
           Volver al inicio
         </Link>
+        <button
+          type="button"
+          aria-pressed={characterPaused}
+          onClick={() => setCharacterPaused(!characterPaused)}
+        >
+          {characterPaused ? <Play size={18} /> : <Pause size={18} />}{" "}
+          {characterPaused ? "Animar personaje" : "Pausar personaje"}
+        </button>
       </nav>
       <section
         className="office-progression"

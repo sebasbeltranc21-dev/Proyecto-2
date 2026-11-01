@@ -1,5 +1,13 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Personajes sentados y escena despejada — 31 de octubre de 2026
+
+- Se retiran de la escena el retrato, la bienvenida flotante, los enlaces superpuestos y las insignias interactivas. El fondo anime se edita para retirar el marco del escritorio. Los accesos a invitación e historial se conservan en la barra inferior junto al resto de secciones.
+- Cinco nuevos recortes anime sentados, derivados de las identidades existentes: Álex, Bruno, Leo, Nora y Vera. Pose frontal de escritorio, torso y brazos con cuaderno. Assets en `public/characters/seated/`. El fondo editado permanece en `public/office/dispatch.webp`. Preparados con la herramienta integrada de imágenes: conservar identidad/vestuario/estilo, pose sentada y fondo transparente; retirar solo el marco del fondo sin alterar el resto del despacho.
+- Personaje centrado frente a la silla; capa de primer plano del escritorio para profundidad. Animación CSS suave de respiración y balanceo, sin temporizadores de animación. Control de pausa bajo la escena y vista estática con movimiento reducido. No se simula animación articulada ni parpadeo.
+- Lint, 64 pruebas y compilación local aprobados. La revisión de navegador comprueba que no queden enlaces/botones dentro de la escena, ausencia del retrato, presencia del personaje sentado, pausa y selección de casos en escritorio y móvil; resultado final consultado en CI.
+- Sin cambios de perfiles, rangos, logros, base de datos ni lógica multijugador. Los avatares y acompañantes durante la partida mantienen sus assets anteriores.
+
 ## Despacho anime y progresión real — 31 de octubre de 2026
 
 - Oficina recompuesta como una ilustración anime con contornos y cel shading, ajustada a las referencias chibi del usuario. Ventana lateral, escritorio y muebles con perspectiva coherente; el personaje está representado en el marco de credencial sobre la mesa. Las carpetas y los controles se ordenan en zonas independientes. Fondo preparado con la herramienta integrada de imágenes y optimizado a `public/office/dispatch.webp`. Prompt: conservar la composición del despacho, reinterpretarlo en anime/cel shading según referencias, sin personajes, textos, marcas ni pistas reales.

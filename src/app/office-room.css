@@ -648,3 +648,123 @@
   width: 100%;
   height: 100%;
 }
+
+/* The scene contains only scenery and the seated investigator; all controls are below it. */
+.office-seated-detective {
+  position: absolute;
+  left: 37%;
+  top: 26%;
+  width: 26%;
+  height: 44%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+  filter: drop-shadow(0 5px 7px #14202a66);
+}
+.office-seated-motion {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 95%;
+  animation: office-seated-breathe 5.5s ease-in-out infinite;
+}
+.office-seated-motion img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  user-select: none;
+}
+.office-desk-foreground {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(75% 0 0 0);
+  pointer-events: none;
+  z-index: 2;
+}
+.office-desk-foreground img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.office-seated-detective[data-paused="true"] .office-seated-motion {
+  animation-play-state: paused;
+}
+.office-actionbar button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #506577;
+  border-radius: 5px;
+  color: #e6dcc9;
+  background: transparent;
+  font-size: 12px;
+}
+.office-actionbar button:hover {
+  background: #314657;
+  border-color: #c8a76b;
+}
+@keyframes office-seated-breathe {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.5deg) scaleY(1);
+  }
+  35% {
+    transform: translateY(-2px) rotate(0.5deg) scaleY(1.012);
+  }
+  70% {
+    transform: translateY(-1px) rotate(0) scaleY(1.005);
+  }
+}
+@media (max-width: 600px) {
+  .office-seated-detective {
+    left: 33%;
+    width: 34%;
+    top: 26%;
+    height: 44%;
+  }
+  .office-actionbar button {
+    padding: 9px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .office-seated-motion {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+.detective-office {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+.office-titlebar {
+  background: #14212c;
+  border: 1px solid #536171;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
+.office-stage {
+  border: 1px solid #536171;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+}
+.office-actionbar {
+  margin-top: 20px;
+  border: 1px solid #405666;
+  border-radius: 10px;
+}
+.office-progression,
+.office-case-section,
+.office-achievements {
+  margin-top: 24px;
+  background: #14212c;
+  border: 1px solid #3c4f60;
+  border-radius: 10px;
+}
