@@ -1,5 +1,13 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Oficina interactiva y entrada a los casos — 31 de octubre de 2026
+
+- Se sustituye la bienvenida del panel por una oficina con arquitectura CSS, ventana y lluvia, iluminación cálida, escritorio SVG existente y personaje del perfil. Tres carpetas usan el catálogo real, las ilustraciones originales y la selección del formulario; al elegir una se enfoca el caso correspondiente. Teléfono, archivador y credencial enlazan a invitación, historial y perfil con etiquetas visibles.
+- En móvil los objetos se presentan como accesos grandes y las carpetas como filas; se retira la decoración que compite con el espacio de lectura. Las animaciones respetan movimiento reducido. No se inventan logros, estadísticas ni actividad del equipo.
+- Al comenzar la primera fase se muestra una presentación del escenario de cuatro segundos, saltable con botón o Escape, que se recuerda durante la sesión por ID de partida. No pausa el reloj del juego. El museo, expreso y teatro tienen marcos y tonos de informe propios; el teatro conserva su ilustración específica.
+- 63 pruebas locales, lint y compilación aprobados. Se comprueba el salto de introducción y su no repetición; la fixture de navegador añade selección de carpeta, enlace de invitación y ausencia de desbordamiento a escritorio y móvil. Fixture aislada sin sesiones reales; su resultado se consulta en CI.
+- Cambio de presentación y navegación, sin nuevas dependencias ni cambios de base de datos.
+
 ## Feedback docente: votos revelados y tercer caso — 31 de octubre de 2026
 
 - Informe final con una tabla de investigador, sospechoso votado, acierto y puntos. Incluye explícitamente «No emitió voto» y el culpable oficial. `snapshot` incorpora `suspect_id` por resultado solo en fase 3; conserva la comprobación de pertenencia y la política de votos propios durante la partida.

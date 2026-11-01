@@ -31,6 +31,7 @@ import type { Action } from "@/lib/validation";
 import type { RoomSnapshot } from "@/lib/types";
 import { Avatar, ErrorNotice, Skeleton } from "./ui";
 import { SuspectPortrait } from "./case-art";
+import { CaseArrival } from "./case-arrival";
 import { CaseScene } from "./case-scene";
 import { EvidenceWorkspace, TimelineBoard } from "./evidence-workspace";
 import { FloatingChat } from "./floating-chat";
@@ -310,7 +311,15 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
         )}
       </div>
       {error && <ErrorNotice message={error} />}
-      <div className="room-layout">
+      {game && stage === 0 && me?.in_game && (
+        <CaseArrival
+          key={game.id}
+          gameId={game.id}
+          theme={data.case.theme}
+          title={data.case.title}
+        />
+      )}
+      <div className={`room-layout environment-${data.case.theme}`}>
         <div className="investigation-column">
           {lobby ? (
             <section className="panel lobby-story">

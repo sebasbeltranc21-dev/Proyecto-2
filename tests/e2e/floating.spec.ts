@@ -47,6 +47,18 @@ for (const width of [1440, 390])
     await page.goto("/__floating-review");
     const character = page.getByLabel("Mover mi personaje", { exact: true });
     await expect(character).toBeVisible();
+    const folder = page.getByRole("button", { name: /Teatro de revisión/ });
+    await folder.click();
+    await expect(folder).toHaveAttribute("aria-pressed", "true");
+    await expect(
+      page.getByRole("link", { name: /Teléfono de la central/ }),
+    ).toHaveAttribute("href", "#unirse");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+    await page.evaluate(() => window.scrollTo(0, 0));
     await expect(
       page.getByRole("table", {
         name: "Votos y resultados de todos los investigadores",

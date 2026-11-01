@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { OfficeHub } from "../../../src/components/office-hub";
+import type { HomeSnapshot } from "../../../src/lib/types";
 import { FinalBallots } from "../../../src/components/final-ballots";
 import type { RoomSnapshot } from "../../../src/lib/types";
 import { createRoot } from "react-dom/client";
@@ -26,11 +28,28 @@ const report = {
     },
   ],
 } as RoomSnapshot;
+function OfficeReview() {
+  const [selected, setSelected] = useState("ultima-luz");
+  const data = {
+    profile: { name: "Agente de revisión", avatar: "lupa" },
+    cases: [
+      { slug: "ultima-luz", theme: "museum", title: "Museo de revisión" },
+      {
+        slug: "expreso-medianoche",
+        theme: "train",
+        title: "Expreso de revisión",
+      },
+      { slug: "ultimo-acto", theme: "theater", title: "Teatro de revisión" },
+    ],
+  } as HomeSnapshot;
+  return <OfficeHub data={data} selected={selected} onSelect={setSelected} />;
+}
 createRoot(document.getElementById("root")!).render(
   <main className="room-page room-sidebar">
     <p>
       Revisión de interfaz con datos ficticios; sin sesión ni transporte real.
     </p>
+    <OfficeReview />
     <FinalBallots data={report} uid="a" />
     <InvestigatorCompanion kind="lupa" />
     <FloatingChat messageCount={1}>

@@ -5,7 +5,7 @@ import type { CSSProperties } from "react";
 export function CaseScene({ theme }: { theme: CaseTheme }) {
   const train = theme === "train";
   return (
-    <div className={`case-scene ${train ? "train-scene" : "museum-scene"}`}>
+    <div className={`case-scene ${theme}-scene`}>
       <Image
         unoptimized
         src={casePresentation[theme].image}

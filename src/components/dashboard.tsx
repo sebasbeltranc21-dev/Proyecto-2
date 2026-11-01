@@ -16,7 +16,6 @@ import {
   Fingerprint,
   Paperclip,
   Files,
-  KeyRound,
   BadgeCheck,
   FileSearch,
   Users,
@@ -27,7 +26,7 @@ import { act } from "@/lib/api";
 import type { HomeSnapshot } from "@/lib/types";
 import { actionSchema, roomCode } from "@/lib/validation";
 import { Avatar, ErrorNotice, Skeleton } from "./ui";
-import { DeskIllustration } from "./office-art";
+import { OfficeHub } from "./office-hub";
 export function Dashboard({
   anonymous,
   initialData,
@@ -163,37 +162,9 @@ export function Dashboard({
           Cerrar sesión
         </button>
       </div>
-      <section className="office-welcome" aria-label="Central de investigación">
-        <div className="office-welcome-copy">
-          <span className="office-label">
-            DEPARTAMENTO DE CASOS SIN RESOLVER
-          </span>
-          <h2>
-            El siguiente misterio
-            <br />
-            empieza <em>en tu escritorio.</em>
-          </h2>
-          <p>
-            Abre un expediente, reúne a tu equipo y sigue el rastro. La verdad
-            está en los detalles.
-          </p>
-          {data && (
-            <nav
-              className="office-shortcuts"
-              aria-label="Accesos del escritorio"
-            >
-              <a href="#abrir-expediente">
-                <FolderOpen size={16} aria-hidden="true" /> Elegir caso{" "}
-                <ArrowRight size={14} aria-hidden="true" />
-              </a>
-              <a href="#unirse">
-                <KeyRound size={16} aria-hidden="true" /> Tengo un código
-              </a>
-            </nav>
-          )}
-        </div>
-        <DeskIllustration />
-      </section>
+      {data && (
+        <OfficeHub data={data} selected={caseSlug} onSelect={setCaseSlug} />
+      )}
       {data && (
         <nav
           className="investigation-route"
