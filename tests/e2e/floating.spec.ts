@@ -11,6 +11,7 @@ test.beforeAll(async () => {
       alias: {
         "@": resolve("src"),
         "next/image": resolve("tests/e2e/fixtures/image.tsx"),
+        "next/link": resolve("tests/e2e/fixtures/link.tsx"),
       },
     },
     build: {

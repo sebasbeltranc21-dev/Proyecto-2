@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Phone,
   Archive,
@@ -129,10 +130,10 @@ export function OfficeHub({
           <Fingerprint size={18} />
           Mi credencial
         </a>
-        <a href="/">
+        <Link href="/">
           <Home size={18} />
           Volver al inicio
-        </a>
+        </Link>
       </nav>
       <section
         className="office-progression"
