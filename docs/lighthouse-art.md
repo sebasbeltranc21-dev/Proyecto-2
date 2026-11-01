@@ -16,3 +16,5 @@ Prompt final:
 ## Comprobaciones
 
 La prueba de base de datos recorre creación de sala, reparto privado a dos jugadores, consentimiento para compartir, chat, revelado de la segunda fase y cierre de votos. Las pruebas de cinemática verifican acierto y error. El escenario utiliza el estilo anime del despacho; las ilustraciones de evidencias reutilizan la colección del juego.
+
+Verificación local: lint, TypeScript, compilación y 67 pruebas correctas. La comprobación transaccional `tests/remote-lighthouse-smoke.sql` también pasó en Supabase con dos identidades temporales: confirmó las 16 pistas, aislamiento privado, consentimiento, chat, ocultación de votos y resultados coincidentes. Toda la prueba terminó con `rollback`.
