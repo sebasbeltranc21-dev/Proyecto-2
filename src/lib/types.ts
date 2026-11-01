@@ -1,3 +1,4 @@
+import type { CaseTheme } from "./case-presentation";
 export type Profile = { id: string; name: string; avatar: string };
 export type Participant = {
   user_id: string;
@@ -26,7 +27,7 @@ export type CaseSummary = {
   slug: string;
   title: string;
   intro: string;
-  theme: "museum" | "train";
+  theme: CaseTheme;
   suspect_count: number;
 };
 export type TimelineEntry = {
@@ -66,7 +67,7 @@ export type RoomSnapshot = {
   } | null;
   case: {
     slug: string;
-    theme: "museum" | "train";
+    theme: CaseTheme;
     title: string;
     intro: string;
     locations: CaseLocation[];
@@ -90,6 +91,7 @@ export type RoomSnapshot = {
     name: string;
     points: number;
     correct: boolean;
+    suspect_id?: string | null;
   }[];
   solution: { suspect_id: string; explanation: string } | null;
   server_now: string;

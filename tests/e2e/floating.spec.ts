@@ -47,6 +47,17 @@ for (const width of [1440, 390])
     await page.goto("/__floating-review");
     const character = page.getByLabel("Mover mi personaje", { exact: true });
     await expect(character).toBeVisible();
+    await expect(
+      page.getByRole("table", {
+        name: "Votos y resultados de todos los investigadores",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("rowheader", { name: "Agente ficticio A (tú)" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("No emitió voto", { exact: true }),
+    ).toBeVisible();
     await expect(page.locator(".companion-caption")).toHaveCount(0);
     const before = await character.boundingBox();
     if (!before) throw new Error("Missing character");

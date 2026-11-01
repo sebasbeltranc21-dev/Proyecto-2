@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import { FinalBallots } from "./final-ballots";
+import { casePresentation } from "@/lib/case-presentation";
 import {
   useEffect,
   useState,
@@ -228,8 +230,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
         />
         <div>
           <p className="eyebrow">
-            EXPEDIENTE {data.case.theme === "train" ? "002" : "001"} /
-            COOPERATIVO
+            EXPEDIENTE {casePresentation[data.case.theme].number} / COOPERATIVO
           </p>
           <h1>{data.case.title}</h1>
           <p className="operation-label">
@@ -326,6 +327,12 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                       <br />
                       Alguien lo planeó.
                     </>
+                  ) : data.case.theme === "theater" ? (
+                    <>
+                      El telón espera.
+                      <br />
+                      La partitura desapareció.
+                    </>
                   ) : (
                     <>
                       La luz volvió.
@@ -402,8 +409,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
               <section className="panel results-panel">
                 <div className="report-masthead">
                   <span>
-                    INFORME FINAL /{" "}
-                    {data.case.theme === "train" ? "002" : "001"}
+                    INFORME FINAL / {casePresentation[data.case.theme].number}
                   </span>
                   <span
                     className={`report-stamp ${game.success ? "solved" : "unsolved"}`}
@@ -435,23 +441,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                   <h3>{solved?.name}</h3>
                   <p>{data.solution?.explanation}</p>
                 </div>
-                <h3>Resultados del equipo</h3>
-                <ul className="data-list">
-                  {data.results.map((r) => (
-                    <li className="result-row" key={r.user_id}>
-                      <span>
-                        {r.name}
-                        {r.user_id === uid ? " (tú)" : ""}
-                        <small className="muted">
-                          {r.correct
-                            ? "Acusación correcta"
-                            : "Acusación incorrecta o sin voto"}
-                        </small>
-                      </span>
-                      <b className="gold">{r.points} pts</b>
-                    </li>
-                  ))}
-                </ul>
+                <FinalBallots data={data} uid={uid} />
                 <p className="muted">
                   100 puntos por acertar tu voto + 50 para cada integrante si el
                   equipo resuelve el caso. La puntuación se registra una sola
@@ -474,9 +464,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                     <Fingerprint size={15} aria-hidden="true" />
                     {stage === 2 ? "ACTA DE ACUSACIÓN" : "CUADERNO DE CAMPO"}
                   </span>
-                  <span>
-                    CASO {data.case.theme === "train" ? "002" : "001"}
-                  </span>
+                  <span>CASO {casePresentation[data.case.theme].number}</span>
                 </div>
                 <p className="eyebrow">FASE 0{stage + 1}</p>
                 <h2>{data.case.stages[stage].title}</h2>

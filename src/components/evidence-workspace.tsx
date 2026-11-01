@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import type { Evidence, RoomSnapshot, TimelineEntry } from "@/lib/types";
 import type { Action } from "@/lib/validation";
+import { casePresentation } from "@/lib/case-presentation";
 import { EvidenceIllustration } from "./case-art";
 import { ErrorNotice } from "./ui";
 
@@ -169,11 +170,7 @@ export function EvidenceWorkspace({
             <div className="workspace-heading">
               <div>
                 <p className="eyebrow">EXPLORA EL ESCENARIO</p>
-                <h3>
-                  {data.case.theme === "train"
-                    ? "Los vagones del expreso"
-                    : "El plano del museo"}
-                </h3>
+                <h3>{casePresentation[data.case.theme].map}</h3>
               </div>
               {data.case.theme === "train" ? (
                 <TrainFront size={26} aria-hidden="true" />

@@ -162,14 +162,15 @@ export default function Page() {
       <section className="closing">
         <div className="new-case-promo">
           <div className="new-case-scene">
-            <CaseScene theme="train" />
+            <CaseScene theme="theater" />
           </div>
           <div>
-            <p className="eyebrow">NUEVO EXPEDIENTE / 002</p>
-            <h2>El Expreso Medianoche</h2>
+            <p className="eyebrow">NUEVO EXPEDIENTE / 003</p>
+            <h2>El último acto</h2>
             <p>
-              Un tren detenido. Cinco coartadas. Explora los vagones y
-              reconstruye una noche que alguien quiso interrumpir.
+              Una partitura desaparecida antes del estreno. Cuatro coartadas.
+              Explora los bastidores del Teatro Bellavista y sigue el recorrido
+              de la carpeta.
             </p>
             <Link href="/panel" className="text-link">
               Elegir mi próximo caso <ArrowRight size={17} />
@@ -182,7 +183,10 @@ export default function Page() {
           <br />
           <em>Una misma verdad.</em>
         </h2>
-        <p>Sin descargas. Sin roles ocultos. Solo vuestra deducción.</p>
+        <p>
+          Tres casos: museo, expreso y teatro. Sin descargas. Solo vuestra
+          deducción.
+        </p>
         <Link href="/panel" className="text-link">
           Abrir mi expediente <ArrowRight size={18} />
         </Link>

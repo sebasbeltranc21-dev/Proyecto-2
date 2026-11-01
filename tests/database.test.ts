@@ -545,3 +545,63 @@ test("all five character choices persist and unknown choices are rejected", asyn
   ).rejects.toThrow();
   await action({ action: "profile", name: "Agente Uno", avatar: "lupa" });
 });
+
+test("theater case keeps ballots secret, reveals all voters and the culprit to both members", async () => {
+  const code = await room("ultimo-acto");
+  const first = await snap(code);
+  expect(first.case.theme).toBe("theater");
+  expect(first.case.locations).toHaveLength(5);
+  expect(first.suspects).toHaveLength(4);
+  expect(first.solution).toBeNull();
+  expect(first.results).toEqual([]);
+  expect(first.evidence.every((e) => e.stage === 0)).toBe(true);
+  const responsible = first.suspects.find((s) => s.name === "Mara Vidal")!.id;
+  const innocent = first.suspects.find((s) => s.name === "Iván Ríos")!.id;
+  await owner(
+    `update public.mm_games set stage=1 where room_id=(select id from public.mm_rooms where code='${code}')`,
+  );
+  expect((await snap(code)).evidence.some((e) => e.stage === 1)).toBe(true);
+  await owner(
+    `update public.mm_games set stage=2,phase_ends_at=now()+interval '1 minute' where room_id=(select id from public.mm_rooms where code='${code}')`,
+  );
+  await action({ action: "vote", code, suspect: responsible });
+  await as(b);
+  expect((await snap(code)).results).toEqual([]);
+  expect((await snap(code)).solution).toBeNull();
+  expect((await db.query("select * from public.mm_votes")).rows).toHaveLength(
+    0,
+  );
+  await action({ action: "vote", code, suspect: innocent });
+  const finalB = await snap(code);
+  await as(a);
+  const finalA = await snap(code);
+  expect(finalA.results).toEqual(finalB.results);
+  expect(finalA.solution?.suspect_id).toBe(responsible);
+  expect(finalA.game?.team_suspect).toBeNull();
+  expect(finalA.results.find((r) => r.user_id === a)?.suspect_id).toBe(
+    responsible,
+  );
+  expect(finalA.results.find((r) => r.user_id === b)?.suspect_id).toBe(
+    innocent,
+  );
+  await as(c);
+  await expect(snap(code)).rejects.toThrow("No perteneces");
+});
+test("timeout reveals a missing vote as null without inventing an accusation", async () => {
+  const code = await room("ultimo-acto");
+  const responsible = (await snap(code)).suspects.find(
+    (s) => s.name === "Mara Vidal",
+  )!.id;
+  await owner(
+    `update public.mm_games set stage=2,phase_ends_at=now()+interval '1 minute' where room_id=(select id from public.mm_rooms where code='${code}')`,
+  );
+  await action({ action: "vote", code, suspect: responsible });
+  await owner(
+    `update public.mm_games set phase_ends_at=now()-interval '1 minute' where room_id=(select id from public.mm_rooms where code='${code}')`,
+  );
+  await action({ action: "tick", code });
+  const result = await snap(code);
+  expect(result.results.find((r) => r.user_id === b)?.suspect_id).toBeNull();
+  await action({ action: "tick", code });
+  expect((await snap(code)).results).toEqual(result.results);
+});

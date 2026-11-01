@@ -1345,3 +1345,40 @@ body {
 .room-sidebar > .team-panel {
   grid-column: 1 / -1;
 }
+
+.final-ballots {
+  margin: 28px 0;
+}
+.final-ballots strong {
+  color: var(--gold);
+}
+.ballot-table-scroll {
+  overflow-x: auto;
+}
+.final-ballots table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+.final-ballots caption {
+  text-align: left;
+  color: var(--muted);
+  padding-bottom: 10px;
+}
+.final-ballots th,
+.final-ballots td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.final-ballots thead {
+  background: #243443;
+}
+.final-ballots tbody th {
+  font-weight: 500;
+}
+.final-ballots td:last-child {
+  color: var(--gold);
+  white-space: nowrap;
+}

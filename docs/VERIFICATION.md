@@ -1,5 +1,12 @@
 # Actualización de integración — 23 de octubre de 2026
 
+## Feedback docente: votos revelados y tercer caso — 31 de octubre de 2026
+
+- Informe final con una tabla de investigador, sospechoso votado, acierto y puntos. Incluye explícitamente «No emitió voto» y el culpable oficial. `snapshot` incorpora `suspect_id` por resultado solo en fase 3; conserva la comprobación de pertenencia y la política de votos propios durante la partida.
+- Nuevo caso original «El último acto» (`ultimo-acto`): Teatro Bellavista, desaparición de una partitura, cuatro sospechosos, cinco zonas y catorce pistas públicas/privadas en dos fases. La solución queda en `mm_private`; el catálogo contiene solo presentación. Arte SVG original, mapa por zonas, portada de carpeta y cinemática adaptados al teatro. Ahora hay tres casos cooperativos.
+- Migración aplicada en Proyecto 2. Prueba alojada transaccional con dos identidades temporales: crear e iniciar el caso, votar por sospechosos distintos, verificar el secreto antes del cierre y comprobar los mismos votos y culpable al finalizar. Todo se revirtió. No equivale a dos personas operando navegadores.
+- 62 pruebas locales, lint y compilación aprobados. Cobertura añadida de tercer caso, fases, empate, ausencia de voto, prohibición de acceso externo, liquidación idempotente y tabla final. La fixture de navegador verifica también la tabla final en escritorio y móvil; su ejecución se comprueba en CI.
+
 ## Personaje arrastrable y chat flotante — 26 de octubre de 2026
 
 - Se retira el rótulo sobre el personaje. Se arrastra desde la ilustración con ratón o pantalla táctil y también se mueve con flechas al enfocar el control. Captura de puntero, cancelación y límites de ventana; tecla Inicio y control de restablecimiento recuperan la posición inicial.

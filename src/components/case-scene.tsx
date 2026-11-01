@@ -1,18 +1,15 @@
 import Image from "next/image";
+import { casePresentation, type CaseTheme } from "@/lib/case-presentation";
 import type { CSSProperties } from "react";
 
-export function CaseScene({ theme }: { theme: "museum" | "train" }) {
+export function CaseScene({ theme }: { theme: CaseTheme }) {
   const train = theme === "train";
   return (
     <div className={`case-scene ${train ? "train-scene" : "museum-scene"}`}>
       <Image
         unoptimized
-        src={train ? "/train.svg" : "/museum.svg"}
-        alt={
-          train
-            ? "El Expreso Medianoche detenido junto al túnel bajo la lluvia"
-            : "La vitrina del zafiro en el Museo Áurea"
-        }
+        src={casePresentation[theme].image}
+        alt={casePresentation[theme].alt}
         width={1200}
         height={720}
       />

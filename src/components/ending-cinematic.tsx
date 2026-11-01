@@ -1,4 +1,5 @@
 "use client";
+import type { CaseTheme } from "@/lib/case-presentation";
 
 import {
   useCallback,
@@ -95,7 +96,7 @@ function EndingSession({
 }: {
   gameId: string;
   uid: string;
-  theme: "museum" | "train";
+  theme: CaseTheme;
   title: string;
   responsible: Suspect;
   won: boolean;
@@ -155,11 +156,53 @@ function EndingSession({
 }
 
 function story(
-  theme: "museum" | "train",
+  theme: CaseTheme,
   won: boolean,
   responsible: string,
   accused?: string,
 ) {
+  if (theme === "theater")
+    return won
+      ? [
+          {
+            title: "El telón puede levantarse.",
+            text: "El equipo reúne las pruebas junto al atril vacío del Teatro Bellavista.",
+          },
+          {
+            title: "Las pruebas señalan un nombre.",
+            text: `La investigación identifica a ${responsible} como responsable de ocultar la partitura.`,
+          },
+          {
+            title: "Los agentes cierran el paso.",
+            text: `Los agentes interceptan a ${responsible} a la salida de bastidores.`,
+          },
+          {
+            title: "El expediente se cierra.",
+            text: "La partitura vuelve a manos de la compositora. El estreno puede continuar.",
+          },
+        ]
+      : [
+          {
+            title: "El teatro espera una respuesta.",
+            text: "El equipo entrega sus conclusiones, pero no logra resolver el caso.",
+          },
+          {
+            title: accused
+              ? "La acusación no encaja."
+              : "Faltó una conclusión común.",
+            text: accused
+              ? `El equipo señaló a ${accused}; las pruebas no respaldan esa acusación.`
+              : "El empate o la ausencia de votos impidió una acusación única.",
+          },
+          {
+            title: "Una pieza quedó fuera de lugar.",
+            text: "El expediente conserva las pistas para revisar qué conexión faltó.",
+          },
+          {
+            title: "La verdad del último acto.",
+            text: `El informe revela a ${responsible} como responsable y explica el recorrido de la partitura.`,
+          },
+        ];
   const train = theme === "train";
   if (won)
     return [
@@ -222,7 +265,7 @@ function CinematicPlayer({
   accused,
   onFinish,
 }: {
-  theme: "museum" | "train";
+  theme: CaseTheme;
   title: string;
   responsible: Suspect;
   won: boolean;
@@ -432,7 +475,7 @@ function EndingBackdrop({
   theme,
   recovered,
 }: {
-  theme: "museum" | "train";
+  theme: CaseTheme;
   recovered: boolean;
 }) {
   return (
@@ -443,7 +486,29 @@ function EndingBackdrop({
       fill="none"
       focusable="false"
     >
-      {theme === "museum" ? (
+      {theme === "theater" ? (
+        <>
+          <path fill="#101923" d="M0 0H960V440H0Z" />
+          <path
+            fill="#4c2936"
+            d="M0 0h240Q200 160 70 220v120H0ZM960 0H720q40 160 170 220v120h70Z"
+          />
+          <path fill="#342b2a" d="M0 330h960v110H0Z" />
+          <path stroke="#c8a76b" strokeWidth="8" d="M0 25h960" />
+          <path fill="#f1d498" opacity=".08" d="M410 30L190 330h580L550 30Z" />
+          <path
+            fill="#344252"
+            stroke="#c8a76b"
+            strokeWidth="3"
+            d="M170 170l110 10-10 75-110-10z"
+          />
+          <path
+            stroke="#89958d"
+            strokeWidth="6"
+            d="M220 250v82m-40 15 40-15 40 15"
+          />
+        </>
+      ) : theme === "museum" ? (
         <>
           <path fill="#203532" d="M0 0H960V440H0Z" />
           <path fill="#1b2b28" d="M0 318H960V440H0Z" />

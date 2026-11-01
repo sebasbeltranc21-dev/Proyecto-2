@@ -3,6 +3,7 @@ import { characters, type CharacterId } from "@/lib/characters";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { casePresentation } from "@/lib/case-presentation";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -281,14 +282,12 @@ export function Dashboard({
                           required
                         />
                         <span className="folder-tab" aria-hidden="true">
-                          CASO {c.theme === "train" ? "002" : "001"}
+                          CASO {casePresentation[c.theme].number}
                         </span>
                         <span className="folder-photo">
                           <Image
                             unoptimized
-                            src={
-                              c.theme === "train" ? "/train.svg" : "/museum.svg"
-                            }
+                            src={casePresentation[c.theme].image}
                             alt=""
                             width={420}
                             height={240}
