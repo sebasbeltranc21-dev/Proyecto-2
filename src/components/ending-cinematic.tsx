@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import type { CaseTheme } from "@/lib/case-presentation";
 
 import {
@@ -161,6 +162,48 @@ function story(
   responsible: string,
   accused?: string,
 ) {
+  if (theme === "lighthouse")
+    return won
+      ? [
+          {
+            title: "La tormenta pierde su ventaja.",
+            text: "El equipo reúne los registros del Faro Bruma y reconstruye la hora real de la desaparición.",
+          },
+          {
+            title: "Las pruebas señalan un nombre.",
+            text: `El sensor, los accesos y el embalaje identifican a ${responsible} como responsable de retirar Aurora.`,
+          },
+          {
+            title: "El muelle queda cerrado.",
+            text: `Los agentes interceptan a ${responsible} antes de que se autorice el embarque.`,
+          },
+          {
+            title: "Aurora vuelve a su lugar.",
+            text: `${responsible} queda bajo custodia. La lente se recupera intacta y la exhibición del faro puede continuar.`,
+          },
+        ]
+      : [
+          {
+            title: "El faro espera una respuesta.",
+            text: "El equipo entrega sus conclusiones, pero no logra conectar todas las pruebas.",
+          },
+          {
+            title: accused
+              ? "La acusación no encaja."
+              : "Faltó una conclusión común.",
+            text: accused
+              ? `El equipo señaló a ${accused}; los registros no respaldan esa acusación.`
+              : "El empate o la ausencia de votos dejó al equipo sin una acusación única.",
+          },
+          {
+            title: "Una hora cambió la historia.",
+            text: "El momento del hallazgo no era necesariamente el momento de la retirada. El expediente permite revisar esa diferencia.",
+          },
+          {
+            title: "La verdad de medianoche.",
+            text: `El informe identifica a ${responsible} como responsable y reconstruye el recorrido de Aurora hasta el muelle.`,
+          },
+        ];
   if (theme === "theater")
     return won
       ? [
@@ -478,6 +521,17 @@ function EndingBackdrop({
   theme: CaseTheme;
   recovered: boolean;
 }) {
+  if (theme === "lighthouse")
+    return (
+      <Image
+        className="ending-backdrop lighthouse-ending-backdrop"
+        src="/lighthouse.webp"
+        alt=""
+        width={1280}
+        height={720}
+        sizes="(max-width: 760px) 100vw, 960px"
+      />
+    );
   return (
     <svg
       className="ending-backdrop"

@@ -3,7 +3,7 @@ import { casePresentation, type CaseTheme } from "@/lib/case-presentation";
 import type { CSSProperties } from "react";
 
 export function CaseScene({ theme }: { theme: CaseTheme }) {
-  const train = theme === "train";
+  const rain = theme === "train" || theme === "lighthouse";
   return (
     <div className={`case-scene ${theme}-scene`}>
       <Image
@@ -13,7 +13,7 @@ export function CaseScene({ theme }: { theme: CaseTheme }) {
         width={1200}
         height={720}
       />
-      {train && (
+      {rain && (
         <div className="scene-rain" aria-hidden="true">
           {[7, 19, 31, 43, 55, 67, 79, 91].map((x, i) => (
             <i

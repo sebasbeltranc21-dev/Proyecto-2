@@ -180,15 +180,15 @@ export default function Page() {
       <section className="closing">
         <div className="new-case-promo">
           <div className="new-case-scene">
-            <CaseScene theme="theater" />
+            <CaseScene theme="lighthouse" />
           </div>
           <div>
-            <p className="eyebrow">NUEVO EXPEDIENTE / 003</p>
-            <h2>El último acto</h2>
+            <p className="eyebrow">NUEVO EXPEDIENTE / 004</p>
+            <h2>La señal de medianoche</h2>
             <p>
-              Una partitura desaparecida antes del estreno. Cuatro coartadas.
-              Explora los bastidores del Teatro Bellavista y sigue el recorrido
-              de la carpeta.
+              Una lente desaparecida. Una tormenta sobre el Faro Bruma. Cuatro
+              sospechosos y una hora que puede cambiarlo todo. Conecta las
+              pistas antes del próximo embarque.
             </p>
             <Link href="/panel" className="text-link">
               Elegir mi próximo caso <ArrowRight size={17} />
@@ -202,8 +202,8 @@ export default function Page() {
           <em>Una misma verdad.</em>
         </h2>
         <p>
-          Tres casos: museo, expreso y teatro. Sin descargas. Solo vuestra
-          deducción.
+          Cuatro casos: museo, expreso, teatro y faro. Sin descargas. Solo
+          vuestra deducción.
         </p>
         <Link href="/panel" className="text-link">
           Abrir mi expediente <ArrowRight size={18} />

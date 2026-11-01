@@ -10,10 +10,11 @@ import {
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { CaseEnding } from "../src/components/ending-cinematic";
 import type { RoomSnapshot } from "../src/lib/types";
+import type { CaseTheme } from "../src/lib/case-presentation";
 let reduced = false,
   pageVisible = true;
 function snapshot(
-  theme: "museum" | "train" = "museum",
+  theme: CaseTheme = "museum",
   success = true,
   team: string | null = "official",
 ): RoomSnapshot {
@@ -35,10 +36,19 @@ function snapshot(
       team_suspect: team,
     },
     case: {
-      slug: theme === "train" ? "expreso-medianoche" : "ultima-luz",
+      slug: {
+        museum: "ultima-luz",
+        train: "expreso-medianoche",
+        theater: "ultimo-acto",
+        lighthouse: "senal-medianoche",
+      }[theme],
       theme,
-      title:
-        theme === "train" ? "El Expreso Medianoche" : "La última luz del museo",
+      title: {
+        museum: "La última luz del museo",
+        train: "El Expreso Medianoche",
+        theater: "El último acto",
+        lighthouse: "La señal de medianoche",
+      }[theme],
       intro: "Caso de prueba.",
       locations: [],
       stages: [],
@@ -116,7 +126,7 @@ test("no cinematic or culprit is mounted before closure or without an official s
   show({ ...snapshot(), solution: null });
   expect(screen.queryByRole("region", { name: "Cinemática final" })).toBeNull();
 });
-for (const theme of ["museum", "train"] as const) {
+for (const theme of ["museum", "train", "lighthouse"] as const) {
   test(`${theme}: successful final escorts the official culprit and completes after fourteen seconds`, () => {
     const view = show(snapshot(theme));
     expect(
@@ -145,6 +155,21 @@ for (const theme of ["museum", "train"] as const) {
     );
   });
 }
+test("lighthouse ending keeps an incorrect accusation separate from the official answer", () => {
+  show(snapshot("lighthouse", false, "other"));
+  expect(screen.getByRole("status").textContent).toContain(
+    "El faro espera una respuesta",
+  );
+  advance();
+  expect(screen.getByRole("status").textContent).toContain("Otra persona");
+  advance();
+  expect(screen.getByRole("status").textContent).toContain(
+    "momento del hallazgo",
+  );
+  advance();
+  expect(screen.getByRole("status").textContent).toContain("Persona oficial");
+  expect(document.querySelector('[data-detained="true"]')).toBeNull();
+});
 test("wrong accusations and tied/no-vote outcomes never depict a detention", () => {
   for (const team of ["other", null]) {
     const view = show(snapshot("train", false, team), "agent-" + String(team));

@@ -287,6 +287,25 @@ const drawings: Record<string, ReactNode> = {
 // a neutral folder; this module never contains unrevealed clue text or answers.
 function illustrationFor(title: string) {
   const name = title.toLocaleLowerCase("es");
+  if (name.includes("soporte")) return "display";
+  if (
+    name.includes("sensor") ||
+    name.includes("calibración") ||
+    name.includes("prueba anunciada")
+  )
+    return "electrical";
+  if (name.includes("credencial d-4")) return "credential";
+  if (name.includes("recibo")) return "ticket";
+  if (name.includes("oferta")) return "report";
+  if (
+    name.includes("cajas") ||
+    name.includes("bulto") ||
+    name.includes("aurora recuperada")
+  )
+    return "parcel";
+  if (name.includes("hora de la retirada")) return "clock";
+  if (name.includes("dos puestos") || name.includes("de la galería"))
+    return "camera";
   if (name.includes("vitrina")) return "display";
   if (name.includes("noventa")) return "clock";
   if (name.includes("acceso c-04")) return "credential";

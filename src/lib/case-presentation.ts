@@ -1,4 +1,4 @@
-export type CaseTheme = "museum" | "train" | "theater";
+export type CaseTheme = "museum" | "train" | "theater" | "lighthouse";
 export const casePresentation = {
   museum: {
     number: "001",
@@ -17,5 +17,11 @@ export const casePresentation = {
     image: "/theater.svg",
     alt: "El escenario del Teatro Bellavista, con el atril vacío y el telón rojo",
     map: "Entre bastidores del teatro",
+  },
+  lighthouse: {
+    number: "004",
+    image: "/lighthouse.webp",
+    alt: "La linterna del Faro Bruma, con su soporte vacío frente al mar bajo la tormenta",
+    map: "Los rincones del Faro Bruma",
   },
 } as const;

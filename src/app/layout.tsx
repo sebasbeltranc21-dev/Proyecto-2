@@ -4,6 +4,7 @@ import "./investigation.css";
 import "./night-office.css";
 import "./office-room.css";
 import "./chibi-ui.css";
+import "./lighthouse-case.css";
 import { Header, Footer } from "@/components/ui";
 import { OfficeAtmosphere } from "@/components/office-atmosphere";
 export const metadata: Metadata = {

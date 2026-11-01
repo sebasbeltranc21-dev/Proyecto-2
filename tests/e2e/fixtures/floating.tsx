@@ -9,6 +9,7 @@ import { InvestigatorCompanion } from "../../../src/components/investigator-comp
 import "../../../src/app/investigation.css";
 import "../../../src/app/office-room.css";
 import "../../../src/app/chibi-ui.css";
+import "../../../src/app/lighthouse-case.css";
 const report = {
   game: { stage: 3 },
   suspects: [{ id: "fictional", name: "Responsable ficticio" }],
@@ -65,6 +66,13 @@ function OfficeReview() {
         slug: "ultimo-acto",
         theme: "theater",
         title: "Teatro de revisión",
+        intro: "Caso de prueba",
+        suspect_count: 4,
+      },
+      {
+        slug: "senal-medianoche",
+        theme: "lighthouse",
+        title: "Faro de revisión",
         intro: "Caso de prueba",
         suspect_count: 4,
       },

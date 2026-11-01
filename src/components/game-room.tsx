@@ -330,7 +330,13 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
               <div className="lobby-content">
                 <p className="eyebrow">BRIEFING DEL CASO</p>
                 <h2>
-                  {data.case.theme === "train" ? (
+                  {data.case.theme === "lighthouse" ? (
+                    <>
+                      Una luz se apaga.
+                      <br />
+                      Una coartada parece perfecta.
+                    </>
+                  ) : data.case.theme === "train" ? (
                     <>
                       El tren se detuvo.
                       <br />

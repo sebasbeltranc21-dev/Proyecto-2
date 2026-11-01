@@ -1,0 +1,36 @@
+.office-case-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.office-case-lighthouse {
+  background: #dce7ee;
+}
+.lighthouse-scene img {
+  object-position: center;
+}
+.lighthouse-scene .scene-ambience {
+  background: radial-gradient(ellipse at 32% 30%, #f2cc8522, transparent 65%);
+}
+.arrival-lighthouse {
+  border-color: #9bcad3;
+}
+.environment-lighthouse .field-report {
+  border-color: #9bcad3;
+  background: linear-gradient(125deg, #30314c, #1e2c3e);
+}
+.environment-lighthouse .field-report-folio {
+  color: #c6e8e9;
+}
+.environment-lighthouse .map-room-drawing {
+  border-radius: 45% 45% 8px 8px;
+  border-color: #9bcad3;
+  background: linear-gradient(#263f50, #19243b);
+}
+.lighthouse-ending-backdrop {
+  object-fit: cover;
+  filter: brightness(0.65);
+}
+@media (max-width: 600px) {
+  .office-case-grid {
+    grid-template-columns: 1fr;
+  }
+}
