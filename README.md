@@ -2,7 +2,7 @@
 
 Juego web cooperativo de investigación para 2–8 personas. Un equipo entra a una sala privada, recibe pistas públicas y privadas, debate en el chat y vota para resolver un misterio con solución fija.
 
-**Estado actual:** cuatro casos originales y registro ficticio desde la app mediante una Edge Function de Supabase. La web está publicada en <https://proyecto-2-rho.vercel.app>. La integración alojada comprobó dos cuentas nuevas, chat Realtime y persistencia de perfil, historial y 150 puntos del museo después de volver a iniciar sesión. Las partidas manuales de los casos nuevos con dos personas en navegador siguen pendientes. Los cambios se publican mediante la conexión GitHub existente con Vercel. [Verificación](docs/VERIFICATION.md).
+**Estado actual:** cinco casos originales y registro ficticio desde la app mediante una Edge Function de Supabase. La web está publicada en <https://proyecto-2-rho.vercel.app>. La integración alojada comprobó dos cuentas nuevas, chat Realtime y persistencia de perfil, historial y 150 puntos del museo después de volver a iniciar sesión. Las partidas manuales de los casos nuevos con dos personas en navegador siguen pendientes. Los cambios se publican mediante la conexión GitHub existente con Vercel. [Verificación](docs/VERIFICATION.md).
 
 La inspección inicial encontró el repositorio vacío y ninguna base accesible. Al habilitar Supabase se comprobó que no había tablas del juego antes de aplicar las migraciones. La aplicación sigue mostrando «Conexión pendiente» cuando faltan sus variables de entorno.
 
@@ -11,7 +11,7 @@ La inspección inicial encontró el repositorio vacío y ninguna base accesible.
 - Next.js App Router, TypeScript y Tailwind CSS, versiones exactas y lockfile.
 - Supabase Auth: creación de cuentas ficticias desde la app con un correo terminado en `@example.com` y contraseña de práctica. Confirmación automática sin enviar correos, inicio y cierre de sesión, y recuperación del mismo perfil e historial desde otro navegador.
 - Perfiles con emblemas, salas privadas con código, anfitrión y preparación. Al unirse por código, un usuario nuevo puede escribir su nombre y guardar el perfil desde el mismo formulario.
-- Selector de cuatro casos originales con solución fija: «La última luz del museo» (4 sospechosos, 12 pistas), «El Expreso Medianoche» (5 sospechosos, 14 pistas), «El último acto» (4 sospechosos, 14 pistas) y «La señal de medianoche» (4 sospechosos, 16 pistas). El nuevo faro incluye escenario anime y desenlaces propios. [Arte y ficha del faro](docs/lighthouse-art.md).
+- Selector de cinco casos originales con solución fija: «La última luz del museo» (4 sospechosos, 12 pistas), «El Expreso Medianoche» (5 sospechosos, 14 pistas), «El último acto» (4 sospechosos, 14 pistas) «La señal de medianoche» (4 sospechosos, 16 pistas) y «El secreto de la cúpula» (4 sospechosos chibi, 16 pistas). El planetario es el piloto de personajes y cinemáticas chibi; el faro incluye escenario anime y desenlaces propios. [Arte y ficha del faro](docs/lighthouse-art.md).
 - Mapas por zonas y vagones, aperturas por fase y evidencias ampliables. Pistas privadas por identidad; Supabase Realtime y recuperación por consultas periódicas.
 - Cronología compartida: cada investigador elige la hora de su hipótesis. Compartir una pista privada requiere confirmación expresa de su contenido completo. Solo su autor cambia la hora o retira la tarjeta durante la investigación.
 - Votos inmutables, cierre transaccional, puntos, historial, estadísticas y clasificación.
@@ -130,3 +130,5 @@ Las pruebas multijugador en navegador cubren el museo y el expreso, la confirmac
 | `tests/`, `tests/e2e/`                  | Pruebas de datos, validación y navegador  |
 
 [Arquitectura y reglas](docs/ARCHITECTURE.md) · [Verificación](docs/VERIFICATION.md)
+
+Piloto chibi: [ficha, arte y prompts de El secreto de la cúpula](docs/dome-chibi-pilot.md).

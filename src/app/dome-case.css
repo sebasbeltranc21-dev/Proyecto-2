@@ -1,0 +1,221 @@
+/* Pilot art is scoped to the new case; other case portraits and endings keep their designs. */
+.chibi-suspect {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(ellipse at 50% 70%, #9e8cc13d, transparent 65%), #24263d;
+  border-color: #b39ac9;
+}
+.chibi-suspect > img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 4px 3px #080b1740);
+  animation: dome-breathe 5s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+.suspect > .chibi-suspect {
+  height: 235px;
+}
+.case-lineup .chibi-suspect {
+  height: 140px;
+}
+.office-case-observatory {
+  background: #e5dcf4;
+  grid-column: 1 / -1;
+}
+.arrival-observatory {
+  border-color: #c3ace5;
+}
+.observatory-scene .scene-ambience {
+  background: radial-gradient(ellipse at 40% 30%, #baa7f528, transparent 65%);
+}
+.environment-observatory .field-report {
+  border-color: #a495cb;
+  background: linear-gradient(125deg, #332849, #20283f);
+}
+.environment-observatory .field-report-folio {
+  color: #e5d5fc;
+}
+.environment-observatory .map-room-drawing {
+  border-radius: 50% 50% 8px 8px;
+  background: #2f3151;
+  border-color: #b6a2dd;
+}
+.dome-film {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #171d32;
+}
+.dome-film-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s;
+  transform: scale(1.06);
+}
+.dome-film-backdrop.visible {
+  opacity: 1;
+  animation: dome-pan 14s ease-out both;
+}
+.dome-film-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#11162c08 35%, #11162c88);
+}
+.dome-film-cast {
+  position: absolute;
+  inset: 17% 11% 12%;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 3%;
+  animation: dome-arrive 0.7s ease-out both;
+}
+.dome-film-cast img {
+  width: 22%;
+  height: 90%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 9px 4px #11162988);
+  animation: dome-breathe 4.8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+.dome-film-cast img:nth-child(2n) {
+  animation-delay: -2s;
+}
+.dome-film-actor {
+  position: absolute;
+  bottom: 10%;
+  width: 23%;
+  height: 68%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 8px 4px #11162988);
+  animation:
+    dome-arrive 0.65s ease-out both,
+    dome-breathe 5s 0.7s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+.dome-film-lead {
+  left: 14%;
+}
+.dome-film-interest {
+  left: 55%;
+}
+.dome-film-partner {
+  left: 74%;
+}
+.dome-film[data-shot="2"] .dome-film-interest {
+  left: 45%;
+}
+.dome-film[data-shot="3"][data-outcome="solved"] .dome-film-interest {
+  left: 46%;
+  opacity: 0.65;
+  width: 17%;
+  height: 51%;
+  bottom: 23%;
+}
+.dome-film[data-shot="3"][data-outcome="solved"] .dome-film-lead {
+  left: 13%;
+}
+.dome-film-dossier {
+  position: absolute;
+  left: 44%;
+  top: 36%;
+  border: 3px solid #f1dcad;
+  border-radius: 12px;
+  padding: 5px 18px;
+  color: #f5d99b;
+  background: #433559;
+  font-size: clamp(25px, 5vw, 60px);
+  transform: rotate(-8deg);
+  box-shadow: 4px 5px 0 #14192e66;
+}
+.dome-film-disk {
+  position: absolute;
+  width: 18%;
+  left: 42%;
+  bottom: 5%;
+  filter: drop-shadow(0 0 12px #efcc7f77);
+  animation: dome-arrive 0.7s ease-out both;
+}
+.dome-film-disk svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ending-player[data-paused="true"] .dome-film-cast,
+.ending-player[data-paused="true"] .dome-film-actor,
+.ending-player[data-paused="true"] .dome-film-disk {
+  animation: none;
+}
+@keyframes dome-breathe {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.4deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(0.5deg);
+  }
+}
+@keyframes dome-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes dome-pan {
+  from {
+    transform: scale(1.06) translateX(-0.5%);
+  }
+  to {
+    transform: scale(1.02) translateX(0.5%);
+  }
+}
+@media (max-width: 600px) {
+  .case-lineup .chibi-suspect {
+    height: 110px;
+  }
+  .suspect > .chibi-suspect {
+    height: 210px;
+  }
+  .dome-film-cast {
+    inset: 16% 4% 13%;
+    gap: 0;
+  }
+  .dome-film-cast img {
+    width: 25%;
+  }
+  .dome-film-actor {
+    width: 27%;
+  }
+  .dome-film-lead {
+    left: 8%;
+  }
+  .dome-film-partner {
+    left: 72%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chibi-suspect > img,
+  .dome-film *,
+  .dome-film *::before,
+  .dome-film *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

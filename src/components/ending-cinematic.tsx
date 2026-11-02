@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { DomeCinematicScene } from "./dome-cinematic-scene";
 import type { CaseTheme } from "@/lib/case-presentation";
 
 import {
@@ -162,6 +163,48 @@ function story(
   responsible: string,
   accused?: string,
 ) {
+  if (theme === "observatory")
+    return won
+      ? [
+          {
+            title: "Una noche vuelve a encenderse.",
+            text: "Los cuatro sospechosos se reúnen bajo la cúpula. El equipo contrasta los accesos con el maletín recuperado.",
+          },
+          {
+            title: "El expediente encaja.",
+            text: `Las pruebas identifican a ${responsible} como responsable de retirar el disco estelar.`,
+          },
+          {
+            title: "La terraza guarda la última respuesta.",
+            text: `Los investigadores acompañan a ${responsible} mientras la dirección recibe el informe. El disco queda protegido.`,
+          },
+          {
+            title: "Nácar recupera sus estrellas.",
+            text: "El disco original regresa al planetario. La Noche de los Deseos puede comenzar y el expediente queda cerrado.",
+          },
+        ]
+      : [
+          {
+            title: "Una noche espera su cielo.",
+            text: "El equipo reúne a los sospechosos, pero su conclusión no resuelve la desaparición.",
+          },
+          {
+            title: accused
+              ? "La acusación no encaja."
+              : "Faltó una conclusión común.",
+            text: accused
+              ? `El equipo señaló a ${accused}; las pruebas no respaldan esa acusación.`
+              : "Un empate o la ausencia de votos dejó al equipo sin una acusación única.",
+          },
+          {
+            title: "Una coartada merecía otra mirada.",
+            text: "El expediente conserva los registros del banco de trabajo y el recorrido de los maletines para revisar las conexiones.",
+          },
+          {
+            title: "La verdad bajo la cúpula.",
+            text: `El informe oficial identifica a ${responsible} y explica cómo retiró y ocultó el disco. Puedes revisar todas las pruebas en los resultados.`,
+          },
+        ];
   if (theme === "lighthouse")
     return won
       ? [
@@ -373,51 +416,65 @@ function CinematicPlayer({
         data-outcome={won ? "solved" : "open"}
         aria-hidden="true"
       >
-        <div className="ending-camera">
-          <EndingBackdrop theme={theme} recovered={won && frame === 3} />
-          <div className="ending-presenter">
-            <EndingActor portrait="investigator" id="investigator" />
-          </div>
-          <div className="ending-file">
-            <svg viewBox="0 0 72 90" fill="none" focusable="false">
-              <path
-                d="M9 8H48L63 24V81H9Z"
-                fill="#e6d8b5"
-                stroke="#526250"
-                strokeWidth="3"
-              />
-              <path
-                d="M48 8V24H63M20 37H50M20 47H50M20 57H42"
-                stroke="#75836a"
-                strokeWidth="3"
-              />
-              <circle cx="46" cy="68" r="7" stroke="#9b7744" strokeWidth="3" />
-            </svg>
-          </div>
-          {!won && frame < 3 && <div className="ending-question">?</div>}
-          <div className="ending-escort" data-detained={won && frame >= 2}>
-            {(won ? frame >= 1 : frame === 3) && (
-              <div className="ending-culprit">
-                <EndingActor
-                  id={responsible.id}
-                  portrait={responsible.portrait}
-                  detained={won && frame >= 2}
-                  identified={won}
+        {theme === "observatory" ? (
+          <DomeCinematicScene
+            frame={frame}
+            won={won}
+            portrait={responsible.portrait}
+          />
+        ) : (
+          <div className="ending-camera">
+            <EndingBackdrop theme={theme} recovered={won && frame === 3} />
+            <div className="ending-presenter">
+              <EndingActor portrait="investigator" id="investigator" />
+            </div>
+            <div className="ending-file">
+              <svg viewBox="0 0 72 90" fill="none" focusable="false">
+                <path
+                  d="M9 8H48L63 24V81H9Z"
+                  fill="#e6d8b5"
+                  stroke="#526250"
+                  strokeWidth="3"
                 />
-              </div>
-            )}
-            {won && frame >= 2 && (
-              <>
-                <div className="ending-agent ending-agent-left">
-                  <EndingActor id="agent-one" portrait="agent" />
+                <path
+                  d="M48 8V24H63M20 37H50M20 47H50M20 57H42"
+                  stroke="#75836a"
+                  strokeWidth="3"
+                />
+                <circle
+                  cx="46"
+                  cy="68"
+                  r="7"
+                  stroke="#9b7744"
+                  strokeWidth="3"
+                />
+              </svg>
+            </div>
+            {!won && frame < 3 && <div className="ending-question">?</div>}
+            <div className="ending-escort" data-detained={won && frame >= 2}>
+              {(won ? frame >= 1 : frame === 3) && (
+                <div className="ending-culprit">
+                  <EndingActor
+                    id={responsible.id}
+                    portrait={responsible.portrait}
+                    detained={won && frame >= 2}
+                    identified={won}
+                  />
                 </div>
-                <div className="ending-agent ending-agent-right">
-                  <EndingActor id="agent-two" portrait="agent" />
-                </div>
-              </>
-            )}
+              )}
+              {won && frame >= 2 && (
+                <>
+                  <div className="ending-agent ending-agent-left">
+                    <EndingActor id="agent-one" portrait="agent" />
+                  </div>
+                  <div className="ending-agent ending-agent-right">
+                    <EndingActor id="agent-two" portrait="agent" />
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
         <span className="ending-shot">
           {
             ["PLANO GENERAL", "EL EXPEDIENTE", "EL DESENLACE", "ÚLTIMA ESCENA"][

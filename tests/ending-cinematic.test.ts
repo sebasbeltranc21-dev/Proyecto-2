@@ -41,6 +41,7 @@ function snapshot(
         train: "expreso-medianoche",
         theater: "ultimo-acto",
         lighthouse: "senal-medianoche",
+        observatory: "secreto-cupula",
       }[theme],
       theme,
       title: {
@@ -48,6 +49,7 @@ function snapshot(
         train: "El Expreso Medianoche",
         theater: "El último acto",
         lighthouse: "La señal de medianoche",
+        observatory: "El secreto de la cúpula",
       }[theme],
       intro: "Caso de prueba.",
       locations: [],
@@ -60,7 +62,12 @@ function snapshot(
         description: "Descripción",
         motive: "Motivo",
         alibi: "Coartada",
-        portrait: theme === "train" ? "conductor" : "restorer",
+        portrait:
+          theme === "observatory"
+            ? "dome-nico"
+            : theme === "train"
+              ? "conductor"
+              : "restorer",
       },
       {
         id: "other",
@@ -93,6 +100,52 @@ function show(data = snapshot(), uid = "agent") {
 function advance() {
   act(() => vi.advanceTimersByTime(3500));
 }
+test("observatory chibi finale reveals only after settlement, pauses, advances and skips", () => {
+  const pending = snapshot("observatory");
+  pending.game!.stage = 2;
+  const first = show(pending);
+  expect(document.querySelector(".dome-film")).toBeNull();
+  first.unmount();
+  show(snapshot("observatory"));
+  expect(document.querySelectorAll(".dome-film-cast img")).toHaveLength(4);
+  expect(document.querySelector(".dome-film-interest")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Pausar" }));
+  advance();
+  expect(document.querySelector(".dome-film")?.getAttribute("data-shot")).toBe(
+    "0",
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Siguiente escena" }));
+  expect(
+    document.querySelector(".dome-film-interest")?.getAttribute("src"),
+  ).toContain("nico.webp");
+  fireEvent.click(screen.getByRole("button", { name: "Omitir cinemática" }));
+  expect(screen.getByText("Resultados de prueba")).toBeTruthy();
+});
+test("observatory failed vote does not stage recovery or an escort", () => {
+  show(snapshot("observatory", false, "other"));
+  advance();
+  advance();
+  expect(document.querySelector(".dome-film-interest")).toBeNull();
+  advance();
+  expect(
+    document.querySelector(".dome-film-interest")?.getAttribute("src"),
+  ).toContain("nico.webp");
+  expect(document.querySelector(".dome-film-partner")).toBeNull();
+  expect(document.querySelector(".dome-film-disk")).toBeNull();
+  expect(screen.getByRole("status").textContent).toContain("Persona oficial");
+});
+test("observatory reduced-motion mode waits for manual scene changes", () => {
+  reduced = true;
+  show(snapshot("observatory"));
+  act(() => vi.advanceTimersByTime(20000));
+  expect(document.querySelector(".dome-film")?.getAttribute("data-shot")).toBe(
+    "0",
+  );
+  for (let i = 0; i < 3; i++)
+    fireEvent.click(screen.getByRole("button", { name: "Siguiente escena" }));
+  expect(document.querySelector(".dome-film-disk")).toBeTruthy();
+  expect(screen.getByRole("status").textContent).toContain("disco original");
+});
 beforeEach(() => {
   vi.useFakeTimers();
   sessionStorage.clear();

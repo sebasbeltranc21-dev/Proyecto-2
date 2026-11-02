@@ -1,4 +1,5 @@
-export type CaseTheme = "museum" | "train" | "theater" | "lighthouse";
+export type CaseTheme =
+  "museum" | "train" | "theater" | "lighthouse" | "observatory";
 export const casePresentation = {
   museum: {
     number: "001",
@@ -23,5 +24,11 @@ export const casePresentation = {
     image: "/lighthouse.webp",
     alt: "La linterna del Faro Bruma, con su soporte vacío frente al mar bajo la tormenta",
     map: "Los rincones del Faro Bruma",
+  },
+  observatory: {
+    number: "005",
+    image: "/cases/dome/cover.webp",
+    alt: "La cúpula del Planetario Nácar y el proyector estelar de latón",
+    map: "Bajo la cúpula de Nácar",
   },
 } as const;

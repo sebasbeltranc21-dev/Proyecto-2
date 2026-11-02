@@ -181,15 +181,15 @@ export default function Page() {
       <section className="closing">
         <div className="new-case-promo">
           <div className="new-case-scene">
-            <CaseScene theme="lighthouse" />
+            <CaseScene theme="observatory" />
           </div>
           <div>
-            <p className="eyebrow">NUEVO EXPEDIENTE / 004</p>
-            <h2>La señal de medianoche</h2>
+            <p className="eyebrow">NUEVO EXPEDIENTE / 005</p>
+            <h2>El secreto de la cúpula</h2>
             <p>
-              Una lente desaparecida. Una tormenta sobre el Faro Bruma. Cuatro
-              sospechosos y una hora que puede cambiarlo todo. Conecta las
-              pistas antes del próximo embarque.
+              Un planetario sin su disco estelar. Cuatro sospechosos chibi y una
+              noche por rescatar. Investiga bajo la cúpula y descubre una nueva
+              historia con escenas animadas.
             </p>
             <Link href="/panel" className="text-link">
               Elegir mi próximo caso <ArrowRight size={17} />
@@ -203,8 +203,8 @@ export default function Page() {
           <em>Una misma verdad.</em>
         </h2>
         <p>
-          Cuatro casos: museo, expreso, teatro y faro. Sin descargas. Solo
-          vuestra deducción.
+          Cinco casos: museo, expreso, teatro, faro y planetario. Sin descargas.
+          Solo vuestra deducción.
         </p>
         <Link href="/panel" className="text-link">
           Abrir mi expediente <ArrowRight size={18} />

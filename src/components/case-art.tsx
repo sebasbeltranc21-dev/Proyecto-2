@@ -1,4 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
+import Image from "next/image";
+import { domeCharacter } from "@/lib/dome-characters";
 import {
   CharacterFigure,
   type CharacterExpression,
@@ -49,6 +51,22 @@ export function SuspectPortrait({
   expression?: CharacterExpression;
   pose?: CharacterPose;
 }) {
+  const chibi = domeCharacter(portrait);
+  if (chibi)
+    return (
+      <div
+        className={`suspect-art chibi-suspect ${presentation === "scene" ? "portrait-scene" : ""}`}
+        aria-hidden="true"
+      >
+        <Image
+          src={chibi.image}
+          alt=""
+          width={420}
+          height={600}
+          sizes="(max-width: 600px) 45vw, 300px"
+        />
+      </div>
+    );
   const { kind, color } = portraitStyles[portrait ?? ""] ??
     characters[id] ?? {
       kind: "unknown",
