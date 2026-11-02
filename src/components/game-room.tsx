@@ -366,7 +366,11 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                 <div className="case-lineup" aria-label="Personas de interés">
                   {data.suspects.map((s) => (
                     <figure key={s.id}>
-                      <SuspectPortrait id={s.id} portrait={s.portrait} />
+                      <SuspectPortrait
+                        id={s.id}
+                        name={s.name}
+                        portrait={s.portrait}
+                      />
                       <figcaption>{s.name}</figcaption>
                     </figure>
                   ))}
@@ -455,6 +459,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                   {solved && (
                     <SuspectPortrait
                       id={solved.id}
+                      name={solved.name}
                       portrait={solved.portrait}
                     />
                   )}
@@ -557,7 +562,11 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                       className={`panel suspect ${data.my_vote === s.id ? "voted" : ""}`}
                       key={s.id}
                     >
-                      <SuspectPortrait id={s.id} portrait={s.portrait} />
+                      <SuspectPortrait
+                        id={s.id}
+                        name={s.name}
+                        portrait={s.portrait}
+                      />
                       <div className="suspect-heading">
                         <span className="suspect-number">0{i + 1}</span>
                         <div>

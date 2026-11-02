@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { DomeCinematicScene } from "./dome-cinematic-scene";
 import type { CaseTheme } from "@/lib/case-presentation";
 
@@ -20,7 +19,6 @@ import {
   SkipForward,
 } from "lucide-react";
 import type { RoomSnapshot, Suspect } from "@/lib/types";
-import { SuspectPortrait } from "./case-art";
 
 const SCENE_MS = 3500;
 const MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -74,6 +72,7 @@ export function CaseEnding({
       theme={data.case.theme}
       title={data.case.title}
       responsible={responsible}
+      cast={data.suspects}
       won={
         data.game.success === true && data.game.team_suspect === responsible.id
       }
@@ -92,6 +91,7 @@ function EndingSession({
   theme,
   title,
   responsible,
+  cast,
   won,
   accused,
   children,
@@ -101,6 +101,7 @@ function EndingSession({
   theme: CaseTheme;
   title: string;
   responsible: Suspect;
+  cast: Suspect[];
   won: boolean;
   accused?: string;
   children: ReactNode;
@@ -130,6 +131,7 @@ function EndingSession({
       theme={theme}
       title={title}
       responsible={responsible}
+      cast={cast}
       won={won}
       accused={accused}
       onFinish={finish}
@@ -347,6 +349,7 @@ function CinematicPlayer({
   theme,
   title,
   responsible,
+  cast,
   won,
   accused,
   onFinish,
@@ -354,6 +357,7 @@ function CinematicPlayer({
   theme: CaseTheme;
   title: string;
   responsible: Suspect;
+  cast: Suspect[];
   won: boolean;
   accused?: string;
   onFinish: () => void;
@@ -416,65 +420,14 @@ function CinematicPlayer({
         data-outcome={won ? "solved" : "open"}
         aria-hidden="true"
       >
-        {theme === "observatory" ? (
-          <DomeCinematicScene
-            frame={frame}
-            won={won}
-            portrait={responsible.portrait}
-          />
-        ) : (
-          <div className="ending-camera">
-            <EndingBackdrop theme={theme} recovered={won && frame === 3} />
-            <div className="ending-presenter">
-              <EndingActor portrait="investigator" id="investigator" />
-            </div>
-            <div className="ending-file">
-              <svg viewBox="0 0 72 90" fill="none" focusable="false">
-                <path
-                  d="M9 8H48L63 24V81H9Z"
-                  fill="#e6d8b5"
-                  stroke="#526250"
-                  strokeWidth="3"
-                />
-                <path
-                  d="M48 8V24H63M20 37H50M20 47H50M20 57H42"
-                  stroke="#75836a"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="46"
-                  cy="68"
-                  r="7"
-                  stroke="#9b7744"
-                  strokeWidth="3"
-                />
-              </svg>
-            </div>
-            {!won && frame < 3 && <div className="ending-question">?</div>}
-            <div className="ending-escort" data-detained={won && frame >= 2}>
-              {(won ? frame >= 1 : frame === 3) && (
-                <div className="ending-culprit">
-                  <EndingActor
-                    id={responsible.id}
-                    portrait={responsible.portrait}
-                    detained={won && frame >= 2}
-                    identified={won}
-                  />
-                </div>
-              )}
-              {won && frame >= 2 && (
-                <>
-                  <div className="ending-agent ending-agent-left">
-                    <EndingActor id="agent-one" portrait="agent" />
-                  </div>
-                  <div className="ending-agent ending-agent-right">
-                    <EndingActor id="agent-two" portrait="agent" />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+        <DomeCinematicScene
+          frame={frame}
+          won={won}
+          theme={theme}
+          cast={cast}
+          name={responsible.name}
+          portrait={responsible.portrait}
+        />
         <span className="ending-shot">
           {
             ["PLANO GENERAL", "EL EXPEDIENTE", "EL DESENLACE", "ÚLTIMA ESCENA"][
@@ -538,211 +491,5 @@ function CinematicPlayer({
               : "Una historieta animada del desenlace. Puedes pausarla u omitirla."}
       </p>
     </section>
-  );
-}
-
-function EndingActor({
-  id,
-  portrait,
-  detained = false,
-  identified = false,
-}: {
-  id: string;
-  portrait?: string;
-  detained?: boolean;
-  identified?: boolean;
-}) {
-  return (
-    <div className="ending-actor">
-      <SuspectPortrait
-        id={id}
-        portrait={portrait}
-        presentation="scene"
-        expression={detained ? "worried" : identified ? "alert" : "neutral"}
-        pose={
-          detained
-            ? "detained"
-            : id === "investigator"
-              ? "presenting"
-              : "relaxed"
-        }
-      />
-    </div>
-  );
-}
-
-function EndingBackdrop({
-  theme,
-  recovered,
-}: {
-  theme: CaseTheme;
-  recovered: boolean;
-}) {
-  if (theme === "lighthouse")
-    return (
-      <Image
-        className="ending-backdrop lighthouse-ending-backdrop"
-        src="/lighthouse.webp"
-        alt=""
-        width={1280}
-        height={720}
-        sizes="(max-width: 760px) 100vw, 960px"
-      />
-    );
-  return (
-    <svg
-      className="ending-backdrop"
-      viewBox="0 0 960 440"
-      preserveAspectRatio="xMidYMid slice"
-      fill="none"
-      focusable="false"
-    >
-      {theme === "theater" ? (
-        <>
-          <path fill="#101923" d="M0 0H960V440H0Z" />
-          <path
-            fill="#4c2936"
-            d="M0 0h240Q200 160 70 220v120H0ZM960 0H720q40 160 170 220v120h70Z"
-          />
-          <path fill="#342b2a" d="M0 330h960v110H0Z" />
-          <path stroke="#c8a76b" strokeWidth="8" d="M0 25h960" />
-          <path fill="#f1d498" opacity=".08" d="M410 30L190 330h580L550 30Z" />
-          <path
-            fill="#344252"
-            stroke="#c8a76b"
-            strokeWidth="3"
-            d="M170 170l110 10-10 75-110-10z"
-          />
-          <path
-            stroke="#89958d"
-            strokeWidth="6"
-            d="M220 250v82m-40 15 40-15 40 15"
-          />
-        </>
-      ) : theme === "museum" ? (
-        <>
-          <path fill="#203532" d="M0 0H960V440H0Z" />
-          <path fill="#1b2b28" d="M0 318H960V440H0Z" />
-          <path
-            d="M0 318H960M480 318L210 440M480 318L730 440M0 379H960"
-            stroke="#718173"
-            strokeOpacity=".3"
-            strokeWidth="2"
-          />
-          <path
-            d="M60 42H116V316H60ZM427 42H483V316H427ZM777 42H833V316H777Z"
-            fill="#52645a"
-          />
-          <path
-            d="M51 42H126M417 42H493M767 42H843M51 316H126M417 316H493M767 316H843"
-            stroke="#849383"
-            strokeWidth="9"
-          />
-          <path d="M88 0L220 305H6Z" fill="#e6d5a5" fillOpacity=".06" />
-          <path
-            d="M844 100H934V320H844Z"
-            fill="#0c1a19"
-            stroke="#a1976e"
-            strokeWidth="3"
-          />
-          <path d="M858 116H918V300H858Z" stroke="#42574a" />
-          <path d="M163 248H283V344H163Z" fill="#817b60" />
-          <path
-            d="M153 152L224 128L295 152V248L224 272L153 248Z"
-            fill="#a5c3ad"
-            fillOpacity=".15"
-            stroke="#b4c9af"
-            strokeWidth="3"
-          />
-          <path
-            d="M153 152L224 177L295 152M224 177V272"
-            stroke="#b4c9af"
-            strokeWidth="2"
-          />
-          {recovered && (
-            <path
-              d="M209 219L224 209L240 219L224 240Z"
-              fill="#8cb9d5"
-              stroke="#dce9e3"
-              strokeWidth="2"
-            />
-          )}
-          <path
-            d="M177 177L165 203M185 180L173 206"
-            stroke="#e4ebcd"
-            strokeWidth="3"
-            opacity=".5"
-          />
-          <path
-            d="M0 39H960M0 71H960"
-            stroke="#91a086"
-            strokeOpacity=".22"
-            strokeWidth="2"
-          />
-        </>
-      ) : (
-        <>
-          <path fill="#707e79" d="M0 0H960V440H0Z" />
-          <path
-            fill="#d1bd88"
-            fillOpacity=".55"
-            d="M0 125Q300 20 960 112V249H0Z"
-          />
-          <circle cx="776" cy="105" r="38" fill="#e6d6a4" />
-          <path
-            d="M0 172L175 82L348 161L534 69L727 163L960 98V257H0Z"
-            fill="#415e59"
-          />
-          <path
-            d="M0 211Q130 182 282 203T590 194T960 201V291H0Z"
-            fill="#254540"
-          />
-          <path d="M0 296H960V440H0Z" fill="#3a4c46" />
-          <path d="M0 327H960M0 339H960" stroke="#bdb58b" strokeWidth="3" />
-          <path
-            d="M0 165Q14 145 48 145H627Q659 145 659 175V302H0Z"
-            fill="#294a49"
-            stroke="#879284"
-            strokeWidth="3"
-          />
-          <path d="M0 245H658M0 255H658" stroke="#baa570" strokeWidth="3" />
-          {[29, 135, 241, 347, 453].map((x) => (
-            <path
-              key={x}
-              d={`M${x} 168h79v66h-79z`}
-              fill="#c7ba85"
-              stroke="#1b3433"
-              strokeWidth="5"
-            />
-          ))}
-          <path
-            d="M565 161H630V295H565Z"
-            fill="#142e2d"
-            stroke="#72887b"
-            strokeWidth="2"
-          />
-          <path
-            d="M720 74V321M886 74V321M675 73H938"
-            stroke="#253b37"
-            strokeWidth="8"
-          />
-          <path d="M672 73L766 26H960V73Z" fill="#2a4039" />
-          <path
-            d="M21 382H940M0 427H960"
-            stroke="#879381"
-            strokeOpacity=".3"
-            strokeWidth="2"
-          />
-        </>
-      )}
-      <ellipse
-        cx="570"
-        cy="375"
-        rx="310"
-        ry="22"
-        fill="#071612"
-        fillOpacity=".26"
-      />
-    </svg>
   );
 }

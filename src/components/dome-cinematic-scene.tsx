@@ -1,50 +1,86 @@
 import Image from "next/image";
-import { domeCharacters, domeCharacter } from "@/lib/dome-characters";
+import { domeCharacters } from "@/lib/dome-characters";
+import { chibiCharacter } from "@/lib/chibi-characters";
+import { casePresentation, type CaseTheme } from "@/lib/case-presentation";
+import type { Suspect } from "@/lib/types";
+import { ChibiEvidenceObject } from "./chibi-evidence-object";
 
 /** Called only by the post-settlement ending player. Art never supplies an answer. */
 export function DomeCinematicScene({
   frame,
   won,
   portrait,
+  name,
+  cast = [],
+  theme = "observatory",
 }: {
   frame: number;
   won: boolean;
   portrait?: string;
+  name?: string;
+  cast?: Suspect[];
+  theme?: CaseTheme;
 }) {
-  const person = domeCharacter(portrait);
-  const reveal = Boolean(person && (won ? frame >= 1 : frame === 3));
+  const person = chibiCharacter(name, portrait);
+  const lineup =
+    theme === "observatory"
+      ? Object.values(domeCharacters)
+      : cast.flatMap((s) => {
+          const character = chibiCharacter(s.name, s.portrait);
+          return character ? [character] : [];
+        });
+  const finalObject = {
+    museum: "gem",
+    train: "report",
+    theater: "report",
+    lighthouse: "lens",
+    observatory: "disk",
+  }[theme];
+  const reveal = Boolean(
+    person && (won ? frame === 1 || frame === 2 : frame === 3),
+  );
   return (
     <div
       className="dome-film"
       data-shot={frame}
+      data-case={theme}
+      data-detained={won && frame >= 2}
+      data-cast-count={lineup.length}
       data-outcome={won ? "solved" : "open"}
     >
       <Image
         className={`dome-film-backdrop ${frame < 2 ? "visible" : ""}`}
-        src="/cases/dome/cover.webp"
+        src={casePresentation[theme].image}
         alt=""
         width={1280}
         height={720}
+        sizes="(max-width: 760px) 100vw, 960px"
         loading="eager"
       />
       <Image
         className={`dome-film-backdrop ${frame >= 2 ? "visible" : ""}`}
-        src="/cases/dome/terrace.webp"
+        src={
+          theme === "observatory"
+            ? "/cases/dome/terrace.webp"
+            : `/cases/cinematics/${theme}-closing.webp`
+        }
         alt=""
         width={1280}
         height={720}
+        sizes="(max-width: 760px) 100vw, 960px"
         loading="eager"
       />
       <div className="dome-film-shade" />
       {(frame === 0 || (!won && frame < 3)) && (
         <div className="dome-film-cast">
-          {Object.entries(domeCharacters).map(([key, character]) => (
+          {lineup.map((character) => (
             <Image
-              key={key}
+              key={character.name}
               src={character.image}
               alt=""
               width={280}
               height={400}
+              sizes="(max-width: 600px) 22vw, 200px"
               loading="eager"
             />
           ))}
@@ -57,6 +93,7 @@ export function DomeCinematicScene({
           alt=""
           width={360}
           height={512}
+          sizes="(max-width: 600px) 27vw, 240px"
           loading="eager"
         />
       )}
@@ -67,6 +104,7 @@ export function DomeCinematicScene({
           alt=""
           width={420}
           height={600}
+          sizes="(max-width: 600px) 27vw, 240px"
           loading="eager"
         />
       )}
@@ -77,30 +115,14 @@ export function DomeCinematicScene({
           alt=""
           width={400}
           height={512}
+          sizes="(max-width: 600px) 27vw, 240px"
           loading="eager"
         />
       )}
       {won && frame === 1 && <div className="dome-film-dossier">✦</div>}
       {won && frame === 3 && (
         <div className="dome-film-disk">
-          <svg viewBox="0 0 120 120" fill="none" focusable="false">
-            <circle
-              cx="60"
-              cy="60"
-              r="52"
-              fill="#43355f"
-              stroke="#f4d69a"
-              strokeWidth="6"
-            />
-            <circle cx="60" cy="60" r="41" stroke="#b3d6ee" strokeWidth="2" />
-            <path
-              d="m60 24 9 24 25 3-19 16 5 26-20-14-23 14 6-26-18-16 26-3Z"
-              fill="#f4d69a"
-              stroke="#6f516d"
-              strokeWidth="2"
-            />
-            <circle cx="60" cy="60" r="7" fill="#43355f" />
-          </svg>
+          <ChibiEvidenceObject kind={finalObject} />
         </div>
       )}
     </div>

@@ -11,6 +11,7 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { CaseEnding } from "../src/components/ending-cinematic";
 import type { RoomSnapshot } from "../src/lib/types";
 import type { CaseTheme } from "../src/lib/case-presentation";
+import { caseCharacters } from "../src/lib/chibi-characters";
 let reduced = false,
   pageVisible = true;
 function snapshot(
@@ -99,6 +100,53 @@ function show(data = snapshot(), uid = "agent") {
 }
 function advance() {
   act(() => vi.advanceTimersByTime(3500));
+}
+for (const theme of ["museum", "train", "theater", "lighthouse"] as const) {
+  test(`${theme}: chibi cast follows the snapshot and reveals its official identity only after closure`, () => {
+    const people = Object.values(caseCharacters).filter((c) =>
+      c.image.includes(`/cast/${theme}-`),
+    );
+    const data = snapshot(theme);
+    data.suspects = people.map((p, i) => ({
+      ...data.suspects[0],
+      id: `person-${i}`,
+      name: p.name,
+    }));
+    const official = data.suspects.at(-1)!;
+    data.solution!.suspect_id = official.id;
+    data.game!.team_suspect = official.id;
+    show(data);
+    expect(document.querySelectorAll(".dome-film-cast img")).toHaveLength(
+      people.length,
+    );
+    expect(document.querySelector(".dome-film-interest")).toBeNull();
+    advance();
+    expect(
+      document.querySelector(".dome-film-interest")?.getAttribute("src"),
+    ).toContain(encodeURIComponent(people.at(-1)!.image));
+    advance();
+    expect(document.querySelector(".dome-film-partner")).toBeTruthy();
+    advance();
+    expect(
+      document.querySelector(".dome-film-disk .chibi-object"),
+    ).toBeTruthy();
+  });
+  test(`${theme}: a failed vote never animates an escort or recovered object`, () => {
+    const person = Object.values(caseCharacters).find((c) =>
+      c.image.includes(`/cast/${theme}-`),
+    )!;
+    const data = snapshot(theme, false, "other");
+    data.suspects[0].name = person.name;
+    show(data);
+    for (let frame = 0; frame < 4; frame++) {
+      expect(document.querySelector(".dome-film-partner")).toBeNull();
+      expect(document.querySelector(".dome-film-disk")).toBeNull();
+      expect(Boolean(document.querySelector(".dome-film-interest"))).toBe(
+        frame === 3,
+      );
+      advance();
+    }
+  });
 }
 test("observatory chibi finale reveals only after settlement, pauses, advances and skips", () => {
   const pending = snapshot("observatory");

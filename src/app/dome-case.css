@@ -1,4 +1,32 @@
-/* Pilot art is scoped to the new case; other case portraits and endings keep their designs. */
+/* Shared chibi cast, evidence stickers and animated case endings. */
+.chibi-evidence {
+  background: radial-gradient(
+    ellipse at 50% 55%,
+    #fff4dc 0,
+    #eee4f1 58%,
+    #d4e6e5 100%
+  );
+  border-color: #b6a1c9;
+  border-radius: 16px;
+  color: #625273;
+}
+.chibi-object {
+  overflow: visible;
+  filter: drop-shadow(0 4px 0 #fff8e9) drop-shadow(0 5px 3px #66547230);
+}
+.chibi-object-body {
+  transform-origin: 50% 88%;
+  animation: chibi-object-idle 6s ease-in-out infinite;
+}
+@keyframes chibi-object-idle {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1deg);
+  }
+}
 .chibi-suspect {
   display: grid;
   place-items: center;
@@ -93,6 +121,13 @@
 .dome-film-cast img:nth-child(2n) {
   animation-delay: -2s;
 }
+.dome-film[data-cast-count="5"] .dome-film-cast img {
+  width: 17%;
+}
+.dome-film[data-shot="2"] .dome-film-backdrop,
+.dome-film[data-shot="3"] .dome-film-backdrop {
+  object-position: 65% center;
+}
 .dome-film-actor {
   position: absolute;
   bottom: 10%;
@@ -105,6 +140,11 @@
     dome-arrive 0.65s ease-out both,
     dome-breathe 5s 0.7s ease-in-out infinite;
   transform-origin: center bottom;
+  transition:
+    left 0.7s ease,
+    bottom 0.7s ease,
+    width 0.7s ease,
+    height 0.7s ease;
 }
 .dome-film-lead {
   left: 14%;
@@ -117,13 +157,6 @@
 }
 .dome-film[data-shot="2"] .dome-film-interest {
   left: 45%;
-}
-.dome-film[data-shot="3"][data-outcome="solved"] .dome-film-interest {
-  left: 46%;
-  opacity: 0.65;
-  width: 17%;
-  height: 51%;
-  bottom: 23%;
 }
 .dome-film[data-shot="3"][data-outcome="solved"] .dome-film-lead {
   left: 13%;
@@ -143,9 +176,9 @@
 }
 .dome-film-disk {
   position: absolute;
-  width: 18%;
-  left: 42%;
-  bottom: 5%;
+  width: 32%;
+  left: 34%;
+  bottom: 2%;
   filter: drop-shadow(0 0 12px #efcc7f77);
   animation: dome-arrive 0.7s ease-out both;
 }
@@ -200,6 +233,9 @@
   .dome-film-cast img {
     width: 25%;
   }
+  .dome-film[data-cast-count="5"] .dome-film-cast img {
+    width: 20%;
+  }
   .dome-film-actor {
     width: 27%;
   }
@@ -212,6 +248,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .chibi-suspect > img,
+  .chibi-object-body,
   .dome-film *,
   .dome-film *::before,
   .dome-film *::after {
