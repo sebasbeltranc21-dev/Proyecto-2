@@ -44,3 +44,5 @@ Use case: stylized-concept. Asset: wide 16:9 cinematic background for an origina
 ## Verificación
 
 La suite local comprueba las pistas privadas, el consentimiento para compartir, el voto y el cierre. Las pruebas de cinemática comprueban que no se revela al responsable antes del cierre, los desenlaces de acierto y error, la pausa, la omisión y el movimiento reducido. `tests/remote-observatory-smoke.sql` permite comprobar el flujo alojado con identidades temporales y rollback.
+
+Resultado: lint, TypeScript, compilación y 71 pruebas locales correctas. La comprobación alojada pasó con dos identidades temporales y terminó con rollback. La revisión visual en escritorio y a 390 px verificó los retratos completos, las escenas pausadas, la terraza y los controles móviles.
