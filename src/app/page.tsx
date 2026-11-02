@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { ConfigNotice } from "@/components/ui";
 import { CaseScene } from "@/components/case-scene";
+import { casePresentation } from "@/lib/case-presentation";
 import {
   AgencySeal,
   InvestigationBoard,
@@ -83,10 +84,10 @@ export default function Page() {
         <div className="case-visual">
           <Image
             unoptimized
-            src="/museum.svg"
+            src={casePresentation.museum.image}
             alt="Ilustración original de la sala oscura del Museo Áurea, con una vitrina vacía bajo un haz de luz"
-            width="1000"
-            height="1000"
+            width={1280}
+            height={720}
           />
           <span className="visual-label">
             <span className="live-dot" /> ESCENA DEL CASO
