@@ -256,3 +256,25 @@
     transition: none !important;
   }
 }
+
+/* Uniform numbered case archive and dedicated personal pages. */
+.office-case-grid { grid-template-columns: repeat(3,minmax(0,1fr)); grid-auto-flow: row; align-items: stretch; }
+.office-case-grid > .office-case { grid-column: auto; grid-row: auto; transform: none; display: flex; flex-direction: column; height: 100%; text-decoration: none; }
+.office-case-grid > .office-case img { flex: none; height: 170px; object-fit: cover; width:100%; }
+.office-case-grid > .office-case b { min-height: 2.6em; }
+.office-case-grid > .office-case small { margin-top: auto; }
+.office-progression.office-progression-compact { grid-template-columns: minmax(0,1fr); max-width: 760px; }
+.office-progression-compact .office-rank-sticker { width: 80px; height: 96px; }
+.office-records-nav { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:28px; }
+.office-records-nav a { padding:12px 18px; border:2px solid #b6a1c9; border-radius:16px; background:#403354; color:#f5edff; }
+.office-records-nav a[aria-current="page"] { background:#f1dbab; color:#352944; }
+.office-records-page > .archive-panel,.office-records-page > .leaderboard-panel { margin-top:28px; }
+@media(max-width:1000px) { .office-case-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) {
+ .office-case-grid { grid-template-columns:minmax(0,1fr); }
+ .office-case-grid > .office-case { display:grid; grid-template-columns:105px minmax(0,1fr); height:auto; }
+ .office-case-grid > .office-case img { height:100%; min-height:140px; grid-row:1/4; grid-column:1; }
+ .office-case-grid > .office-case b { min-height:0; }
+ .office-case-grid > .office-case small { margin-top:0; }
+ .office-records-nav a { flex:1 1 140px; text-align:center; }
+}

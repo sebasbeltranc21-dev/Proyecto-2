@@ -1,7 +1,6 @@
 "use client";
 import { characters, type CharacterId } from "@/lib/characters";
 import { useState, type FormEvent } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { casePresentation } from "@/lib/case-presentation";
 import { useRouter } from "next/navigation";
@@ -9,32 +8,30 @@ import {
   ArrowRight,
   Plus,
   LogOut,
-  Trophy,
-  FolderOpen,
   Check,
   Save,
   Fingerprint,
   Paperclip,
   Files,
   BadgeCheck,
-  FileSearch,
-  Users,
-  Crosshair,
 } from "lucide-react";
 import { browserClient } from "@/lib/supabase/client";
 import { act } from "@/lib/api";
 import type { HomeSnapshot } from "@/lib/types";
 import { actionSchema, roomCode } from "@/lib/validation";
 import { Avatar, ErrorNotice, Skeleton } from "./ui";
+import { orderedCases } from "@/lib/case-order";
 import { OfficeHub } from "./office-hub";
 export function Dashboard({
   anonymous,
   initialData,
   initialError,
+  initialCaseSlug,
 }: {
   anonymous: boolean;
   initialData: HomeSnapshot | null;
   initialError: string;
+  initialCaseSlug?: string;
 }) {
   const router = useRouter();
   const [data, setData] = useState<HomeSnapshot | null>(initialData);
@@ -45,7 +42,8 @@ export function Dashboard({
   const [joinError, setJoinError] = useState("");
   const [avatar, setAvatar] = useState(initialData?.profile?.avatar || "lupa");
   const [caseSlug, setCaseSlug] = useState(
-    initialData?.cases?.find((c) => c.slug === "ultima-luz")?.slug ||
+    initialData?.cases?.find((c) => c.slug === initialCaseSlug)?.slug ||
+    orderedCases(initialData?.cases ?? [])[0]?.slug ||
       initialData?.cases?.[0]?.slug ||
       "",
   );
@@ -59,7 +57,7 @@ export function Dashboard({
       setCaseSlug((current) =>
         data.cases?.some((c: { slug: string }) => c.slug === current)
           ? current
-          : data.cases?.[0]?.slug || "",
+          : orderedCases(data.cases ?? [])[0]?.slug || "",
       );
       setError("");
     } catch {
@@ -163,43 +161,7 @@ export function Dashboard({
         </button>
       </div>
       {data && (
-        <OfficeHub data={data} selected={caseSlug} onSelect={setCaseSlug} />
-      )}
-      {data && (
-        <nav
-          className="investigation-route"
-          aria-label="Preparar una investigación"
-        >
-          <a href="#perfil-investigador">
-            <span className="route-number">01</span>
-            <Fingerprint size={21} aria-hidden="true" />
-            <span>
-              <b>Tu credencial</b>
-              <small>
-                {data.profile
-                  ? data.profile.name
-                  : "Guarda tu alias de investigador"}
-              </small>
-            </span>
-            {data.profile && <Check size={16} aria-label="Perfil guardado" />}
-          </a>
-          <a href="#abrir-expediente">
-            <span className="route-number">02</span>
-            <FolderOpen size={21} aria-hidden="true" />
-            <span>
-              <b>El expediente</b>
-              <small>Elige el misterio que vas a investigar</small>
-            </span>
-          </a>
-          <a href="#unirse">
-            <span className="route-number">03</span>
-            <Users size={21} aria-hidden="true" />
-            <span>
-              <b>Tu equipo</b>
-              <small>Entra con un código de invitación</small>
-            </span>
-          </a>
-        </nav>
+        <OfficeHub data={data} />
       )}
       {anonymous && (
         <p className="notice">
@@ -239,7 +201,7 @@ export function Dashboard({
                 <fieldset className="case-picker">
                   <legend>Elige el caso</legend>
                   <div className="case-options">
-                    {(data.cases ?? []).map((c) => (
+                    {orderedCases(data.cases ?? []).map((c) => (
                       <label
                         className={`case-option ${caseSlug === c.slug ? "selected" : ""}`}
                         key={c.slug}
@@ -465,118 +427,6 @@ export function Dashboard({
                 </form>
               </section>
             </div>
-          </div>
-          <div className="stats-strip">
-            <div>
-              <FileSearch size={21} aria-hidden="true" />
-              <b>{data.stats.games}</b>
-              <span>Casos completados</span>
-            </div>
-            <div>
-              <Crosshair size={21} aria-hidden="true" />
-              <b>{data.stats.correct}</b>
-              <span>Acusaciones correctas</span>
-            </div>
-            <div>
-              <Trophy size={21} aria-hidden="true" />
-              <b>{data.stats.points}</b>
-              <span>Puntos acumulados</span>
-            </div>
-          </div>
-          <div className="archive-heading">
-            <div>
-              <p className="eyebrow">REGISTRO DE ACTIVIDAD</p>
-              <h2>El archivo del investigador.</h2>
-            </div>
-            <Fingerprint size={36} aria-hidden="true" />
-          </div>
-          <div className="two-col">
-            <section className="panel archive-panel" id="mis-expedientes">
-              <h2>
-                <FolderOpen size={20} />
-                Tus expedientes
-              </h2>
-              {data.rooms.length === 0 ? (
-                <p className="empty">
-                  Todavía no tienes salas. Abre tu primer expediente.
-                </p>
-              ) : (
-                <ul className="data-list">
-                  {data.rooms.map((r) => (
-                    <li key={r.code}>
-                      <Link href={`/sala/${r.code}`}>
-                        <b className="mono">{r.code}</b>
-                        {r.title && (
-                          <small className="recent-case-title">{r.title}</small>
-                        )}
-                        <span
-                          className={`archive-status ${r.status === "active" ? "active" : r.status === "finished" ? "finished" : "waiting"}`}
-                        >
-                          {r.status === "lobby"
-                            ? "En espera"
-                            : r.status === "active"
-                              ? "En curso"
-                              : "Finalizada"}
-                        </span>
-                        <ArrowRight size={16} />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <h3 className="subheading">Historial de resultados</h3>
-              {data.history.length === 0 ? (
-                <p className="empty">
-                  Tus resultados aparecerán al completar una partida.
-                </p>
-              ) : (
-                <ul className="data-list">
-                  {data.history.map((h) => (
-                    <li key={h.code}>
-                      <Link href={`/sala/${h.code}`}>
-                        <span>
-                          {h.title}
-                          <small className="muted">
-                            {new Date(h.finished_at).toLocaleDateString(
-                              "es-EC",
-                            )}
-                          </small>
-                        </span>
-                        <b className="gold">{h.points} pts</b>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-            <section className="panel leaderboard-panel">
-              <h2>
-                <Trophy size={20} />
-                Clasificación
-              </h2>
-              <p className="muted">Investigadores con más puntos · Top 10</p>
-              {data.leaderboard.length === 0 ? (
-                <p className="empty">
-                  El primer caso resuelto abrirá la clasificación.
-                </p>
-              ) : (
-                <ol className="data-list rankings">
-                  {data.leaderboard.map((p, i) => (
-                    <li key={i}>
-                      <span className="muted mono">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <Avatar small kind={p.avatar} />
-                      <span>
-                        {p.name}
-                        <small className="muted">{p.games} partidas</small>
-                      </span>
-                      <b className="gold">{p.points}</b>
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </section>
           </div>
         </>
       )}

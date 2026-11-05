@@ -216,3 +216,17 @@ test("the fifth character is sent when saving the profile", async () => {
     }),
   );
 });
+
+test("office keeps detailed personal records on separate routes", () => {
+ show({...home,profile});
+ expect(screen.getByRole("link",{name:"Mis logros"}).getAttribute("href")).toBe("/panel/logros");
+ expect(screen.getByRole("link",{name:"Mis expedientes"}).getAttribute("href")).toBe("/panel/expedientes");
+ expect(screen.getByRole("link",{name:"Mis estadísticas"}).getAttribute("href")).toBe("/panel/estadisticas");
+ expect(screen.queryByText("Historial de resultados")).toBeNull();
+ expect(screen.queryByText("Distinciones de tu investigación")).toBeNull();
+ expect(screen.queryByText("Puntos acumulados")).toBeNull();
+});
+test("a case selected from the archive is preserved in the room form", () => {
+ render(createElement(Dashboard,{anonymous:false,initialError:"",initialCaseSlug:"expreso-medianoche",initialData:{...home,profile,cases:[...home.cases,{slug:"expreso-medianoche",title:"El Expreso Medianoche",intro:"Un tren detenido.",theme:"train",suspect_count:5}]}}));
+ expect((screen.getByRole("radio",{name:/El Expreso Medianoche/}) as HTMLInputElement).checked).toBe(true);
+});

@@ -5,7 +5,7 @@ export const characters = [
     name: "Álex",
     role: "Observador",
     image: "/characters/alex.webp",
-    seatedImage: "/characters/seated/alex.webp",
+    seatedImage: "/characters/seated/alex-corrected.png",
   },
   {
     id: "huella",

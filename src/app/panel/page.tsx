@@ -4,7 +4,8 @@ import { isConfigured } from "@/lib/config";
 import { ConfigNotice } from "@/components/ui";
 import { Dashboard } from "@/components/dashboard";
 export const dynamic = "force-dynamic";
-export default async function Page() {
+export default async function Page({searchParams}:{searchParams:Promise<{caso?:string}>}) {
+  const {caso} = await searchParams;
   if (!isConfigured())
     return (
       <main id="contenido" className="shell dashboard">
@@ -24,6 +25,7 @@ export default async function Page() {
       <Dashboard
         anonymous={Boolean(user.is_anonymous)}
         initialData={data}
+        initialCaseSlug={caso}
         initialError={
           error
             ? "No se pudo cargar tu expediente. Comprueba la conexión y las migraciones de Supabase."
