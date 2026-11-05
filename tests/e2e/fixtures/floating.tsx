@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { OfficeHub } from "../../../src/components/office-hub";
 import type { HomeSnapshot } from "../../../src/lib/types";
 import { FinalBallots } from "../../../src/components/final-ballots";
@@ -32,7 +32,6 @@ const report = {
   ],
 } as RoomSnapshot;
 function OfficeReview() {
-  const [selected, setSelected] = useState("ultima-luz");
   const data: HomeSnapshot = {
     profile: { id: "review", name: "Agente de revisión", avatar: "lupa" },
     rooms: [],
@@ -78,7 +77,7 @@ function OfficeReview() {
       },
     ],
   };
-  return <OfficeHub data={data} selected={selected} onSelect={setSelected} />;
+  return <OfficeHub data={data} />;
 }
 createRoot(document.getElementById("root")!).render(
   <main className="room-page room-sidebar">
