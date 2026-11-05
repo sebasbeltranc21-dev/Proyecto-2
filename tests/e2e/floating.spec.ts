@@ -66,9 +66,7 @@ for (const width of [1440, 390])
       "data-paused",
       "true",
     );
-    const folder = page.getByRole("button", { name: /Teatro de revisión/ });
-    await folder.click();
-    await expect(folder).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("link", { name: "Mis expedientes", exact: true })).toHaveAttribute("href", "/panel/expedientes");
     await expect(
       page.getByRole("link", { name: /Teléfono de la central/ }),
     ).toHaveAttribute("href", "#unirse");
