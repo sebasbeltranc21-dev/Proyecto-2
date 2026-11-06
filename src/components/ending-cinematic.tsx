@@ -5,6 +5,7 @@ import type { CaseTheme } from "@/lib/case-presentation";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -377,7 +378,11 @@ function CinematicPlayer({
   const heading = useRef<HTMLHeadingElement>(null);
   const frames = story(theme, won, responsible.name, accused);
   const automatic = !paused && !reduce && foreground;
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // Instant positioning happens before paint and before the first scene timer.
+    heading.current
+      ?.closest<HTMLElement>(".ending-player")
+      ?.scrollIntoView?.({ block: "start", behavior: "instant" });
     heading.current?.focus({ preventScroll: true });
   }, []);
   useEffect(() => {

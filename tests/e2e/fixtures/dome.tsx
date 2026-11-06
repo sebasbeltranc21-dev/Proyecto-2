@@ -26,6 +26,7 @@ const titles: Record<CaseTheme, string> = {
 };
 function Review() {
   const [theme, setTheme] = useState<CaseTheme>("observatory");
+  const [closed, setClosed] = useState(true);
   const cast =
     theme === "observatory"
       ? Object.entries(domeCharacters).map(([portrait, c]) => ({
@@ -38,7 +39,7 @@ function Review() {
   const data = {
     game: {
       id: `chibi-review-${theme}`,
-      stage: 3,
+      stage: closed ? 3 : 2,
       success: true,
       team_suspect: "review-1",
     },
@@ -57,6 +58,9 @@ function Review() {
   return (
     <main className="shell" id="contenido">
       <h1>{titles[theme]}</h1>
+      <button className="button secondary" onClick={() => setClosed(false)}>
+        Simular votación
+      </button>
       <p>
         Revisión visual con datos ficticios, sin sesión ni conexión a partidas.
       </p>
@@ -108,6 +112,11 @@ function Review() {
           </article>
         ))}
       </div>
+      {!closed && (
+        <button className="button primary" onClick={() => setClosed(true)}>
+          Cerrar caso de revisión
+        </button>
+      )}
     </main>
   );
 }

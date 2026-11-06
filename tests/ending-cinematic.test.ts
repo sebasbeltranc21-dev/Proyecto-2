@@ -366,3 +366,27 @@ test("unavailable session storage never blocks skipping or viewing the results",
     screen.getByRole("heading", { name: "Resultados de prueba" }),
   ).toBeTruthy();
 });
+
+test("ending scrolls into view before playback and does not jump again on realtime refresh", () => {
+  const scroll = vi.fn();
+  Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+    value: scroll,
+    configurable: true,
+  });
+  const data = snapshot();
+  const view = show(data);
+  expect(scroll).toHaveBeenCalledWith({ block: "start", behavior: "instant" });
+  expect(
+    (document.activeElement as HTMLElement).closest(".ending-player"),
+  ).toBeTruthy();
+  view.rerender(
+    createElement(
+      CaseEnding,
+      { data: { ...data }, uid: "agent" },
+      createElement("h2", null, "Resultados de prueba"),
+    ),
+  );
+  expect(scroll).toHaveBeenCalledTimes(1);
+  advance();
+  expect(scroll).toHaveBeenCalledTimes(1);
+});

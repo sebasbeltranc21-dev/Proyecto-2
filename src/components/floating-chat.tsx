@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { GripHorizontal, MessagesSquare, Minus, RotateCcw } from "lucide-react";
+import { GripHorizontal, MessagesSquare, Minus } from "lucide-react";
 import { useFloatingPosition } from "@/hooks/use-floating-position";
 export function FloatingChat({
   children,
@@ -36,14 +36,6 @@ export function FloatingChat({
         >
           <GripHorizontal size={17} />
           <span>Chat del equipo</span>
-        </button>
-        <button
-          hidden={minimized}
-          className="widget-icon-button"
-          onClick={reset}
-          aria-label="Restablecer posición del chat"
-        >
-          <RotateCcw size={16} />
         </button>
         <button
           className={`chat-toggle widget-icon-button`}

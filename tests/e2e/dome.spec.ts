@@ -99,3 +99,29 @@ for (const theme of [
       );
       expect(errors).toEqual([]);
     });
+
+for (const width of [1440, 390])
+  test(`ending returns a scrolled player to scene one at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.route("**/__dome-review", (route) =>
+      route.fulfill({ contentType: "text/html", body: html }),
+    );
+    await page.goto("/__dome-review");
+    await page
+      .getByRole("button", { name: "Simular votación", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Cerrar caso de revisión", exact: true })
+      .click();
+    await expect(page.locator(".dome-film")).toHaveAttribute("data-shot", "0");
+    await expect
+      .poll(async () => {
+        const box = await page.locator(".ending-player").boundingBox();
+        return Boolean(box && box.y >= -2 && box.y < 100);
+      })
+      .toBe(true);
+    await expect(page.locator(".ending-player h2")).toBeFocused();
+  });

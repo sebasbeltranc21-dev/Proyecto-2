@@ -13,6 +13,7 @@ test("chat minimizes without losing its draft and counts incoming messages", () 
   fireEvent.click(
     screen.getByRole("button", { name: "Abrir chat del equipo" }),
   );
+  expect(screen.queryByLabelText("Restablecer posición del chat")).toBeNull();
   fireEvent.change(screen.getByLabelText("Draft"), {
     target: { value: "Una teoría por terminar" },
   });

@@ -35,6 +35,7 @@ import { CaseArrival } from "./case-arrival";
 import { CaseScene } from "./case-scene";
 import { EvidenceWorkspace, TimelineBoard } from "./evidence-workspace";
 import { FloatingChat } from "./floating-chat";
+import { useCaseTab } from "@/hooks/use-case-tab";
 import { ChatMessage } from "./chat-message";
 import { InvestigatorCompanion } from "./investigator-companion";
 import { CaseEnding } from "./ending-cinematic";
@@ -45,8 +46,9 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const [connection, setConnection] = useState("connecting");
   const [now, setNow] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [tab, setTab] = useState<"evidence" | "suspects" | "timeline">(
-    "evidence",
+  const { tab, setTab, voteTabRef } = useCaseTab(
+    data?.game?.id,
+    data?.game?.stage,
   );
   const [selection, setSelection] = useState("");
   const [confirm, setConfirm] = useState(false);
@@ -508,6 +510,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                 </button>
                 <button
                   role="tab"
+                  ref={voteTabRef}
                   id="tab-suspects"
                   aria-controls="suspects-panel"
                   aria-selected={tab === "suspects"}
