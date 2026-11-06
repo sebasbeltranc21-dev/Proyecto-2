@@ -1,77 +1,41 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { Grip, Pause, Play, Search, X } from "lucide-react";
-import { useFloatingPosition } from "@/hooks/use-floating-position";
+import { Pause, Play } from "lucide-react";
 import { characterFor } from "@/lib/characters";
 
+/** Anchored in the case header, outside the evidence and chat workspaces. */
 export function InvestigatorCompanion({ kind }: { kind: string }) {
   const character = characterFor(kind);
-  const [minimized, setMinimized] = useState(false);
   const [paused, setPaused] = useState(false);
-  const { ref: widgetRef, style, dragProps, reset } = useFloatingPosition();
   return (
     <aside
-      ref={widgetRef}
-      style={style}
-      className={`investigator-companion companion-left ${minimized ? "companion-minimized" : ""}`}
+      className="room-investigator"
       data-paused={paused}
       aria-label={`Tu personaje: ${character.name}`}
     >
-      {minimized ? (
-        <button
-          className="companion-restore"
-          onClick={() => setMinimized(false)}
-          aria-label="Mostrar mi personaje"
-        >
-          <Search size={16} />
-        </button>
-      ) : (
-        <>
-          <button
-            className="companion-drag widget-drag-handle"
-            {...dragProps}
-            aria-label="Mover mi personaje"
-            title="Arrastra para mover; flechas del teclado para ajustar; Inicio para restablecer"
-          >
-            <div className="companion-stage" aria-hidden="true">
-              <span className="companion-scan" />
-              <div className="companion-character">
-                <Image
-                  src={character.image}
-                  alt=""
-                  width={160}
-                  height={210}
-                  draggable={false}
-                />
-                <Search className="companion-lens" size={27} />
-              </div>
-              <span className="companion-floor" />
-            </div>
-          </button>
-          <div className="companion-controls">
-            <button
-              onClick={() => setPaused(!paused)}
-              aria-label={paused ? "Animar personaje" : "Pausar personaje"}
-              aria-pressed={paused}
-            >
-              {paused ? <Play size={14} /> : <Pause size={14} />}
-            </button>
-            <button
-              onClick={reset}
-              aria-label="Restablecer posición del personaje"
-            >
-              <Grip size={14} />
-            </button>
-            <button
-              onClick={() => setMinimized(true)}
-              aria-label="Minimizar personaje"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        </>
-      )}
+      <Image
+        className="room-investigator-image"
+        src={character.image}
+        alt=""
+        width={120}
+        height={156}
+        sizes="(max-width: 760px) 70px, 110px"
+        draggable={false}
+      />
+      <button
+        type="button"
+        className="widget-icon-button"
+        onClick={() => setPaused(!paused)}
+        aria-label={
+          paused
+            ? "Animar personaje de cabecera"
+            : "Pausar personaje de cabecera"
+        }
+        aria-pressed={paused}
+      >
+        {paused ? <Play size={14} /> : <Pause size={14} />}
+      </button>
     </aside>
   );
 }

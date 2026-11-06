@@ -50,7 +50,10 @@ test("dragging uses pointer capture and stays inside the viewport after resizing
     y: 30,
     toJSON() {},
   });
-  const toggle = screen.getByRole("button", { name: "Abrir chat del equipo" });
+  fireEvent.click(
+    screen.getByRole("button", { name: "Abrir chat del equipo" }),
+  );
+  const toggle = screen.getByRole("button", { name: "Mover chat" });
   toggle.setPointerCapture = vi.fn();
   toggle.hasPointerCapture = () => true;
   toggle.releasePointerCapture = vi.fn();
@@ -59,10 +62,14 @@ test("dragging uses pointer capture and stays inside the viewport after resizing
   fireEvent.pointerUp(toggle);
   expect(root.style.left).toBe(`${window.innerWidth - 368}px`);
   expect(root.style.top).toBe(`${window.innerHeight - 408}px`);
-  fireEvent.click(toggle);
-  expect(toggle.getAttribute("aria-expanded")).toBe("false");
-  fireEvent.click(toggle);
-  expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  fireEvent.click(screen.getByLabelText("Minimizar chat"));
+  expect(root.style.left).toBe("");
+  expect(root.style.top).toBe("");
+  const dock = screen.getByRole("button", { name: "Abrir chat del equipo" });
+  fireEvent.keyDown(dock, { key: "ArrowUp" });
+  expect(root.style.top).toBe("");
+  fireEvent.click(dock);
+  expect(dock.getAttribute("aria-expanded")).toBe("true");
   vi.unstubAllGlobals();
 });
 test("bounds fit both edges and narrow screens", () => {

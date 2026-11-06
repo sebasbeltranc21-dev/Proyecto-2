@@ -22,7 +22,7 @@ export function FloatingChat({
   return (
     <section
       ref={widgetRef}
-      style={style}
+      style={minimized ? undefined : style}
       className={`floating-chat ${minimized ? "chat-minimized" : ""}`}
       aria-label="Chat del equipo"
     >
@@ -46,8 +46,7 @@ export function FloatingChat({
           <RotateCcw size={16} />
         </button>
         <button
-          {...(minimized ? dragProps : {})}
-          className={`chat-toggle widget-icon-button ${minimized ? "widget-drag-handle" : ""}`}
+          className={`chat-toggle widget-icon-button`}
           aria-label={
             minimized
               ? `Abrir chat del equipo${unread ? `, ${unread} mensajes nuevos` : ""}`
@@ -58,6 +57,7 @@ export function FloatingChat({
           onClick={() => {
             setSeenCount(messageCount);
             follow.current = true;
+            reset();
             setMinimized(!minimized);
           }}
         >

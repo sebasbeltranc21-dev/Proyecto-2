@@ -1,4 +1,8 @@
 import React from "react";
+import { ChatMessage } from "../../../src/components/chat-message";
+import { SuspectPortrait } from "../../../src/components/case-art";
+import "../../../src/app/globals.css";
+import "../../../src/app/dome-case.css";
 import { OfficeHub } from "../../../src/components/office-hub";
 import type { HomeSnapshot } from "../../../src/lib/types";
 import { FinalBallots } from "../../../src/components/final-ballots";
@@ -86,11 +90,45 @@ createRoot(document.getElementById("root")!).render(
     </p>
     <OfficeReview />
     <FinalBallots data={report} uid="a" />
-    <InvestigatorCompanion kind="lupa" />
+    <header className="room-top operation-header">
+      <div>
+        <h1>Caso de revisión</h1>
+      </div>
+      <InvestigatorCompanion kind="lupa" />
+      <div className="room-code">CÓDIGO DE PRUEBA</div>
+    </header>
+    <div className="solution">
+      <SuspectPortrait id="review" name="Clara Vidal" portrait="restorer" />
+      <h3>Persona de revisión</h3>
+      <p>
+        Informe ficticio para comprobar que el retrato tenga altura visible.
+      </p>
+    </div>
     <FloatingChat messageCount={1}>
       <section className="panel chat-panel">
         <div className="chat-messages">
-          <p>Mensaje ficticio de revisión</p>
+          <ChatMessage
+            message={{
+              id: "review-a",
+              user_id: "a",
+              name: "Agente A",
+              body: "Mensaje ficticio de revisión",
+              sent_at: "2026-11-06T15:00:00Z",
+            }}
+            avatar="camara"
+            mine={false}
+          />
+          <ChatMessage
+            message={{
+              id: "review-b",
+              user_id: "b",
+              name: "Agente B",
+              body: "Otra teoría",
+              sent_at: "2026-11-06T15:01:00Z",
+            }}
+            avatar="luna"
+            mine
+          />
         </div>
         <form>
           <textarea aria-label="Tu teoría" />

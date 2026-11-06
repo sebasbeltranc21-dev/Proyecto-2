@@ -35,6 +35,7 @@ import { CaseArrival } from "./case-arrival";
 import { CaseScene } from "./case-scene";
 import { EvidenceWorkspace, TimelineBoard } from "./evidence-workspace";
 import { FloatingChat } from "./floating-chat";
+import { ChatMessage } from "./chat-message";
 import { InvestigatorCompanion } from "./investigator-companion";
 import { CaseEnding } from "./ending-cinematic";
 export function GameRoom({ code, uid }: { code: string; uid: string }) {
@@ -215,20 +216,11 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
   const solved = data.suspects.find((s) => s.id === data.solution?.suspect_id);
   return (
     <>
-      {!lobby && !finished && me?.in_game && (
-        <InvestigatorCompanion kind={me.avatar} />
-      )}
       <Link href="/panel" className="back">
         <ArrowLeft size={16} />
         Mi expediente
       </Link>
       <div className="room-top operation-header">
-        <Fingerprint
-          className="operation-watermark"
-          size={120}
-          strokeWidth={0.8}
-          aria-hidden="true"
-        />
         <div>
           <p className="eyebrow">
             EXPEDIENTE {casePresentation[data.case.theme].number} / COOPERATIVO
@@ -242,6 +234,7 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                 : "INVESTIGACIÓN EN CURSO"}
           </p>
         </div>
+        {me && <InvestigatorCompanion kind={me.avatar} />}
         <div className="room-code">
           <span>CÓDIGO DE SALA</span>
           <button onClick={copy} aria-label="Copiar código de sala">
@@ -716,21 +709,15 @@ export function GameRoom({ code, uid }: { code: string; uid: string }) {
                   </p>
                 ) : (
                   data.messages.map((m) => (
-                    <article
+                    <ChatMessage
                       key={m.id}
-                      className={m.user_id === uid ? "mine" : ""}
-                    >
-                      <div>
-                        <b>{m.name}</b>
-                        <time dateTime={m.sent_at}>
-                          {new Date(m.sent_at).toLocaleTimeString("es-EC", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </time>
-                      </div>
-                      <p>{m.body}</p>
-                    </article>
+                      message={m}
+                      mine={m.user_id === uid}
+                      avatar={
+                        data.participants.find((p) => p.user_id === m.user_id)
+                          ?.avatar
+                      }
+                    />
                   ))
                 )}
               </div>
